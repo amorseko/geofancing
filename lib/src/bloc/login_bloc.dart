@@ -16,7 +16,7 @@ class DoLoginBloc {
     print(body);
     MemberModels model = await _repository.actLogin(body: body);
     if (model.data != null) {
-      print(model.data.password);
+//      print(model.data.password);
       SharedPreferencesHelper.setDoLogin(json.encode(model.toJson()));
 //      SharedPreferencesHelper.setToken(model.token);
     }

@@ -9,8 +9,8 @@ import 'package:geofancing/src/widgets/Strings.dart';
 class ApiProvider {
   Dio _dio;
   final _apiKey = '802b2c4b88ea1183e50e6b285a27696e';
-//  String _baseUrl = 'http://192.168.210.169:2001';
-  String _baseUrl = "http://192.168.0.107/api_geofancing/";
+   String _baseUrl = 'http://192.168.241.96/api_geofancing/';
+//  String _baseUrl = "http://192.168.0.107/api_geofancing/";
 
   ApiProvider() {
     SharedPreferencesHelper.getToken().then((token) {
@@ -19,8 +19,7 @@ class ApiProvider {
           baseUrl: _baseUrl,
           connectTimeout: 5000,
           headers: {'Authorization': token},
-          contentType: ContentType.parse("application/json")
-      );
+          contentType: ContentType.parse("application/json"));
 
       _dio = Dio(options);
       _setupLoggingInterceptor();
@@ -37,6 +36,7 @@ class ApiProvider {
     _dio = Dio(options);
     return _dio;
   }
+
   Future<Dio> _syncConn() async {
     var token = await SharedPreferencesHelper.getToken();
     print("data token: " + token);
@@ -75,18 +75,18 @@ class ApiProvider {
           break;
         case DioErrorType.DEFAULT:
           errorDescription =
-          "Connection to API server failed due to internet connection";
+              "Connection to API server failed due to internet connection";
           break;
         case DioErrorType.RECEIVE_TIMEOUT:
           errorDescription = "Receive timeout in connection with API server";
           break;
         case DioErrorType.RESPONSE:
           errorDescription =
-          "Received invalid status code: ${error.response.statusCode}";
+              "Received invalid status code: ${error.response.statusCode}";
           break;
       }
     } else {
-      errorDescription = "Unexpected error occured "+error.toString();
+      errorDescription = "Unexpected error occured " + error.toString();
     }
     return errorDescription;
   }
@@ -109,7 +109,7 @@ class ApiProvider {
       String responseAsString = response.data.toString();
       if (responseAsString.length > maxCharactersPerLine) {
         int iterations =
-        (responseAsString.length / maxCharactersPerLine).floor();
+            (responseAsString.length / maxCharactersPerLine).floor();
         for (int i = 0; i <= iterations; i++) {
           int endingIndex = i * maxCharactersPerLine + maxCharactersPerLine;
           if (endingIndex > responseAsString.length) {
@@ -141,8 +141,8 @@ class ApiProvider {
     final _dio = await _syncConnWithoutToken();
 
     try {
-      final response = await _dio.post("/get_language.php",
-          data: json.encode(body));
+      final response =
+          await _dio.post("/get_language.php", data: json.encode(body));
       print(response.data);
       return response.data;
     } catch (error, _) {

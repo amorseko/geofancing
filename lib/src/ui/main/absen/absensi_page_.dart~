@@ -12,40 +12,35 @@ import 'package:geofancing/src/utility/sharedpreferences.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
-import 'package:geofancing/src/utility/utils.dart' as Utils;
+import 'package:geofancing/src/utility/utils.dart' as  Utils;
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:latlong/latlong.dart' as pref;
+import 'package:latlong/latlong.dart' as pref ;
 
 class AbsensiPage extends StatefulWidget {
   @override
   _AbsensiPageState createState() => _AbsensiPageState();
 }
 
+
 class _AbsensiPageState extends State<AbsensiPage> {
   bool _isLoading = true;
   String _fullName;
-  double _lat, _long;
+  double _lat,_long;
   final pref.Distance distance = new pref.Distance();
-  LatLng _latlng;
 
-  bool _isButtonDisabled = false;
+  int _totalMeters = 0;
 
-  double _totalMeters = 0;
-
-  Icon actionIcon = new Icon(
-    Icons.search,
-    color: Colors.white,
-  );
+  Icon actionIcon = new Icon(Icons.search, color: Colors.white,);
 
 //  Completer<GoogleMapController> _controller = Completer();
   GoogleMapController _controller;
   final Set<Marker> _markers = Set();
 
   static var today = new DateTime.now();
-  String formattedDate =
-      DateFormat('d' + '-' + 'MMMM' + '-' + 'y').format(today);
+  String formattedDate = DateFormat('d' + '-' + 'MMMM' + '-' + 'y').format(today);
+
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -59,20 +54,22 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   StreamSubscription _locationSubscription;
 
-  final pref.Distance sDistance = new pref.Distance();
+  final Distance distance = new Distance();
 
-  double latitude = 0.0, longitude = 0.0;
+  double latitude = 0.0,
+      longitude = 0.0;
   Map<String, double> userLocation;
   final Location location = Location();
+  final LatLng _currentPosition = LatLng(3.595196, 98.672226);
 
   static final CameraPosition initiallocation = CameraPosition(
     target: LatLng(0, 0),
     zoom: 14.4746,
   );
 
+
   void initState() {
     super.initState();
-    _isButtonDisabled = false;
 
     Future.delayed(Duration(seconds: 0)).then((_) {
       showModalBottomSheet(
@@ -90,8 +87,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                          top: Radius.elliptical(150, 30)),
+                      borderRadius: BorderRadius.vertical(top: Radius.elliptical(150, 30)),
                     ),
                   ),
                 ),
@@ -108,7 +104,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                           height: 40,
                           child: Image.asset('assets/icons/close_popup.png'),
                           decoration: const BoxDecoration(
-                            color: Colors.white,
+                            color : Colors.white,
                             borderRadius: BorderRadius.all(
                               Radius.circular(50.0),
                             ),
@@ -126,35 +122,34 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //
                       SizedBox(height: 20),
                       Container(
-                        child: TextWidget(
-                          txt: allTranslations.text('txt_tanggal') +
-                              " : " +
-                              formattedDate,
+                        child :
+                        TextWidget(
+                          txt: allTranslations.text('txt_tanggal') + " : " + formattedDate,
                           txtSize: 20,
                           color: Colors.lightBlueAccent,
                           weight: FontWeight.bold,
+
                         ),
                         padding: const EdgeInsets.only(bottom: 15),
                       ),
                       Container(
-                        child: TextWidget(
+                        child :
+                        TextWidget(
                           txt: _totalMeters.toString() + " Meters",
                           txtSize: 20,
                           color: Colors.lightBlueAccent,
                           weight: FontWeight.bold,
+
                         ),
                         padding: const EdgeInsets.only(bottom: 15),
                       ),
 
                       Container(
                           child: RaisedButton(
-                            onPressed : () {
-                              _ValidationChecking(_totalMeters,_latlng);
-//                              setState(() {
-//                                _isLoading = true;
-//                              });
+                            onPressed: () async {
+//                        Navigator.pop(context);
                             },
-                            color: Colors.lightBlueAccent,
+                            color : Colors.lightBlueAccent,
                             textColor: Colors.white,
                             child: TextWidget(
                               txt: allTranslations.text('btn_attendance'),
@@ -168,7 +163,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
                             ),
 //                      child: Container(),
                           ),
-                          padding: const EdgeInsets.only(bottom: 15)),
+                          padding:const EdgeInsets.only(bottom: 15)
+                      ),
                     ],
                   ),
                 ),
@@ -194,7 +190,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
           title: Text(allTranslations.text("btn_absen"),
               style: TextStyle(color: coorporateColor)),
           centerTitle: true,
-          backgroundColor: Colors.white),
+          backgroundColor: Colors.white
+      ),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
         child: Stack(
@@ -207,7 +204,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
                 circles: Set.of((circle != null ? [circle] : [])),
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
-                }),
+                }
+            ),
           ],
         ),
       ),
@@ -217,26 +215,30 @@ class _AbsensiPageState extends State<AbsensiPage> {
           getCurrentLocation();
         },
       ),
+
+
     );
   }
 
   Future<Uint8List> getMarker() async {
-    ByteData byteData =
-        await DefaultAssetBundle.of(context).load("assets/icons/car_icon.png");
+    ByteData byteData = await DefaultAssetBundle.of(context).load(
+        "assets/icons/car_icon.png");
     return byteData.buffer.asUint8List();
   }
 
-  void updateMarkerAndCircle(
-      LocationData newLocationData, Uint8List imageData) {
-//    LatLng latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
-    LatLng latlngCirlce = LatLng(_long, _lat);
-    _latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
 
-    _totalMeters = sDistance(
-        new pref.LatLng(newLocationData.latitude, newLocationData.longitude),
-        new pref.LatLng(_long, _lat));
+  void getCurrentMeters(LocationData newLocationData) {
 
-//    (_totalMeters < 5) ? _isButtonDisabled=false : _isButtonDisabled= true;
+  }
+
+  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData) {
+    LatLng latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
+    LatLng latlngCirlce = LatLng(_long,_lat);
+
+//    final int meter = distance(
+//        new pref.LatLng(newLocationData.latitude, newLocationData.longitude),
+//        new pref.LatLng(_long,_lat)
+//    );
 //
 //    _totalMeters = meter;
 //    print("Current meters : $meter");
@@ -245,7 +247,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     this.setState(() {
       marker = Marker(
           markerId: MarkerId('home'),
-          position: _latlng,
+          position: latlng,
           rotation: newLocationData.heading,
           draggable: false,
           zIndex: 2,
@@ -262,7 +264,10 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
 //      print(circle);
     });
+
+
   }
+
 
 
   void getCurrentLocation() async {
@@ -279,29 +284,28 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
       _locationSubscription =
           _locationTracker.onLocationChanged().listen((newLocalData) {
-        if (_controller != null) {
-          _controller.animateCamera(CameraUpdate.newCameraPosition(
-              new CameraPosition(
-                  bearing: 192.83349401395799,
-                  target: LatLng(newLocalData.latitude, newLocalData.longitude),
-                  tilt: 0,
-                  zoom: 18.00)));
-          updateMarkerAndCircle(newLocalData, imageData);
+            if (_controller != null) {
+              _controller.animateCamera(
+                  CameraUpdate.newCameraPosition(new CameraPosition(
+                      bearing: 192.83349401395799,
+                      target: LatLng(
+                          newLocalData.latitude, newLocalData.longitude),
+                      tilt: 0,
+                      zoom: 18.00
+                  )));
+              updateMarkerAndCircle(newLocalData, imageData);
 //              getCurrentMeters(newLocalData);
-        }
-      });
+            }
+          });
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint("Permission Denied");
       }
     }
   }
-  _ValidationChecking(double _Meters, LatLng ltlng) {
-    if(_Meters == null || _Meters > 5) {
-      Utils.showToast(context, 'Jarak kurang dari 5 meters');
-    }
-  }
+
   _inivtiew() async {
+
     print("tanggal : " + formattedDate);
     SharedPreferencesHelper.getDoLogin().then((member) {
       final memberModels = MemberModels.fromJson(json.decode(member));
@@ -318,12 +322,17 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   _renderView(BuildContext context) {
     showBottomSheet(
-        context: context,
-        builder: (context) => Container(
-              color: Colors.red,
-            ));
+      context: context,
+      builder: (context) => Container(
+        color: Colors.red,
+      ));
     setState(() {
       _isLoading = false;
     });
   }
+
+
 }
+
+
+
