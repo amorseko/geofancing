@@ -9,7 +9,7 @@ import 'package:geofancing/src/widgets/Strings.dart';
 class ApiProvider {
   Dio _dio;
   final _apiKey = '802b2c4b88ea1183e50e6b285a27696e';
-   String _baseUrl = 'http://192.168.241.96/api_geofancing/';
+   String _baseUrl = 'http://192.168.1.20/api_geofancing/';
 //  String _baseUrl = "http://192.168.0.107/api_geofancing/";
 
   ApiProvider() {

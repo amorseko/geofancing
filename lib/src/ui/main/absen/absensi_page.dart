@@ -28,6 +28,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
   String _fullName;
   double _lat, _long;
   final pref.Distance distance = new pref.Distance();
+//  final _scaffoldKey = GlobalKey<ScaffoldState>();
   LatLng _latlng;
 
   bool _isButtonDisabled = false;
@@ -110,7 +111,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                           decoration: const BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(
-                              Radius.circular(50.0),
+                              Radius.circular(78.0),
                             ),
                             boxShadow: [
                               BoxShadow(
@@ -148,12 +149,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
                       Container(
                           child: RaisedButton(
-                            onPressed : () {
-                              _ValidationChecking(_totalMeters,_latlng);
-//                              setState(() {
-//                                _isLoading = true;
-//                              });
-                            },
+                            onPressed: () =>_ValidationChecking(_totalMeters,_latlng),
+
                             color: Colors.lightBlueAccent,
                             textColor: Colors.white,
                             child: TextWidget(
@@ -297,8 +294,9 @@ class _AbsensiPageState extends State<AbsensiPage> {
     }
   }
   _ValidationChecking(double _Meters, LatLng ltlng) {
+    print("data meters : " + _Meters.toString());
     if(_Meters == null || _Meters > 5) {
-      Utils.showToast(context, 'Jarak kurang dari 5 meters');
+      showAlertDialog(context, "Jarak anda lebih dari 5 Meter");
     }
   }
   _inivtiew() async {
@@ -314,6 +312,36 @@ class _AbsensiPageState extends State<AbsensiPage> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  showAlertDialog(BuildContext context, message) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alert"),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   _renderView(BuildContext context) {
