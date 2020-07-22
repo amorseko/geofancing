@@ -2,67 +2,73 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/models/default_model.dart';
+import 'package:geofancing/src/models/history_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
 
 class ApiProvider {
   Dio _dio;
+  Dio _dioSecond;
+
   final _apiKey = '802b2c4b88ea1183e50e6b285a27696e';
-//  String _baseUrl = 'http://192.168.210.169:2001';
-  String _baseUrl = "http://192.168.0.107/api_geofancing/";
+   String _baseUrl = 'http://13.229.237.174/api/';
+//  String _baseUrl = "http://192.168.0.107/api_geofancing/";
 
   ApiProvider() {
     SharedPreferencesHelper.getToken().then((token) {
-      Options options = Options(
+      BaseOptions options = BaseOptions(
           receiveTimeout: 5000,
           baseUrl: _baseUrl,
           connectTimeout: 5000,
           headers: {'Authorization': token},
-          contentType: ContentType.parse("application/json")
+          contentType: Headers.formUrlEncodedContentType
       );
 
+      BaseOptions optionsSecond = BaseOptions(
+          followRedirects: false,
+          validateStatus: (status) {
+            return status < 500;
+          },
+          receiveTimeout: 1000000,
+          connectTimeout: 1000000,
+          contentType: Headers.formUrlEncodedContentType);
+
       _dio = Dio(options);
+      _dioSecond  = Dio(optionsSecond);
       _setupLoggingInterceptor();
     });
   }
-
-  Future<Dio> _syncConnection() async {
-    Dio _dio;
-    Options options = Options(
-        receiveTimeout: 5000,
-        connectTimeout: 5000,
-        baseUrl: _baseUrl,
-        contentType: ContentType.parse("application/json"));
-    _dio = Dio(options);
-    return _dio;
-  }
-  Future<Dio> _syncConn() async {
-    var token = await SharedPreferencesHelper.getToken();
-    print("data token: " + token);
-    Dio _dio;
-    Options options = Options(
-        receiveTimeout: 5000,
-        connectTimeout: 5000,
-        baseUrl: _baseUrl,
-        headers: {'Authorization': token},
-        contentType: ContentType.parse("application/json"));
-    _dio = Dio(options);
-    return _dio;
-  }
-
   Future<Dio> _syncConnWithoutToken() async {
     Dio _dio;
-    Options options = Options(
+    BaseOptions options = BaseOptions(
         receiveTimeout: 5000,
         connectTimeout: 5000,
         baseUrl: _baseUrl,
-        contentType: ContentType.parse("application/json"));
+        contentType: Headers.formUrlEncodedContentType
+    );
     _dio = Dio(options);
     return _dio;
   }
 
-  String _handleError(Error error) {
+  Future<Dio> _syncFormData() async {
+    Dio _dioSecond;
+    BaseOptions optionsSecond = BaseOptions(
+        followRedirects: false,
+        validateStatus: (status) {
+          return status < 500;
+        },
+        receiveTimeout: 1000000,
+        connectTimeout: 1000000,
+        contentType: Headers.formUrlEncodedContentType);
+    _dioSecond = Dio(optionsSecond);
+    return _dio;
+  }
+
+
+  String _handleError(error) {
     print(error);
     String errorDescription = "";
     if (error is DioError) {
@@ -75,18 +81,18 @@ class ApiProvider {
           break;
         case DioErrorType.DEFAULT:
           errorDescription =
-          "Connection to API server failed due to internet connection";
+              "Connection to API server failed due to internet connection";
           break;
         case DioErrorType.RECEIVE_TIMEOUT:
           errorDescription = "Receive timeout in connection with API server";
           break;
         case DioErrorType.RESPONSE:
           errorDescription =
-          "Received invalid status code: ${error.response.statusCode}";
+              "Received invalid status code: ${error.response.statusCode}";
           break;
       }
     } else {
-      errorDescription = "Unexpected error occured "+error.toString();
+      errorDescription = "Unexpected error occured " + error.toString();
     }
     return errorDescription;
   }
@@ -94,16 +100,19 @@ class ApiProvider {
   void _setupLoggingInterceptor() {
     int maxCharactersPerLine = 200;
 
-    _dio.interceptor.request.onSend = (Options options) {
-      print("--> ${options.method} ${options.path}");
-      print("Header: ${options.headers}");
-      print("Content type: ${options.contentType}");
-      print("Body: ${options.data}");
-      print("<-- END HTTP");
+    _dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+      SharedPreferencesHelper.getToken().then((token) {
+        options.headers['Authorization'] = token;
+//            options.headers['Authorization']="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBpZCI6ImFwcHNfTkh0Mm94IiwiY2FyZCI6IjgwMDAxOTU4MDA1ODcxOTkiLCJleHAiOjE1ODI3NDQ3MjcsInByb2plY3RpZCI6InJhbWF5YW5hX1JCSW0iLCJ1c2VyaWQiOiJkOTgwcGcifQ.f6lCh0Yg6dwgDLk1ksRGXvR3c76u0e5lVEO4ygzH_Yc";
+        print("--> ${options.method} ${options.path}");
+        print("Header: ${options.headers}");
+        print("Content type: ${options.contentType}");
+        print("Body: ${options.data}");
+        print("<-- END HTTP");
+      });
       return options;
-    };
-
-    _dio.interceptor.response.onSuccess = (Response response) {
+    }, onResponse: (Response response) {
       print(
           "<-- ${response.statusCode} ${response.request.method} ${response.request.path}");
       String responseAsString = response.data.toString();
@@ -122,7 +131,9 @@ class ApiProvider {
         print(response.data);
       }
       print("<-- END HTTP");
-    };
+    }, onError: (DioError error) {
+      print(error);
+    }));
   }
 
   Future<MemberModels> login({Map<String, dynamic> body}) async {
@@ -141,12 +152,54 @@ class ApiProvider {
     final _dio = await _syncConnWithoutToken();
 
     try {
-      final response = await _dio.post("/get_language.php",
-          data: json.encode(body));
+      final response =
+          await _dio.post("/get_language.php", data: json.encode(body));
       print(response.data);
       return response.data;
     } catch (error, _) {
 //      return _handleError(error);
     }
   }
+
+
+  Future<DefaultModel> submitAbsen({FormData formData}) async {
+    final _dioSecond = await _syncFormData();
+    try {
+      final response = await _dioSecond.post(_baseUrl+"/save_absen.php", data: formData, onSendProgress:  (int sent, int total) {
+        print("progress >>> " +
+            ((sent / total) * 100).floor().toString() +
+            "%");
+      });
+      print(response.data.toString());
+      return DefaultModel.fromJson(response.data);
+    } catch (error, _) {
+      print(_handleError(error));
+    }
+  }
+
+  Future<HistoryModels> getHistoryAbsen({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+
+    try {
+      final response =
+      await _dio.post("/history_absen.php", data: json.encode(body));
+      return HistoryModels.fromJson(response.data);
+    } catch (error, _) {
+//      return _handleError(error);
+    }
+  }
+
+  Future<AbsenModels> getTodayAbsen({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+
+    try {
+      final response =
+      await _dio.post("/absen.php", data: json.encode(body));
+      return AbsenModels.fromJson(response.data);
+    } catch (error, _) {
+//      return _handleError(error);
+    }
+  }
+
+
 }

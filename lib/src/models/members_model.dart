@@ -31,20 +31,19 @@ class _Data {
   _Data(
         {
           this.username,
-          this.password,
           this.level,
           this.nama_user,
           this.id_user,
           this.foto,
           this.id_dealer,
-          this.token
+          this.token,
+          this.longitude,
+          this.latitude
         }
       );
 
   @JsonKey(name: 'username')
   String username;
-  @JsonKey(name: 'password')
-  String password;
   @JsonKey(name: 'level')
   String level;
   @JsonKey(name: 'nama_user')
@@ -57,6 +56,10 @@ class _Data {
   String id_dealer;
   @JsonKey(name: 'token')
   String token;
+  @JsonKey(name: 'longitude')
+  double longitude;
+  @JsonKey(name: 'latitude')
+  double latitude;
 
   factory _Data.fromJson(Map<String, dynamic> json) => _$_DataFromJson(json);
 

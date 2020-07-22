@@ -5,6 +5,10 @@ import 'dart:io' show Platform;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:geofancing/src/bloc/absentoday_bloc.dart' as todayBloc;
+import 'package:geofancing/src/bloc/request/req_history_absen.dart';
+import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/ui/main/absen/report_page.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/utility/colors.dart';
 import 'package:geofancing/src/utility/sharedpreferences.dart';
@@ -13,6 +17,7 @@ import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/models/members_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geofancing/src/ui/main/absen/absensi_page.dart';
@@ -32,6 +37,25 @@ class _MainPageState extends State<MainPage> {
 
   String _fullName;
   bool _isLoading = true;
+
+  int jumlah =0;
+  GoogleMapController _controller;
+  double latitude = 0.0, longitude = 0.0;
+  Map<String, double> userLocation;
+  double _lat, _long;
+
+
+  static final CameraPosition initiallocation = CameraPosition(
+    target: LatLng(0, 0),
+    zoom: 14.4746,
+  );
+
+
+  static final CameraPosition _kLake = CameraPosition(
+      bearing: 192.8334901395799,
+      target: LatLng(37.43296265331129, -122.08832357078792),
+      tilt: 59.440717697143555,
+      zoom: 19.151926040649414);
 
 
   @override
@@ -103,15 +127,13 @@ class _MainPageState extends State<MainPage> {
 
   Widget _boxMenu(BuildContext context){
     return Container(
-//      margin: EdgeInsets.fromLTRB(25, 20, 25, 25),
         width: MediaQuery.of(context).size.width,
         child: GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-//          primary: false,
-            crossAxisCount: 2,
-            childAspectRatio: 1.0/0.7,
+            crossAxisCount: 1,
+            childAspectRatio: 1.0/0.3,
             padding: const EdgeInsets.all(10),
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
@@ -120,39 +142,15 @@ class _MainPageState extends State<MainPage> {
 //                "icon": "assets/icons/icons_peserta.png",
 //                "title": allTranslations.text('btn_absen'),
 //                "type": "page",
-//                "page": "",
+//                "page": AbsensiPage(action: "masuk",),
 //                "status": true,
 //                "color":0xFF74b9ff
 //              },
-//              {
-//                "icon": "assets/icons/ic_date.png",
-//                "title": allTranslations.text('btn_report'),
-//                "type": "page",
-//                "page": "",
-//                "status": "",
-//                "color":0xFFfd79a8
-//              },
-//              {
-//                "icon": "assets/icons/ic_date.png",
-//                "title": allTranslations.text('btn_report'),
-//                "type": "page",
-//                "page": "",
-//                "status": "",
-//                "color":0xFFfd79a8
-//              },
-              {
-                "icon": "assets/icons/icons_peserta.png",
-                "title": allTranslations.text('btn_absen'),
-                "type": "page",
-                "page": AbsensiPage(),
-                "status": true,
-                "color":0xFF74b9ff
-              },
               {
                 "icon": "assets/icons/icons_riwayat.png",
                 "title": allTranslations.text('btn_report'),
                 "type": "page",
-                "page": "",
+                "page": ReportPage(),
                 "status": true,
                 "color":0xFFfd79a8
               }
@@ -211,27 +209,27 @@ class _MainPageState extends State<MainPage> {
             child: Stack(
               children: <Widget>[
                 _buildCustomCover(screenSize),
-                Positioned(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 50.0, right: 10.0),
-                    child: Align(
-                      alignment: FractionalOffset.topRight,
-                      child: RawMaterialButton(
-                        elevation: 10,
-                        shape: new CircleBorder(),
-                        child: Image(
-                          image: AssetImage("assets/icons/icon_settings.png"),
-                          height: 30,
-                        ),
-                        padding: EdgeInsets.all(5),
-                        fillColor: Colors.white,
-                        onPressed: (){
-//                          routeToWidget(context, new SettingsPage());
-                        },
-                      ),
-                    ),
-                  )
-                ),
+//                Positioned(
+//                  child: Padding(
+//                    padding: const EdgeInsets.only(top: 50.0, right: 10.0),
+//                    child: Align(
+//                      alignment: FractionalOffset.topRight,
+//                      child: RawMaterialButton(
+//                        elevation: 10,
+//                        shape: new CircleBorder(),
+//                        child: Image(
+//                          image: AssetImage("assets/icons/icon_settings.png"),
+//                          height: 30,
+//                        ),
+//                        padding: EdgeInsets.all(5),
+//                        fillColor: Colors.white,
+//                        onPressed: (){
+////                          routeToWidget(context, new SettingsPage());
+//                        },
+//                      ),
+//                    ),
+//                  )
+//                ),
                 SafeArea(
                   child: Column(
                     children: <Widget>[
@@ -239,27 +237,85 @@ class _MainPageState extends State<MainPage> {
                       _buildProfileImage(),
                       SizedBox(height: 10),
                       _buildFullName(),
-                      _boxMenu(context)
+                      _boxMenu(context),
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        child: Card(
+                          elevation: 5,
+                      )
+                      )
                     ],
                   ),
                 ),
               ],
             )
           )
-        )
+        ),
+      floatingActionButton: Container(
+        padding: EdgeInsets.only(bottom: 50.0),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: jumlah >= 2 ? Container(): FloatingActionButton.extended(
+            onPressed: (){
+              routeToWidget(context, AbsensiPage(action: jumlah==0 ? "masuk":"pulang"));
+            },
+            icon: Icon(Icons.timer),
+            label: Text(jumlah==0 ? "Absen Masuk" : "Absen Pulang"),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
   _initview() async {
-    SharedPreferencesHelper.getDoLogin().then((member) {
+    SharedPreferencesHelper.getDoLogin().then((member) async{
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
         _fullName =  memberModels.data.nama_user;
+        _long = memberModels.data.longitude;
+        _lat = memberModels.data.latitude;
       });
+
+
+
+
+      ReqHistoryAbsen params = ReqHistoryAbsen(
+          id_pegawai: memberModels.data.id_user
+      );
+     await todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
+       AbsenModels absenModels = model;
+       print(absenModels.data.length);
+       setState(() {
+         jumlah  = absenModels.data.length;
+       });
+     });
+
+
     });
 
     setState(() {
       _isLoading = false;
     });
   }
+
+
+
+//  _doCek() async{
+//    SharedPreferencesHelper.getDoLogin().then((member) async{
+//      final memberModels = MemberModels.fromJson(json.decode(member));
+//      setState(() {
+//        _fullName =  memberModels.data.nama_user;
+//      });
+//
+//      ReqHistoryAbsen params = ReqHistoryAbsen(
+//          id_pegawai: memberModels.data.id_user
+//      );
+//      todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
+//        AbsenModels absenModels = model;
+//        print(absenModels.data.length);
+//        print(status);
+//      });
+//    });
+//  }
 }

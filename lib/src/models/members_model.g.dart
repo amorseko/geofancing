@@ -27,22 +27,24 @@ Map<String, dynamic> _$MemberModelsToJson(MemberModels instance) =>
 _Data _$_DataFromJson(Map<String, dynamic> json) {
   return _Data(
       username: json['username'] as String,
-      password: json['password'] as String,
       level: json['level'] as String,
       nama_user: json['nama_user'] as String,
       id_user: json['id_user'] as String,
       foto: json['foto'] as String,
       id_dealer: json['id_dealer'] as String,
-      token: json['token'] as String);
+      token: json['token'] as String,
+      longitude: (json['longitude'] as num)?.toDouble(),
+      latitude: (json['latitude'] as num)?.toDouble());
 }
 
 Map<String, dynamic> _$_DataToJson(_Data instance) => <String, dynamic>{
       'username': instance.username,
-      'password': instance.password,
       'level': instance.level,
       'nama_user': instance.nama_user,
       'id_user': instance.id_user,
       'foto': instance.foto,
       'id_dealer': instance.id_dealer,
-      'token': instance.token
+      'token': instance.token,
+      'longitude': instance.longitude,
+      'latitude': instance.latitude
     };

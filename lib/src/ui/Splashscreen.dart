@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         Navigator.of(context).pushReplacementNamed('/main_page');
       } else {
-        Navigator.of(context).pushReplacementNamed('/prelogin_menu');
+        Navigator.of(context).pushReplacementNamed('/login_menu');
       }
     });
   }

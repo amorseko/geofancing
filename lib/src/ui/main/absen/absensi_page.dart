@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/services.dart';
+import 'package:geofancing/src/ui/main/absen/takefoto_page.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
@@ -11,157 +14,74 @@ import 'package:geofancing/src/utility/sharedpreferences.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
-import 'package:geofancing/src/utility/utils.dart' as  Utils;
+import 'package:geofancing/src/utility/utils.dart' as Utils;
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:latlong/latlong.dart' as pref;
+import 'package:location/location.dart';
+
 
 class AbsensiPage extends StatefulWidget {
+  String action;
   @override
   _AbsensiPageState createState() => _AbsensiPageState();
-}
 
+  AbsensiPage({this.action});
+}
 
 class _AbsensiPageState extends State<AbsensiPage> {
   bool _isLoading = true;
   String _fullName;
+  double _lat, _long;
+  final pref.Distance distance = new pref.Distance();
+  LatLng _latlng;
 
-  Icon actionIcon = new Icon(Icons.search, color: Colors.white,);
+  bool _isButtonDisabled = false;
 
-//  Completer<GoogleMapController> _controller = Completer();
+  double _totalMeters = 0;
+  Location _locationTracker = Location();
+
+
+  Icon actionIcon = new Icon(
+    Icons.search,
+    color: Colors.white,
+  );
+
   GoogleMapController _controller;
   final Set<Marker> _markers = Set();
 
   static var today = new DateTime.now();
-  String formattedDate = DateFormat('d' + '-' + 'MMMM' + '-' + 'y').format(today);
-
+  String formattedDate =
+      DateFormat('d' + ' ' + 'MMMM' + ' ' + 'y').format(today);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
 //  final Set<Marker> _markers = {};
-  var Lok = new Location();
 
   Marker marker;
   Circle circle;
-  Location _locationTracker = Location();
 
 
 
   StreamSubscription _locationSubscription;
 
-  double latitude = 0.0,
-      longitude = 0.0;
+  final pref.Distance sDistance = new pref.Distance();
+
+  double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
-  final Location location = Location();
-  final LatLng _currentPosition = LatLng(3.595196, 98.672226);
 
   static final CameraPosition initiallocation = CameraPosition(
     target: LatLng(0, 0),
     zoom: 14.4746,
   );
 
-
   void initState() {
     super.initState();
-
-    Future.delayed(Duration(seconds: 0)).then((_) {
-      showModalBottomSheet(
-          backgroundColor: Colors.transparent,
-          context: context,
-          enableDrag: false,
-          builder: (builder) {
-            return Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                Positioned(
-                  top: MediaQuery.of(context).size.height / 2 - 100,
-                  child: Container(
-                    height: 300,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.elliptical(150, 30)),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  child: Column(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: Image.asset('assets/icons/close_popup.png'),
-                          decoration: const BoxDecoration(
-                            color : Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(50.0),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.lightBlueAccent,
-                                blurRadius: 10.0,
-                                spreadRadius: 5.0,
-                                offset: Offset(0.0, 0.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-//
-                      SizedBox(height: 20),
-                      Container(
-                        child :
-                        TextWidget(
-                          txt: allTranslations.text('txt_tanggal') + " : " + formattedDate,
-                          txtSize: 20,
-                          color: Colors.lightBlueAccent,
-                          weight: FontWeight.bold,
-
-                        ),
-                        padding: const EdgeInsets.only(bottom: 15),
-                      ),
-
-                      Container(
-                          child: RaisedButton(
-                            onPressed: () async {
-//                        Navigator.pop(context);
-                            },
-                            color : Colors.lightBlueAccent,
-                            textColor: Colors.white,
-                            child: TextWidget(
-                              txt: allTranslations.text('btn_attendance'),
-                              txtSize: 15,
-                              color: Colors.white,
-                              weight: FontWeight.bold,
-                            ),
-//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-//                      child: Container(),
-                          ),
-                          padding:const EdgeInsets.only(bottom: 15)
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          });
-    });
+    _isButtonDisabled = true;
     new Timer(const Duration(milliseconds: 150), () {
-//      _getLocationData();
-      getCurrentLocation();
       _inivtiew();
     });
   }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -173,128 +93,293 @@ class _AbsensiPageState extends State<AbsensiPage> {
           title: Text(allTranslations.text("btn_absen"),
               style: TextStyle(color: coorporateColor)),
           centerTitle: true,
-          backgroundColor: Colors.white
-      ),
+          backgroundColor: Colors.white),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
+
             GoogleMap(
                 mapType: MapType.normal,
+                zoomControlsEnabled: false,
                 initialCameraPosition: initiallocation,
                 markers: Set.of((marker != null ? [marker] : [])),
                 circles: Set.of((circle != null ? [circle] : [])),
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
-                }
-            ),
+                }),
+            Container(
+              padding: EdgeInsets.only(left: 10, bottom: 20, right: 10),
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Positioned(
+                    bottom: 0,
+                    child: Card(
+                      elevation: 5,
+                      child: Container(
+                        height: 150,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.elliptical(150, 30)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 20),
+                        Container(
+                          child: TextWidget(
+                            txt: allTranslations.text('txt_tanggal') +
+                                " : " +
+                                formattedDate,
+                            txtSize: 20,
+                            color: Colors.lightBlueAccent,
+                            weight: FontWeight.bold,
+                          ),
+                          padding: const EdgeInsets.only(bottom: 15),
+                        ),
+                        Container(
+                          child: TextWidget(
+                            txt: "Jarak dengan kantor anda " +  _totalMeters.toString() + " m",
+                            txtSize: 16,
+                            color: Colors.lightBlueAccent,
+                          ),
+                          padding: const EdgeInsets.only(bottom: 15),
+                        ),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                RaisedButton(
+                                  onPressed: () => getCurrentLocation(),
+                                  color: Colors.white,
+                                  textColor: Colors.lightBlueAccent,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 4,
+                                    child: TextWidget(
+                                      txt: "Refresh",
+                                      txtSize: 15,
+                                      color: Colors.lightBlueAccent,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+//                      child: Container(),
+                                ),
+                                RaisedButton(
+                                  onPressed: () =>_ValidationChecking(_totalMeters,_latlng),
+                                  color: Colors.lightBlueAccent,
+                                  textColor: Colors.white,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 4,
+                                    child: TextWidget(
+                                      txt: allTranslations.text('btn_attendance'),
+                                      txtSize: 15,
+                                      color: Colors.white,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+//                      child: Container(),
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.only(bottom: 15)
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.location_searching),
-        onPressed: () {
-          getCurrentLocation();
-        },
-      ),
-
-
     );
   }
 
   Future<Uint8List> getMarker() async {
-    ByteData byteData = await DefaultAssetBundle.of(context).load(
-        "assets/icons/car_icon.png");
+    ByteData byteData =
+        await DefaultAssetBundle.of(context).load("assets/icons/car_icon.png");
     return byteData.buffer.asUint8List();
   }
 
+  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData) async{
+    LatLng latlngCirlce = LatLng(_long, _lat);
+    _latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
 
 
-
-  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData) {
-    LatLng latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
-    print(latlng);
-    this.setState(() {
+    setState(() {
       marker = Marker(
           markerId: MarkerId('home'),
-          position: latlng,
+          position: _latlng,
           rotation: newLocationData.heading,
           draggable: false,
           zIndex: 2,
           flat: true,
           anchor: Offset(0.5, 0.5),
           icon: BitmapDescriptor.fromBytes(imageData));
+
       circle = Circle(
           circleId: CircleId("car"),
-          radius: newLocationData.accuracy,
+          radius: 10,
           zIndex: 1,
           strokeColor: Colors.blue,
-          center: latlng,
+          center: _latlng,
           fillColor: Colors.blue.withAlpha(70));
     });
+
+    _totalMeters = sDistance(
+        new pref.LatLng(_lat, _long),
+        new pref.LatLng(newLocationData.latitude, newLocationData.longitude));
+
+
   }
+
 
   void getCurrentLocation() async {
     try {
       Uint8List imageData = await getMarker();
 
-      var Location = await _locationTracker.getLocation();
+      _locationTracker.changeSettings(accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
+      var posisi = await _locationTracker.getLocation();
 
-      updateMarkerAndCircle(Location, imageData);
+
+      _controller.animateCamera(CameraUpdate.newCameraPosition(
+          new CameraPosition(
+              target: LatLng(posisi.latitude, posisi.longitude),
+              tilt: 0,
+              zoom: 18.00))
+      );
+
+      print("Lokasi : " + posisi.latitude.toString() + "," + posisi.longitude.toString());
+
+
+      updateMarkerAndCircle(posisi, imageData);
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
       }
 
-      _locationSubscription =
-          _locationTracker.onLocationChanged().listen((newLocalData) {
-            if (_controller != null) {
-              _controller.animateCamera(
-                  CameraUpdate.newCameraPosition(new CameraPosition(
-                      bearing: 192.83349401395799,
-                      target: LatLng(
-                          newLocalData.latitude, newLocalData.longitude),
-                      tilt: 0,
-                      zoom: 18.00
-                  )));
-              updateMarkerAndCircle(newLocalData, imageData);
-            }
-          });
+//      _locationSubscription =
+//          _locationTracker.onLocationChanged().listen((newLocalData) {
+//            if (_controller != null) {
+//              _controller.animateCamera(CameraUpdate.newCameraPosition(
+//                  new CameraPosition(
+//                      target: LatLng(newLocalData.latitude, newLocalData.longitude),
+//                      tilt: 0,
+//                      zoom: 18.00))
+//              );
+//              updateMarkerAndCircle(newLocalData, imageData);
+////              getCurrentMeters(newLocalData);
+//            }
+//          });
+
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint("Permission Denied");
       }
     }
   }
+  _ValidationChecking(double _Meters, LatLng ltlng) {
+    if(_Meters == null || _Meters > 5) {
+      showAlertDialog(context, "Pastikan anda melakukan absen di titik yang sudah di tentukan");
+    }else{
+      Utils.routeToWidget(context, TakeFotoPage(action: widget.action,));
+    }
+  }
 
   _inivtiew() async {
-
-    print("tanggal : " + formattedDate);
     SharedPreferencesHelper.getDoLogin().then((member) {
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
         _fullName = memberModels.data.nama_user;
+        _long = memberModels.data.longitude;
+        _lat = memberModels.data.latitude;
       });
     });
+
+    getCurrentLocation();
+
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<Uint8List> getBytesFromCanvas(int width, int height) async {
+    final PictureRecorder pictureRecorder = PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.blue;
+    final Radius radius = Radius.circular(20.0);
+    canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: radius,
+          bottomRight: radius,
+        ),
+        paint);
+
+    final img = await pictureRecorder.endRecording().toImage(width, height);
+    final data = await img.toByteData(format: ImageByteFormat.png);
+    return data.buffer.asUint8List();
+  }
+
+  showAlertDialog(BuildContext context, message) {
+
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alert"),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   _renderView(BuildContext context) {
     showBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        color: Colors.red,
-      ));
+        context: context,
+        builder: (context) => Container(
+              color: Colors.red,
+            ));
     setState(() {
       _isLoading = false;
     });
   }
 
-
 }
-
-
-
