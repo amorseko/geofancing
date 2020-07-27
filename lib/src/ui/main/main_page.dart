@@ -18,6 +18,7 @@ import 'package:geofancing/src/widgets/Strings.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geofancing/src/ui/main/absen/absensi_page.dart';
@@ -38,6 +39,7 @@ class _MainPageState extends State<MainPage> {
 
   String _fullName;
   bool _isLoading = true;
+  String waktu;
 
   int jumlah =0;
   GoogleMapController _controller;
@@ -270,6 +272,13 @@ class _MainPageState extends State<MainPage> {
   }
 
   _initview() async {
+
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('y-MM-d').format(now);
+    setState(() {
+      waktu  = formattedDate;
+    });
+
     SharedPreferencesHelper.getDoLogin().then((member) async{
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
@@ -282,13 +291,15 @@ class _MainPageState extends State<MainPage> {
 
 
       ReqHistoryAbsen params = ReqHistoryAbsen(
-          id_pegawai: memberModels.data.id_user
+          id_pegawai: memberModels.data.id_user,
+              tanggal : waktu
       );
      await todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
        AbsenModels absenModels = model;
        print(absenModels.data.length);
        setState(() {
          jumlah  = absenModels.data.length;
+         print("data jumlah : " + jumlah.toString());
        });
      });
 
