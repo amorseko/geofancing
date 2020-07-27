@@ -35,6 +35,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
   double _lat, _long;
   final pref.Distance distance = new pref.Distance();
   LatLng _latlng;
+  LatLng _latlng2;
 
   bool _isButtonDisabled = false;
 
@@ -222,6 +223,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
   void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData) async{
     LatLng latlngCirlce = LatLng(_long, _lat);
     _latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
+    _latlng2 = LatLng(_lat,_long);
 
 
     setState(() {
@@ -237,10 +239,10 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
       circle = Circle(
           circleId: CircleId("car"),
-          radius: 10,
+          radius: 50,
           zIndex: 1,
           strokeColor: Colors.blue,
-          center: _latlng,
+          center: _latlng2,
           fillColor: Colors.blue.withAlpha(70));
     });
 
@@ -297,7 +299,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     }
   }
   _ValidationChecking(double _Meters, LatLng ltlng) {
-    if(_Meters == null || _Meters > 1000000) {
+    if(_Meters == null || _Meters > 300) {
       showAlertDialog(context, "Pastikan anda melakukan absen di titik yang sudah di tentukan");
     }else{
       Utils.routeToWidget(context, TakeFotoPage(action: widget.action,));

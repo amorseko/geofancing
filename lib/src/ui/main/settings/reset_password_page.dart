@@ -163,14 +163,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             password_new: _newPasswordController.text,
             id_user: _idUser);
             bloc.actForgotPass(request.toMap(),
-        (status, message) => {_verifyChangePassword(status, message)});
+        (status, message) => {showErrorMessage(context, message, status)});
       });
     } else {
-      _verifyChangePassword(false, "Password tidak sama");
+      showErrorMessage(context, "Password tidak sama", false);
     }
   }
 
-  void showErrorMessage(BuildContext context, message, status){
+  void showErrorMessage(BuildContext context, String message, bool status){
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -195,7 +195,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Column(
                               children: <Widget>[
-                                Text(status==true ? allTranslations.text("msg_password") : message,
+                                Text(status == true ? allTranslations.text("msg_password") : message,
                                   style: TextStyle(
                                       fontSize: 18
                                   ),),
@@ -204,7 +204,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    if(status=="success"){
+                                    if(status == true){
                                       Navigator.pushNamedAndRemoveUntil(context, "/main_page", (_) => false);
                                     }else{
                                       Navigator.of(context).pop();
