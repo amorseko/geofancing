@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/history_model.dart';
+import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/resources/api_provider.dart';
 import 'package:geofancing/src/models/members_model.dart';
 class Repository {
@@ -10,6 +11,9 @@ class Repository {
 
   Future<MemberModels> actLogin({Map<String, dynamic> body}) =>
       apiProvider.login(body: body);
+
+  Future<StandartModels> actChangePassUser({Map<String, dynamic> body}) =>
+      apiProvider.changePass(body: body);
 
   void getLang({Map<String, dynamic> body}) =>
       apiProvider.getLang(body: body);

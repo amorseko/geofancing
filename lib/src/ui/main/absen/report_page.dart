@@ -111,7 +111,8 @@ class _ReportPageState extends State<ReportPage> {
             ),
             Expanded(
               child: Container(
-                child: ListView.builder(
+                height: MediaQuery.of(context).size.height,
+                child:  ListView.builder(
                       scrollDirection: Axis.vertical,
                       physics: AlwaysScrollableScrollPhysics(),
                       itemCount: absensiData.length,
@@ -181,7 +182,7 @@ class AbsenList extends StatelessWidget {
               elevation: 5,
               child: Container(
                 padding: EdgeInsets.all(10),
-                height: 100,
+                height: MediaQuery.of(context).size.height/7,
                 width: MediaQuery.of(context).size.width,
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,6 +198,7 @@ class AbsenList extends StatelessWidget {
                       height: 10,
                     ),
                     Row(
+                      
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Column(

@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/history_model.dart';
+import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
@@ -14,8 +15,9 @@ class ApiProvider {
   Dio _dioSecond;
 
   final _apiKey = '802b2c4b88ea1183e50e6b285a27696e';
-   String _baseUrl = 'http://13.229.237.174/api/';
-//  String _baseUrl = "http://192.168.0.107/api_geofancing/";
+//   String _baseUrl = 'http://13.229.237.174/api/';
+  String _baseUrl = 'https://api-tayoga.septamedia.com/';
+//  String _baseUrl = "http://192.168.0.107/api_geof/ancing/";
 
   ApiProvider() {
     SharedPreferencesHelper.getToken().then((token) {
@@ -163,13 +165,14 @@ class ApiProvider {
 
 
   Future<DefaultModel> submitAbsen({FormData formData}) async {
-    final _dioSecond = await _syncFormData();
+//    final _dioSecond = await _syncFormData();
     try {
-      final response = await _dioSecond.post(_baseUrl+"/save_absen.php", data: formData, onSendProgress:  (int sent, int total) {
+      final response = await _dioSecond.post(_baseUrl+"save_absen.php", data: formData, onSendProgress:  (int sent, int total) {
         print("progress >>> " +
             ((sent / total) * 100).floor().toString() +
             "%");
       });
+      print(response);
       print(response.data.toString());
       return DefaultModel.fromJson(response.data);
     } catch (error, _) {
@@ -198,6 +201,17 @@ class ApiProvider {
       return AbsenModels.fromJson(response.data);
     } catch (error, _) {
 //      return _handleError(error);
+    }
+  }
+
+  Future<StandartModels> changePass({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response = await _dio.post("/change_pass.php",
+          data: json.encode(body));
+      return StandartModels.fromJson(response.data);
+    } catch (error, _) {
+      return StandartModels.withError(_handleError(error));
     }
   }
 

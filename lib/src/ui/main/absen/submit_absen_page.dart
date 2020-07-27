@@ -8,6 +8,7 @@ import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/ui/main/main_page.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
+import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/utility/utils.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:intl/intl.dart';
@@ -153,6 +154,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     String fileName = widget.imagePath.split('/').last;
     print(fileName);
     print(widget.imagePath);
+    print(waktu.split(" ")[1]);
     var formData = FormData.fromMap({
       'jam':waktu.split(" ")[1],
       'tanggal':waktu.split(" ")[0],
@@ -161,7 +163,6 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
       'upfile': await MultipartFile.fromFile(widget.imagePath,filename: fileName),
       'status_absen': widget.action=="masuk" ? 0 : 1
     });
-
     bloc.doAbsen(formData, (callback){
       DefaultModel model =  callback;
       print(model.message);
@@ -204,7 +205,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Column(
                               children: <Widget>[
-                                Text(status=="success" ? "Absen kehadiran anda berhasil di record" : message,
+                                Text(status=="success" ? allTranslations.text("msg_absen") : message,
                                 style: TextStyle(
                                   fontSize: 18
                                 ),),

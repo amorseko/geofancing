@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigationPage() {
 
 //    Navigator.of(context).pushReplacementNamed('/prelogin_menu');
-    SharedPreferencesHelper.getToken().then((onValue) {
+    SharedPreferencesHelper.getDoLogin().then((onValue) {
       if (onValue.isNotEmpty) {
 
         Navigator.of(context).pushReplacementNamed('/main_page');
@@ -44,6 +44,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     getLang();
   }
+
+
 
   getLang(){
     var data = {

@@ -12,6 +12,7 @@ class AbsenBloc {
 
 
   doAbsen(FormData data, Function callback) async {
+//    print(data);
     DefaultModel model = await _repository.submitAbsen(formData: data);
     _getDoAbsen.sink.add(model);
     callback(model);

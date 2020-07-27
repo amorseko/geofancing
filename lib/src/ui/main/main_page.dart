@@ -21,6 +21,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geofancing/src/ui/main/absen/absensi_page.dart';
+import 'package:geofancing/src/ui/main/settings/settings_page.dart';
 
 
 class MainPage extends StatefulWidget {
@@ -209,27 +210,27 @@ class _MainPageState extends State<MainPage> {
             child: Stack(
               children: <Widget>[
                 _buildCustomCover(screenSize),
-//                Positioned(
-//                  child: Padding(
-//                    padding: const EdgeInsets.only(top: 50.0, right: 10.0),
-//                    child: Align(
-//                      alignment: FractionalOffset.topRight,
-//                      child: RawMaterialButton(
-//                        elevation: 10,
-//                        shape: new CircleBorder(),
-//                        child: Image(
-//                          image: AssetImage("assets/icons/icon_settings.png"),
-//                          height: 30,
-//                        ),
-//                        padding: EdgeInsets.all(5),
-//                        fillColor: Colors.white,
-//                        onPressed: (){
-////                          routeToWidget(context, new SettingsPage());
-//                        },
-//                      ),
-//                    ),
-//                  )
-//                ),
+                Positioned(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50.0, right: 10.0),
+                    child: Align(
+                      alignment: FractionalOffset.topRight,
+                      child: RawMaterialButton(
+                        elevation: 10,
+                        shape: new CircleBorder(),
+                        child: Image(
+                          image: AssetImage("assets/icons/icon_settings.png"),
+                          height: 30,
+                        ),
+                        padding: EdgeInsets.all(5),
+                        fillColor: Colors.white,
+                        onPressed: (){
+                          routeToWidget(context, new SettingsPage());
+                        },
+                      ),
+                    ),
+                  )
+                ),
                 SafeArea(
                   child: Column(
                     children: <Widget>[

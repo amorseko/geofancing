@@ -297,7 +297,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     }
   }
   _ValidationChecking(double _Meters, LatLng ltlng) {
-    if(_Meters == null || _Meters > 5) {
+    if(_Meters == null || _Meters > 1000000) {
       showAlertDialog(context, "Pastikan anda melakukan absen di titik yang sudah di tentukan");
     }else{
       Utils.routeToWidget(context, TakeFotoPage(action: widget.action,));
@@ -354,7 +354,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Alert"),
+      title: Text("Message"),
       content: Text(message),
       actions: [
         okButton,

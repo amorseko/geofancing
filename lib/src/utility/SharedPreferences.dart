@@ -74,6 +74,16 @@ class SharedPreferencesHelper {
     return preferences.getString(_language) ?? '';
   }
 
+  static Future<bool> setPosition(int value) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.setInt("position", value);
+  }
+
+  static Future<int> getPosition() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getInt("position") ??  -1;
+  }
+
   static Future<bool> setUsername(String value) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.setString(_username, value);
