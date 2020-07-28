@@ -170,9 +170,10 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
       setState(() {
         _isLoading=false;
       });
-      if(model.status=="success"){
-        showErrorMessage(context, model.message,model.status);
+      if(model.status=="success") {
+        showErrorMessage(context, model.message, model.status);
       }else{
+        print(model.message);
         showErrorMessage(context, model.message,model.status);
       }
 
@@ -205,7 +206,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Column(
                               children: <Widget>[
-                                Text(status=="success" ? allTranslations.text("msg_absen") : message,
+                                Text((status=="success") ? allTranslations.text("msg_absen") : (message=="not accept") ? allTranslations.text('txt_not_accept') : message,
                                 style: TextStyle(
                                   fontSize: 18
                                 ),),
