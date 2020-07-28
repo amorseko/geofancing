@@ -165,7 +165,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     });
     bloc.doAbsen(formData, (callback){
       DefaultModel model =  callback;
-      print(model.message);
+//      print(model.message);
 
       setState(() {
         _isLoading=false;

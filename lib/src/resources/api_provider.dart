@@ -9,6 +9,7 @@ import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
+//import 'package:geofancing/src/resources/MyHttpOverrides.dart';
 
 class ApiProvider {
   Dio _dio;
@@ -165,17 +166,21 @@ class ApiProvider {
 
 
   Future<DefaultModel> submitAbsen({FormData formData}) async {
-//    final _dioSecond = await _syncFormData();
+    final _dioSecond = await _syncConnWithoutToken();
     try {
-      final response = await _dioSecond.post(_baseUrl+"save_absen.php", data: formData, onSendProgress:  (int sent, int total) {
-        print("progress >>> " +
-            ((sent / total) * 100).floor().toString() +
-            "%");
-      });
-      print(response);
+//      final response = await _dioSecond.post(_baseUrl+"save_absen.php", data: formData, onSendProgress:  (int sent, int total) {
+//        print("progress >>> " +
+//            ((sent / total) * 100).floor().toString() +
+//            "%");
+//      });
+
+      print(formData);
+      final response = await _dioSecond.post(_baseUrl+"save_absen.php", data:formData);
+      print("response absen : $response");
       print(response.data.toString());
       return DefaultModel.fromJson(response.data);
     } catch (error, _) {
+      print("error kesini :");
       print(_handleError(error));
     }
   }
