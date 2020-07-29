@@ -9,6 +9,7 @@ import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:geofancing/src/utility/app_config.dart';
 
 
 class ReportPage extends StatefulWidget {
@@ -25,8 +26,7 @@ class _ReportPageState extends State<ReportPage> {
   List absensiData = List<HistoryData>();
   String name;
 
-
-
+  AppConfig _ac;
 
   initData(){
 
@@ -160,6 +160,7 @@ class _ReportPageState extends State<ReportPage> {
 class AbsenList extends StatelessWidget {
   final int index;
   final HistoryData absenData;
+  //AppConfig _ac;
 
   const AbsenList({Key key, this.index, this.absenData});
   @override
@@ -182,7 +183,7 @@ class AbsenList extends StatelessWidget {
               elevation: 5,
               child: Container(
                 padding: EdgeInsets.all(10),
-                height: MediaQuery.of(context).size.height/7,
+                height: MediaQuery.of(context).size.width/3,
                 width: MediaQuery.of(context).size.width,
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

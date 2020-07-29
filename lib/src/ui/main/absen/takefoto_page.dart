@@ -31,7 +31,8 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
 
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
-    final firstCamera = cameras.last;
+//    final firstCamera = cameras.last;
+    final firstCamera = cameras[1];
     _controller = CameraController(firstCamera, ResolutionPreset.high);
     _initializeControllerFuture = _controller.initialize();
     if (!mounted) {

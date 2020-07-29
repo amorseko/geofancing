@@ -227,11 +227,14 @@ class _AbsensiPageState extends State<AbsensiPage> {
     return byteData.buffer.asUint8List();
   }
 
-  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData) async{
+  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData, int jarak) async{
     LatLng latlngCirlce = LatLng(_long, _lat);
     _latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
     _latlng2 = LatLng(_lat,_long);
 
+    double resultJarak = jarak.toDouble();
+
+    print("data jarak to double " + resultJarak.toString());
 
     setState(() {
       marker = Marker(
@@ -246,7 +249,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
       circle = Circle(
           circleId: CircleId("car"),
-          radius: 50,
+          radius: resultJarak,
           zIndex: 1,
           strokeColor: Colors.blue,
           center: _latlng2,
@@ -279,7 +282,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       print("Lokasi : " + posisi.latitude.toString() + "," + posisi.longitude.toString());
 
 
-      updateMarkerAndCircle(posisi, imageData);
+      updateMarkerAndCircle(posisi, imageData, jarak);
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
