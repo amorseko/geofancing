@@ -5,6 +5,8 @@ import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/services.dart';
+import 'package:geofancing/src/bloc/request/req_jarak.dart';
+import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/ui/main/absen/takefoto_page.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ import 'package:geofancing/src/models/members_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:latlong/latlong.dart' as pref;
 import 'package:location/location.dart';
+import 'package:geofancing/src/models/jarak_model.dart';
+import 'package:geofancing/src/bloc/jarak_bloc.dart';
 
 
 class AbsensiPage extends StatefulWidget {
@@ -31,6 +35,7 @@ class AbsensiPage extends StatefulWidget {
 
 class _AbsensiPageState extends State<AbsensiPage> {
   bool _isLoading = true;
+  int jarak;
   String _fullName;
   double _lat, _long;
   final pref.Distance distance = new pref.Distance();
@@ -41,6 +46,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   double _totalMeters = 0;
   Location _locationTracker = Location();
+
+  final JarakBloc bloc = JarakBloc();
 
 
   Icon actionIcon = new Icon(
@@ -299,7 +306,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     }
   }
   _ValidationChecking(double _Meters, LatLng ltlng) {
-    if(_Meters == null || _Meters > 10000) {
+    if(_Meters == null || _Meters > jarak) {
       showAlertDialog(context, allTranslations.text("txt_notif_absen"));
     }else{
       Utils.routeToWidget(context, TakeFotoPage(action: widget.action,));
@@ -307,14 +314,29 @@ class _AbsensiPageState extends State<AbsensiPage> {
   }
 
   _inivtiew() async {
-    SharedPreferencesHelper.getDoLogin().then((member) {
+    SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;
       });
+
+//      _doCheckJarak();
+
+      reqJarak params = reqJarak(
+          app_id: appid
+      );
+
+      await bloc.doJarak(params.toMap(), (status, message, model) {
+        setState(() {
+          jarak  = model.data[0].jarak;
+          print("data jarak : " + jarak.toString());
+        });
+      });
     });
+
+
 
     getCurrentLocation();
 
@@ -322,6 +344,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _isLoading = false;
     });
   }
+
 
   Future<Uint8List> getBytesFromCanvas(int width, int height) async {
     final PictureRecorder pictureRecorder = PictureRecorder();

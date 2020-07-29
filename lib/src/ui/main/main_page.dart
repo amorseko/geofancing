@@ -294,6 +294,7 @@ class _MainPageState extends State<MainPage> {
           id_pegawai: memberModels.data.id_user,
               tanggal : waktu
       );
+
      await todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
        AbsenModels absenModels = model;
        print(absenModels.data.length);

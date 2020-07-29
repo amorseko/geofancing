@@ -8,6 +8,7 @@ import 'package:geofancing/src/models/history_model.dart';
 import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/models/members_model.dart';
+import 'package:geofancing/src/models/jarak_model.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
 //import 'package:geofancing/src/resources/MyHttpOverrides.dart';
 
@@ -205,6 +206,19 @@ class ApiProvider {
       await _dio.post("/absen.php", data: json.encode(body));
       return AbsenModels.fromJson(response.data);
     } catch (error, _) {
+//      return _handleError(error);
+    }
+  }
+
+  Future<JarakModels> getJarak({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+
+    try {
+      final response = await _dio.post("/jarak.php", data: json.encode(body));
+      print(response.data);
+      return JarakModels.fromJson(response.data);
+    } catch (error, _) {
+      return JarakModels.withError(_handleError(error));
 //      return _handleError(error);
     }
   }
