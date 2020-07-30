@@ -490,6 +490,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  ntp:
+    dependency: "direct main"
+    description:
+      name: ntp
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7"
   package_config:
     dependency: transitive
     description:
@@ -789,6 +796,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+2"
+  trust_location:
+    dependency: "direct main"
+    description:
+      name: trust_location
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.11"
   typed_data:
     dependency: transitive
     description:
@@ -796,6 +810,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  universal_io:
+    dependency: transitive
+    description:
+      name: universal_io
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   url_launcher:
     dependency: "direct main"
     description:
@@ -880,6 +901,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+  zone_local:
+    dependency: transitive
+    description:
+      name: zone_local
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
 sdks:
   dart: ">=2.9.0-14.0.dev <3.0.0"
   flutter: ">=1.16.3 <2.0.0"

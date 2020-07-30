@@ -39,6 +39,8 @@ dependencies:
   path_provider: ^1.6.11
   intl: ^0.16.1
   shimmer: ^1.0.1
+  ntp: ^1.0.7
+  trust_location: ^2.0.11
   #  permission: ^0.1.7
   #
 

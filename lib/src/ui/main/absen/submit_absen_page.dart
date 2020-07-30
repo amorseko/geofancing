@@ -13,6 +13,8 @@ import 'package:geofancing/src/utility/utils.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:ntp/ntp.dart';
+
 class SubmitAbsenPage extends StatefulWidget {
   String imagePath;
   String action;

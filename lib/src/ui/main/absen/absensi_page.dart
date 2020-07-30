@@ -23,7 +23,8 @@ import 'package:latlong/latlong.dart' as pref;
 import 'package:location/location.dart';
 import 'package:geofancing/src/models/jarak_model.dart';
 import 'package:geofancing/src/bloc/jarak_bloc.dart';
-
+import 'package:ntp/ntp.dart';
+import 'package:trust_location/trust_location.dart';
 
 class AbsensiPage extends StatefulWidget {
   String action;
@@ -42,6 +43,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
   LatLng _latlng;
   LatLng _latlng2;
 
+  bool _isMockLocation = false;
+
   bool _isButtonDisabled = false;
 
   double _totalMeters = 0;
@@ -58,9 +61,11 @@ class _AbsensiPageState extends State<AbsensiPage> {
   GoogleMapController _controller;
   final Set<Marker> _markers = Set();
 
-  static var today = new DateTime.now();
-  String formattedDate =
-      DateFormat('d' + ' ' + 'MMMM' + ' ' + 'y').format(today);
+//  static var today = new DateTime.now();
+  //String formattedDate =
+   //   DateFormat('d' + ' ' + 'MMMM' + ' ' + 'y').format(today);
+
+  String formattedDate = "";
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -90,6 +95,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _inivtiew();
     });
   }
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -319,7 +326,11 @@ class _AbsensiPageState extends State<AbsensiPage> {
   _inivtiew() async {
     SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
+
+      DateTime now = DateTime.now();
       setState(() {
+
+        formattedDate = DateFormat('y-MM-d').format(now);
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;

@@ -261,7 +261,7 @@ class _MainPageState extends State<MainPage> {
           alignment: Alignment.bottomCenter,
           child: jumlah >= 2 ? Container(): FloatingActionButton.extended(
             onPressed: (){
-              routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang"));
+              routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang",));
             },
             icon: Icon(Icons.timer),
             label: Text(_AbsenMasuk== "" ? "Absen Masuk" : "Absen Pulang"),
@@ -278,7 +278,10 @@ class _MainPageState extends State<MainPage> {
     String formattedDate = DateFormat('y-MM-d').format(now);
     setState(() {
       waktu  = formattedDate;
+      _isLoading = false;
     });
+
+    print(waktu);
 
     SharedPreferencesHelper.getDoLogin().then((member) async{
       final memberModels = MemberModels.fromJson(json.decode(member));
@@ -316,9 +319,7 @@ class _MainPageState extends State<MainPage> {
 
     });
 
-    setState(() {
-      _isLoading = false;
-    });
+
   }
 
 
