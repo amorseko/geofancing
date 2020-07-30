@@ -42,6 +42,7 @@ class _MainPageState extends State<MainPage> {
   String waktu;
 
   int jumlah =0;
+  String _AbsenMasuk, _AbsenKeluar;
   GoogleMapController _controller;
   double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
@@ -260,10 +261,10 @@ class _MainPageState extends State<MainPage> {
           alignment: Alignment.bottomCenter,
           child: jumlah >= 2 ? Container(): FloatingActionButton.extended(
             onPressed: (){
-              routeToWidget(context, AbsensiPage(action: jumlah==0 ? "masuk":"pulang"));
+              routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang"));
             },
             icon: Icon(Icons.timer),
-            label: Text(jumlah==0 ? "Absen Masuk" : "Absen Pulang"),
+            label: Text(_AbsenMasuk== "" ? "Absen Masuk" : "Absen Pulang"),
           ),
         ),
       ),
@@ -300,6 +301,14 @@ class _MainPageState extends State<MainPage> {
        print(absenModels.data.length);
        setState(() {
          jumlah  = absenModels.data.length;
+         if(jumlah != 0) {
+           _AbsenKeluar = absenModels.data[0].absen_keluar;
+           _AbsenMasuk = absenModels.data[0].absen_masuk;
+         } else {
+           _AbsenMasuk = "";
+           _AbsenKeluar = "";
+         }
+         print("data absen Masuk : " + _AbsenMasuk);
          print("data jumlah : " + jumlah.toString());
        });
      });

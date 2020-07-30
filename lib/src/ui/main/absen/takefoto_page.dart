@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,11 @@ import 'package:path_provider/path_provider.dart';
 
 class TakeFotoPage extends StatefulWidget {
   String action;
+  String RangeAbsen;
   @override
   _TakeFotoPageState createState() => _TakeFotoPageState();
 
-  TakeFotoPage({this.action});
+  TakeFotoPage({this.action, this.RangeAbsen});
 }
 
 class _TakeFotoPageState extends State<TakeFotoPage> {
@@ -67,7 +69,7 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
       ImagePath = path;
       await _controller.takePicture(path); //take photo
 
-      routeToWidget(context, SubmitAbsenPage(imagePath: ImagePath,action: widget.action,));
+      routeToWidget(context, SubmitAbsenPage(imagePath: ImagePath,action: widget.action,RangeAbsen: widget.RangeAbsen.toString()));
 
       setState(() {
         showCapturedPhoto = true;
@@ -108,26 +110,26 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
           backgroundColor: Colors.white),
       body: Stack(
         children: <Widget>[
-      FutureBuilder<void>(
-      future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return Transform.scale(
-                scale: _controller.value.aspectRatio / deviceRatio,
-                child: Center(
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: CameraPreview(_controller), //cameraPreview
-                  ),
-                ));
-          } else {
-            return Center(
-                child:
-                CircularProgressIndicator()); // Otherwise, display a loading indicator.
-          }
-        },
-      ),
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                return Transform.scale(
+                    scale: _controller.value.aspectRatio / deviceRatio,
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: CameraPreview(_controller), //cameraPreview
+                      ),
+                    ));
+              } else {
+                return Center(
+                    child:
+                    CircularProgressIndicator()); // Otherwise, display a loading indicator.
+              }
+            },
+          ),
          Align(
               alignment: Alignment.bottomCenter,
               child: Container(

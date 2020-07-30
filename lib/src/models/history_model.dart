@@ -27,22 +27,25 @@ class HistoryData {
 
   HistoryData(
       {
-        this.jam_masuk,
-        this.jam_pulang,
-        this.titik_absen,
-        this.titik_pulang,
+        this.absen_masuk,
+        this.absen_keluar,
+        this.koordinat_masuk,
+        this.koordinat_keluar,
+        this.stt_absen,
         this.tanggal,
       }
       );
 
-  @JsonKey(name: 'jam_masuk')
-  String jam_masuk;
-  @JsonKey(name: 'jam_pulang')
-  String jam_pulang;
-  @JsonKey(name: 'titik_absen')
-  String titik_absen;
-  @JsonKey(name: 'titik_pulang')
-  String titik_pulang;
+  @JsonKey(name: 'absen_masuk')
+  String absen_masuk;
+  @JsonKey(name: 'absen_keluar')
+  String absen_keluar;
+  @JsonKey(name: 'koordinat_masuk')
+  String koordinat_masuk;
+  @JsonKey(name: 'koordinat_keluar')
+  String koordinat_keluar;
+  @JsonKey(name: 'stt_absen')
+  String stt_absen;
   @JsonKey(name: 'tanggal')
   String tanggal;
 

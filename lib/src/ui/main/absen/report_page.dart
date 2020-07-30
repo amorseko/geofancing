@@ -225,7 +225,7 @@ class AbsenList extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      absenData.jam_masuk.split(" ")[1],
+                                      absenData.absen_masuk,
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Colors.green
@@ -261,7 +261,8 @@ class AbsenList extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      absenData.jam_pulang == "-" ? "-":absenData.jam_pulang.split(" ")[1],                                      style: TextStyle(
+                                      absenData.absen_keluar == "" ? "-":absenData.absen_keluar,
+                                      style: TextStyle(
                                           fontSize: 18,
                                       color: Colors.red
                                       ),

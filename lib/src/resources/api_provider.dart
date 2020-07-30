@@ -176,7 +176,7 @@ class ApiProvider {
 //      });
 
       print(formData);
-      final response = await _dioSecond.post(_baseUrl+"save_absen.php", data:formData);
+      final response = await _dioSecond.post(_baseUrl+"save_absen_new.php", data:formData);
       print("response absen : $response");
       print(response.data.toString());
       return DefaultModel.fromJson(response.data);
@@ -191,7 +191,7 @@ class ApiProvider {
 
     try {
       final response =
-      await _dio.post("/history_absen.php", data: json.encode(body));
+      await _dio.post("/history_absen_new.php", data: json.encode(body));
       return HistoryModels.fromJson(response.data);
     } catch (error, _) {
 //      return _handleError(error);
@@ -203,7 +203,7 @@ class ApiProvider {
 
     try {
       final response =
-      await _dio.post("/absen.php", data: json.encode(body));
+      await _dio.post("/absen_new.php", data: json.encode(body));
       return AbsenModels.fromJson(response.data);
     } catch (error, _) {
 //      return _handleError(error);

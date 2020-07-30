@@ -16,11 +16,12 @@ import 'package:location/location.dart';
 class SubmitAbsenPage extends StatefulWidget {
   String imagePath;
   String action;
+  String RangeAbsen;
 
   @override
   _SubmitAbsenPageState createState() => _SubmitAbsenPageState();
 
-  SubmitAbsenPage({this.imagePath, this.action});
+  SubmitAbsenPage({this.imagePath, this.action, this.RangeAbsen});
 }
 
 class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
@@ -155,13 +156,15 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     print(fileName);
     print(widget.imagePath);
     print(waktu.split(" ")[1]);
+    print("range area : " + widget.RangeAbsen);
     var formData = FormData.fromMap({
       'jam':waktu.split(" ")[1],
       'tanggal':waktu.split(" ")[0],
       'koordinat':lokasiAbsen,
       'id_pegawai':id_user,
       'upfile': await MultipartFile.fromFile(widget.imagePath,filename: fileName),
-      'status_absen': widget.action=="masuk" ? 0 : 1
+      'status_absen': widget.action=="masuk" ? 0 : 1,
+      'range_absen' : widget.RangeAbsen.toString()
     });
     bloc.doAbsen(formData, (callback){
       DefaultModel model =  callback;
@@ -186,66 +189,70 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
         context: context,
         builder: (context) {
           return Container(
-            padding: EdgeInsets.fromLTRB(30, 0, 30, 20),
-            height: MediaQuery.of(context).size.width / 2.5,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  decoration: new BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                      new BorderRadius.all(const Radius.circular(30.0))),
-                  child: Container(
-                      width: MediaQuery.of(context).size.width * (3 / 2),
-                      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            child: Column(
-                              children: <Widget>[
-                                Text((status=="success") ? allTranslations.text("msg_absen") : (message=="not accept") ? allTranslations.text('txt_not_accept') : message,
-                                style: TextStyle(
-                                  fontSize: 18
-                                ),),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    if(status=="success"){
-                                      Navigator.pushNamedAndRemoveUntil(context, "/main_page", (_) => false);
-                                    }else{
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                  child: Container(
-                                      width:
-                                      MediaQuery.of(context).size.width /
-                                          2,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          borderRadius: new BorderRadius.all(
-                                              const Radius.circular(30.0)),
-                                          color: coorporateColor),
-                                      child: Text("OK",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white
-                                        ),
-                                      )),
-                                )
-                              ],
+            height: MediaQuery.of(context).size.height/ 5.5,
+            child:new SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+             // height: MediaQuery.of(context).size.width / 2,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: new BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                        new BorderRadius.all(const Radius.circular(30.0))),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width * (3 / 2),
+                        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              child: Column(
+                                children: <Widget>[
+                                  Text((status=="success") ? allTranslations.text("msg_absen") : (message=="not accept") ? allTranslations.text('txt_not_accept') : message,
+                                    style: TextStyle(
+                                        fontSize: 15
+                                    ),),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      if(status=="success"){
+                                        Navigator.pushNamedAndRemoveUntil(context, "/main_page", (_) => false);
+                                      }else{
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                    child: Container(
+                                        width:
+                                        MediaQuery.of(context).size.width /
+                                            2,
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            borderRadius: new BorderRadius.all(
+                                                const Radius.circular(30.0)),
+                                            color: coorporateColor),
+                                        child: Text("OK",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white
+                                          ),
+                                        )),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      )),
-                ),
-              ],
+                          ],
+                        )),
+                  ),
+                ],
+              ),
             ),
+
           );
         });
   }

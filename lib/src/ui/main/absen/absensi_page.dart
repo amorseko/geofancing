@@ -312,7 +312,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     if(_Meters == null || _Meters > jarak) {
       showAlertDialog(context, allTranslations.text("txt_notif_absen"));
     }else{
-      Utils.routeToWidget(context, TakeFotoPage(action: widget.action,));
+      Utils.routeToWidget(context, TakeFotoPage(action: widget.action,RangeAbsen: _totalMeters.toString()));
     }
   }
 

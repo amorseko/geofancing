@@ -27,17 +27,23 @@ class AbsenTodayData {
 
   AbsenTodayData(
       {
-        this.jam_absen,
-        this.koordinat,
+        this.absen_masuk,
+        this.absen_keluar,
+        this.koordinat_masuk,
+        this.koordinat_keluar,
         this.stt_absen,
         this.tanggal
       }
       );
 
-  @JsonKey(name: 'jam_absen')
-  String jam_absen;
-  @JsonKey(name: 'koordinat')
-  String koordinat;
+  @JsonKey(name: 'absen_masuk')
+  String absen_masuk;
+  @JsonKey(name: 'absen_keluar')
+  String absen_keluar;
+  @JsonKey(name: 'koordinat_masuk')
+  String koordinat_masuk;
+  @JsonKey(name: 'koordinat_keluar')
+  String koordinat_keluar;
   @JsonKey(name: 'stt_absen')
   String stt_absen;
   @JsonKey(name: 'tanggal')

@@ -28,18 +28,20 @@ Map<String, dynamic> _$HistoryModelsToJson(HistoryModels instance) =>
 
 HistoryData _$HistoryDataFromJson(Map<String, dynamic> json) {
   return HistoryData(
-      jam_masuk: json['jam_masuk'] as String,
-      jam_pulang: json['jam_pulang'] as String,
-      titik_absen: json['titik_absen'] as String,
-      titik_pulang: json['titik_pulang'] as String,
+      absen_masuk: json['absen_masuk'] as String,
+      absen_keluar: json['absen_keluar'] as String,
+      koordinat_masuk: json['koordinat_masuk'] as String,
+      koordinat_keluar: json['koordinat_keluar'] as String,
+      stt_absen: json['stt_absen'] as String,
       tanggal: json['tanggal'] as String);
 }
 
 Map<String, dynamic> _$HistoryDataToJson(HistoryData instance) =>
     <String, dynamic>{
-      'jam_masuk': instance.jam_masuk,
-      'jam_pulang': instance.jam_pulang,
-      'titik_absen': instance.titik_absen,
-      'titik_pulang': instance.titik_pulang,
+      'absen_masuk': instance.absen_masuk,
+      'absen_keluar': instance.absen_keluar,
+      'koordinat_masuk': instance.koordinat_masuk,
+      'koordinat_keluar': instance.koordinat_keluar,
+      'stt_absen': instance.stt_absen,
       'tanggal': instance.tanggal
     };
