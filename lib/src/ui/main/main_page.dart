@@ -259,7 +259,7 @@ class _MainPageState extends State<MainPage> {
         padding: EdgeInsets.only(bottom: 50.0),
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: jumlah >= 2 ? Container(): FloatingActionButton.extended(
+          child: _AbsenKeluar != "" ? Container(): FloatingActionButton.extended(
             onPressed: (){
               routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang",));
             },
