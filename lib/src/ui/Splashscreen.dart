@@ -11,6 +11,7 @@ import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/bloc/language_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
+import 'package:trust_location/trust_location.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -38,8 +39,13 @@ class _SplashScreenState extends State<SplashScreen> {
     String Localtime = DateFormat('y-MM-d').format(_LocalTime);
     String dFormat = DateFormat('y-MM-d').format(now);
     print('NTP DateTime : ' + dFormat + " LocalTime : " + Localtime);
-
-
+    bool isMockLocation = await TrustLocation.isMockLocation;
+    
+    
+    if(isMockLocation == true) {
+      showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
+    }
+    
     if(dFormat != Localtime) {
       showAlertDialog(context, "Your time is not syncron please open the settings !");
     } else {

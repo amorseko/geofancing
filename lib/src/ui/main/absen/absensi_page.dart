@@ -43,6 +43,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
   LatLng _latlng;
   LatLng _latlng2;
 
+  bool _isButtonDisable = true;
+
   bool _isMockLocation = false;
 
   bool _isButtonDisabled = false;
@@ -94,6 +96,33 @@ class _AbsensiPageState extends State<AbsensiPage> {
     new Timer(const Duration(milliseconds: 150), () {
       _inivtiew();
     });
+  }
+
+  Future<void> NTPTime() async {
+    DateTime _myTime;
+
+    /// Or you could get NTP current (It will call DateTime.now() and add NTP offset to it)
+    _myTime = await NTP.now();
+
+    formattedDate = DateFormat('y-MM-d').format(_myTime);
+  }
+
+  Future<void>isMockLocation() async {
+    bool _detectMockLocation;
+
+    _detectMockLocation = await TrustLocation.isMockLocation;
+
+    _isMockLocation = _detectMockLocation;
+
+//    setState(() {
+      if(_isMockLocation == true) {
+        showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
+        _isButtonDisable = false;
+      } else {
+        _isButtonDisable = true;
+      }
+//    });
+    print("data mock ${_isMockLocation}");
   }
 
 
@@ -194,7 +223,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //                      child: Container(),
                                 ),
                                 RaisedButton(
-                                  onPressed: () =>_ValidationChecking(_totalMeters,_latlng),
+                                  onPressed: () => _isButtonDisable ? _ValidationChecking(_totalMeters,_latlng) : null,
                                   color: Colors.lightBlueAccent,
                                   textColor: Colors.white,
                                   child: Container(
@@ -327,10 +356,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
     SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
 
-      DateTime now = DateTime.now();
+//      DateTime now = DateTime.now();
       setState(() {
 
-        formattedDate = DateFormat('y-MM-d').format(now);
+//        formattedDate = DateFormat('y-MM-d').format(now);
+        NTPTime();
+        isMockLocation();
+
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;

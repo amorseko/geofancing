@@ -29,7 +29,7 @@ class SubmitAbsenPage extends StatefulWidget {
 class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
 
   String name, id_user;
-  String waktu;
+  String waktu ="";
   bool _isLoading=false;
   Location _locationTracker = Location();
 
@@ -42,6 +42,16 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     super.initState();
 
     initView();
+  }
+
+  Future<void> NTPTime() async {
+    DateTime _myTime;
+
+    /// Or you could get NTP current (It will call DateTime.now() and add NTP offset to it)
+    _myTime = await NTP.now();
+
+    waktu = DateFormat('y-MM-d kk:mm:ss').format(_myTime);
+    print(waktu);
   }
 
   @override
@@ -102,7 +112,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15)),
                     child: Text(
-                      "Absen",
+                      allTranslations.text("btn_absen"),
                       style: TextStyle(
                           fontSize: 18,
                           color: Colors.white
@@ -126,20 +136,24 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     );
   }
 
-  initView(){
-    SharedPreferencesHelper.getDoLogin().then((value){
+  initView() async{
+    SharedPreferencesHelper.getDoLogin().then((value) async {
+      DateTime startDate = await NTP.now();
       final member = MemberModels.fromJson(json.decode(value));
       setState(() {
+//        NTPTime();
+        waktu =  DateFormat('y-MM-d kk:mm:ss').format(startDate);
         name  = member.data.nama_user;
         id_user = member.data.id_user;
       });
 
     });
 
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('y-MM-d kk:mm:ss').format(now);
+//    DateTime now = DateTime.now();
+//    String formattedDate = DateFormat('y-MM-d kk:mm:ss').format(now);
     setState(() {
-      waktu  = formattedDate;
+      _isLoading = false;
+//      waktu  = formattedDate;
     });
   }
 
