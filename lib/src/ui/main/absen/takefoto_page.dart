@@ -103,11 +103,11 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
       appBar: AppBar(
 //          automaticallyImplyLeading: false,
           brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text(allTranslations.text("btn_absen"),
-              style: TextStyle(color: coorporateColor)),
+              style: TextStyle(color: Colors.white)),
           centerTitle: true,
-          backgroundColor: Colors.white),
+          backgroundColor: CorpToyogaColor),
       body: Stack(
         children: <Widget>[
           FutureBuilder<void>(
@@ -138,7 +138,7 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
                   onPressed: () {
                     onCaptureButtonPressed(context);
                   },
-                  color: Colors.blue,
+                  color: CorpToyogaColor,
                   textColor: Colors.white,
                   child: Icon(
                     Icons.camera_alt,

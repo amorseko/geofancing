@@ -69,11 +69,11 @@ class _ReportPageState extends State<ReportPage> {
     return Scaffold(
       appBar: AppBar(
           brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text("History Absen",
-              style: TextStyle(color: coorporateColor)),
+              style: TextStyle(color: Colors.white)),
           centerTitle: true,
-          backgroundColor: Colors.white),
+          backgroundColor: CorpToyogaColor),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
         child: Column(
@@ -87,12 +87,17 @@ class _ReportPageState extends State<ReportPage> {
                 child: Column(
                   children: <Widget>[
                     ClipOval(
-                        child: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTG6a6KfKK66Jy1eCuDau7yp2rb5dIfGvl45g&usqp=CAU',
+                          child: Image.asset('assets/images/employee.jpg',
                           fit: BoxFit.cover,
                           matchTextDirection: true,
                           height: 120,
-                          width: 120,
-                        )
+                          width: 120,),
+//                        child: Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTG6a6KfKK66Jy1eCuDau7yp2rb5dIfGvl45g&usqp=CAU',
+//                          fit: BoxFit.cover,
+//                          matchTextDirection: true,
+//                          height: 120,
+//                          width: 120,
+//                        )
                     ),
                     SizedBox(
                       height: 10,

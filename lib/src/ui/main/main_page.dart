@@ -49,6 +49,7 @@ class _MainPageState extends State<MainPage> {
   double _lat, _long;
 
 
+
   static final CameraPosition initiallocation = CameraPosition(
     target: LatLng(0, 0),
     zoom: 14.4746,
@@ -83,7 +84,7 @@ class _MainPageState extends State<MainPage> {
         color: primaryColor,
         child: Image(
           fit: BoxFit.cover,
-          image: AssetImage("assets/images/bg_header.jpg"),
+          image: AssetImage("assets/images/bg_header 2.png"),
         ),
       ),
     );
@@ -97,7 +98,7 @@ class _MainPageState extends State<MainPage> {
         child: Material(
           elevation: 4.0,
           shape: CircleBorder(),
-          color: primaryColor,
+          color: Colors.redAccent[700],
           child: ClipRRect(
             borderRadius: new BorderRadius.circular(8),
             child: Container(
@@ -156,7 +157,7 @@ class _MainPageState extends State<MainPage> {
                 "type": "page",
                 "page": ReportPage(),
                 "status": true,
-                "color":0xFFfd79a8
+                "color":0xFFFE5661
               }
             ].where((menu) => menu['status'] == true).map((listMenu) {
               return GestureDetector(
@@ -203,6 +204,17 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  Widget _bgBox(BuildContext context){
+    return new Container(
+      child: Image.asset(
+        'assets/images/bg_box.png',
+        width: MediaQuery.of(context).size.width,
+      ),
+      alignment: FractionalOffset.topCenter,
+      decoration: BoxDecoration(color: Colors.transparent),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -242,6 +254,7 @@ class _MainPageState extends State<MainPage> {
                       SizedBox(height: 10),
                       _buildFullName(),
                       _boxMenu(context),
+                      _bgBox(context),
                       Container(
                         padding: EdgeInsets.all(10),
                         child: Card(
@@ -263,12 +276,14 @@ class _MainPageState extends State<MainPage> {
             onPressed: (){
               routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang",));
             },
+            backgroundColor: CorpToyogaColor,
             icon: Icon(Icons.timer),
             label: Text(_AbsenMasuk== "" ? "Absen Masuk" : "Absen Pulang"),
           ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
     );
   }
 

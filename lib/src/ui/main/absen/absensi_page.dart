@@ -28,10 +28,11 @@ import 'package:trust_location/trust_location.dart';
 
 class AbsensiPage extends StatefulWidget {
   String action;
+  String Jarak;
   @override
   _AbsensiPageState createState() => _AbsensiPageState();
 
-  AbsensiPage({this.action});
+  AbsensiPage({this.action, this.Jarak});
 }
 
 class _AbsensiPageState extends State<AbsensiPage> {
@@ -133,11 +134,11 @@ class _AbsensiPageState extends State<AbsensiPage> {
       appBar: AppBar(
 //          automaticallyImplyLeading: false,
           brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text(allTranslations.text("btn_absen"),
-              style: TextStyle(color: coorporateColor)),
+              style: TextStyle(color: Colors.white)),
           centerTitle: true,
-          backgroundColor: Colors.white),
+          backgroundColor: CorpToyogaColor),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
         child: Stack(
@@ -184,7 +185,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                                 " : " +
                                 formattedDate,
                             txtSize: 20,
-                            color: Colors.lightBlueAccent,
+                            color: CorpToyogaColor,
                             weight: FontWeight.bold,
                           ),
                           padding: const EdgeInsets.only(bottom: 15),
@@ -193,7 +194,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                           child: TextWidget(
                             txt: "Jarak dengan kantor anda " +  _totalMeters.toString() + " m",
                             txtSize: 16,
-                            color: Colors.lightBlueAccent,
+                            color: CorpToyogaColor,
                           ),
                           padding: const EdgeInsets.only(bottom: 15),
                         ),
@@ -206,13 +207,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
                                 RaisedButton(
                                   onPressed: () => getCurrentLocation(),
                                   color: Colors.white,
-                                  textColor: Colors.lightBlueAccent,
+                                  textColor: CorpToyogaColor,
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 4,
                                     child: TextWidget(
                                       txt: "Refresh",
                                       txtSize: 15,
-                                      color: Colors.lightBlueAccent,
+                                      color: CorpToyogaColor,
                                       weight: FontWeight.bold,
                                     ),
                                   ),
@@ -224,13 +225,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
                                 ),
                                 RaisedButton(
                                   onPressed: () => _isButtonDisable ? _ValidationChecking(_totalMeters,_latlng) : null,
-                                  color: Colors.lightBlueAccent,
+                                  color: CorpToyogaColor,
                                   textColor: Colors.white,
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 4,
                                     child: TextWidget(
                                       txt: allTranslations.text('btn_attendance'),
-                                      txtSize: 15,
+                                      txtSize: 12,
                                       color: Colors.white,
                                       weight: FontWeight.bold,
                                     ),
@@ -380,11 +381,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
           print("data jarak : " + jarak.toString());
         });
       });
+
+
+      getCurrentLocation();
     });
 
 
 
-    getCurrentLocation();
 
     setState(() {
       _isLoading = false;

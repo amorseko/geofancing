@@ -54,16 +54,27 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     print(waktu);
   }
 
+  Widget _bgTime(BuildContext context){
+    return new Container(
+      child: Image.asset(
+        'assets/images/time_management.png',
+        width: MediaQuery.of(context).size.width,
+      ),
+      alignment: FractionalOffset.topCenter,
+      decoration: BoxDecoration(color: Colors.transparent),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           brightness: Brightness.light,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text("Preview",
-              style: TextStyle(color: coorporateColor)),
+              style: TextStyle(color: Colors.white)),
           centerTitle: true,
-          backgroundColor: Colors.white),
+          backgroundColor: CorpToyogaColor),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
         child: Container(
@@ -76,7 +87,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                   width: 200.0,
                   height: 200.0,
                   decoration: new BoxDecoration(
-                      border: Border.all(color: coorporateColor, width: 2),
+                      border: Border.all(color: CorpToyogaColor, width: 2),
                       shape: BoxShape.circle,
                       image: new DecorationImage(
                           fit: BoxFit.cover,
@@ -105,6 +116,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
               SizedBox(
                 height: 20,
               ),
+              _bgTime(context),
               Container(
                 width: MediaQuery.of(context).size.width / 2,
                 child: ButtonTheme(
@@ -119,7 +131,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                       ),
                     ),
                     elevation: 4.0,
-                    color: coorporateColor,
+                    color: CorpToyogaColor,
                     splashColor: Colors.blueAccent,
                     onPressed: () {
                       submitAbsen();
@@ -251,7 +263,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
                                         decoration: BoxDecoration(
                                             borderRadius: new BorderRadius.all(
                                                 const Radius.circular(30.0)),
-                                            color: coorporateColor),
+                                            color: CorpToyogaColor),
                                         child: Text("OK",
                                           style: TextStyle(
                                               fontSize: 14,

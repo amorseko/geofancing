@@ -51,10 +51,10 @@ class _LoginPageState extends State<LoginPage> {
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
-        backgroundColor: coorporateColor,
+        backgroundColor: CorpToyogaColor,
         centerTitle: true,
         title: TextWidget(
-          txt: allTranslations.text('btn_absen'),
+          txt: "Login",
         ),
       ),
       body: ProgressDialog(
@@ -108,24 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                       })),
             ),
           ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0.0),
-            alignment: FractionalOffset.centerRight,
-            child: InkWell(
-              child: GestureDetector(
-                onTap: (){
-                  _openForgotPassword();
-                },
-                child: TextWidget(
-                  txt: allTranslations.text('txt_forgotpass'),
-                  color: coorporateColor,
-                ),
-              ),
-              onTap: () => {
 
-              },
-            ),
-          ),
           SizedBox(
             width: double.infinity,
             child: Padding(
@@ -140,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                     txtSize: 14.0,
                   ),
                   elevation: 4.0,
-                  color: coorporateColor,
+                  color: CorpToyogaColor,
                   splashColor: Colors.blueAccent,
                   onPressed: () {
                     _onSubmitLogin(context);
@@ -153,36 +136,9 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.symmetric(
                 vertical: 20.0, horizontal: 0.0),
-            child: Container(
-                padding: EdgeInsets.only(bottom: 4),
-                alignment: Alignment.center,
-                child: TextWidget(
-                  txt: allTranslations.text('txt_troublelog'),
-                  align: TextAlign.center,
-                  txtSize: 12,
-                )),
+
           ),
-          Container(
-            height: 30,
-            alignment: Alignment.center,
-            child: ButtonTheme(
-              child: new RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: TextWidget(
-                  color: Colors.white,
-                  txt: allTranslations.text('btn_callcenter'),
-                  txtSize: 12.0,
-                ),
-                elevation: 0.0,
-                color: secondaryColor,
-                onPressed: () {
-                  MakeCall(context, '021-29647574');
-                },
-              ),
-              height: 50.0,
-            ),
-          ),
+
 
         ],
       ),

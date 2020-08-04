@@ -29,6 +29,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   bool _isLoading = false;
 
+  Widget _bgHeader(BuildContext context){
+    return new Container(
+      child: Image.asset(
+        'assets/images/change_password.png',
+        width: MediaQuery.of(context).size.width,
+      ),
+      alignment: FractionalOffset.topCenter,
+      decoration: BoxDecoration(color: Colors.transparent),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +47,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.white),
         title: TextWidget(txt: allTranslations.text("txt_changepassword"), color: colorTitle()),
-        backgroundColor: coorporateColor,
+        backgroundColor: CorpToyogaColor,
         elevation: 0,
       ),
       body: ProgressDialog(
@@ -46,6 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                _bgHeader(context),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 0.0),
                   child: TextFormField(
@@ -127,8 +139,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           txtSize: 14.0,
                         ),
                         elevation: 4.0,
-                        color: coorporateColor,
-                        splashColor: Colors.blueAccent,
+                        color: CorpToyogaColor,
+                        splashColor: Colors.redAccent,
                         onPressed: () {
                           _changePassword();
                         },
@@ -151,7 +163,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       _isLoading = false;
     });
 
-    if(_newPasswordController != "") {
+    if(_newPasswordController.text != "" || _oldPasswordController.text != "" || _reNewPassController.text != "") {
+      print("not empty");
       SharedPreferencesHelper.getDoLogin().then((onValue) {
         final memberModels = MemberModels.fromJson(json.decode(onValue));
         setState(() {
@@ -219,7 +232,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                       decoration: BoxDecoration(
                                           borderRadius: new BorderRadius.all(
                                               const Radius.circular(30.0)),
-                                          color: coorporateColor),
+                                          color: CorpToyogaColor),
                                       child: Text("OK",
                                         style: TextStyle(
                                             fontSize: 14,

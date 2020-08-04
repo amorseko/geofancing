@@ -26,6 +26,18 @@ class _PreLoginActivityState extends State<PreLoginActivity> {
     );
   }
 
+  Widget _bgImage(BuildContext context){
+    return new Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+      child: Image.asset(
+        'assets/images/bg_splash.png',
+        width: MediaQuery.of(context).size.width,
+      ),
+      alignment: FractionalOffset.topCenter,
+      decoration: BoxDecoration(color: Colors.transparent),
+    );
+  }
+
   Widget buttonComponet(BuildContext context) {
     return new Positioned(
       bottom: MediaQuery.of(context).size.height / 10,
@@ -53,26 +65,6 @@ class _PreLoginActivityState extends State<PreLoginActivity> {
               ),
               height: 50.0,
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
-              child: ButtonTheme(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: new RaisedButton(
-                  child: TextWidget(
-                    color: Colors.white,
-                    txt: allTranslations.text("btn_register"),
-                    txtSize: 18.0,
-                  ),
-                  color: CorpSecondToyoga,
-                  splashColor: Colors.blueGrey,
-                  onPressed: () {
-                    //_openRegisterForm(context);
-                  },
-                ),
-                height: 50.0,
-              ),
-            )
           ],
         ),
       ),
@@ -85,6 +77,7 @@ class _PreLoginActivityState extends State<PreLoginActivity> {
       body: Stack(
         children: <Widget>[
           _logo(context),
+          _bgImage(context),
           buttonComponet(context)
         ],
       ),

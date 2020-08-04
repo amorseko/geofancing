@@ -34,6 +34,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
   bool _isLoading=true;
   bool isEn = false;
+
+  Widget _bgHeader(BuildContext context){
+    return new Container(
+      child: Image.asset(
+        'assets/images/settings.png',
+        width: MediaQuery.of(context).size.width/2,
+      ),
+      alignment: FractionalOffset.topCenter,
+      decoration: BoxDecoration(color: Colors.transparent),
+    );
+  }
   
 
   void initState() {
@@ -89,7 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.white),
         title: TextWidget(txt: "Settings", color: Utils.colorTitle()),
-        backgroundColor: coorporateColor,
+        backgroundColor: CorpToyogaColor,
         elevation: 0,
       ),
       body: ProgressDialog(
@@ -101,6 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
               padding:  new EdgeInsets.only(top: 20.0, left: 20, right: 10),
                 child: Column(
                   children: <Widget>[
+                    _bgHeader(context),
                     Container(
                       child: Row(
                         children: <Widget>[
@@ -112,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               child: Material(
                                 elevation: 4.0,
                                 shape: CircleBorder(),
-                                color: primaryColor,
+                                color: Colors.redAccent[700],
                                 child: ClipRRect(
                                   borderRadius: new BorderRadius.circular(8),
                                   child: Container(
@@ -172,8 +184,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             value:isEn,
                             textOn: "EN",
                             textOff: "ID",
-                            colorOn: coorporateColor,
-                            colorOff: Colors.redAccent[700],
+                            colorOn: CorpToyogaColor,
+                            colorOff: Colors.red,
                             iconOn: Icons.flag,
                             iconOff: Icons.outlined_flag,
                             textSize: 14.0,
