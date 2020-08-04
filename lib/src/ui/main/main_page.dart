@@ -278,7 +278,7 @@ class _MainPageState extends State<MainPage> {
             },
             backgroundColor: CorpToyogaColor,
             icon: Icon(Icons.timer),
-            label: Text(_AbsenMasuk== "" ? "Absen Masuk" : "Absen Pulang"),
+            label: TextWidget(txt: _AbsenMasuk== "" ? allTranslations.text("txt_absen_masuk") : allTranslations.text("txt_absen_pulang"),txtSize: 13.5,color: Colors.white,),
           ),
         ),
       ),
