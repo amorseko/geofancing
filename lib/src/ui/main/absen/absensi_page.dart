@@ -55,6 +55,9 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   final JarakBloc bloc = JarakBloc();
 
+  BitmapDescriptor pinLocationIcon;
+
+  final Set<Marker> _markers = Set();
 
   Icon actionIcon = new Icon(
     Icons.search,
@@ -62,20 +65,16 @@ class _AbsensiPageState extends State<AbsensiPage> {
   );
 
   GoogleMapController _controller;
-  final Set<Marker> _markers = Set();
-
-//  static var today = new DateTime.now();
-  //String formattedDate =
-   //   DateFormat('d' + ' ' + 'MMMM' + ' ' + 'y').format(today);
+  final Set<Marker> _doMarkers = Set();
 
   String formattedDate = "";
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-//  final Set<Marker> _markers = {};
-
   Marker marker;
   Circle circle;
+//  Marker _buildingMarker;
+//  Marker _doMarker;
 
 
 
@@ -149,7 +148,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                 mapType: MapType.normal,
                 zoomControlsEnabled: false,
                 initialCameraPosition: initiallocation,
-                markers: Set.of((marker != null ? [marker] : [])),
+                markers: Set.of((_markers != null ? _markers : [])),
                 circles: Set.of((circle != null ? [circle] : [])),
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
@@ -260,9 +259,16 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   Future<Uint8List> getMarker() async {
     ByteData byteData =
-        await DefaultAssetBundle.of(context).load("assets/icons/car_icon.png");
+        await DefaultAssetBundle.of(context).load("assets/icons/pin_location.png");
     return byteData.buffer.asUint8List();
   }
+
+  void setCustomMapPin() async {
+    pinLocationIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 4.5),
+        'assets/icons/marker_home.png');
+  }
+
 
   void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData, int jarak) async{
     LatLng latlngCirlce = LatLng(_long, _lat);
@@ -274,15 +280,26 @@ class _AbsensiPageState extends State<AbsensiPage> {
     print("data jarak to double " + resultJarak.toString());
 
     setState(() {
-      marker = Marker(
-          markerId: MarkerId('home'),
-          position: _latlng,
-          rotation: newLocationData.heading,
-          draggable: false,
-          zIndex: 2,
-          flat: true,
-          anchor: Offset(0.5, 0.5),
-          icon: BitmapDescriptor.fromBytes(imageData));
+
+      _markers.addAll([
+        Marker(
+            markerId: MarkerId('home'),
+            position: _latlng,
+//            rotation: newLocationData.heading,
+            draggable: false,
+            zIndex: 2,
+            flat: true,
+            anchor: Offset(0.5, 0.5),
+            icon: BitmapDescriptor.fromBytes(imageData)),
+        Marker(
+            markerId: MarkerId('working'),
+            position: _latlng2,
+            draggable: false,
+            zIndex: 2,
+            flat: true,
+            anchor: Offset(0.5, 0.5),
+            icon: pinLocationIcon,),
+      ]);
 
       circle = Circle(
           circleId: CircleId("car"),
@@ -325,19 +342,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
         _locationSubscription.cancel();
       }
 
-//      _locationSubscription =
-//          _locationTracker.onLocationChanged().listen((newLocalData) {
-//            if (_controller != null) {
-//              _controller.animateCamera(CameraUpdate.newCameraPosition(
-//                  new CameraPosition(
-//                      target: LatLng(newLocalData.latitude, newLocalData.longitude),
-//                      tilt: 0,
-//                      zoom: 18.00))
-//              );
-//              updateMarkerAndCircle(newLocalData, imageData);
-////              getCurrentMeters(newLocalData);
-//            }
-//          });
 
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
@@ -356,11 +360,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
   _inivtiew() async {
     SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
-
-//      DateTime now = DateTime.now();
       setState(() {
-
-//        formattedDate = DateFormat('y-MM-d').format(now);
         NTPTime();
         isMockLocation();
 
@@ -369,7 +369,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
         _lat = memberModels.data.latitude;
       });
 
-//      _doCheckJarak();
 
       reqJarak params = reqJarak(
           app_id: appid
@@ -382,12 +381,10 @@ class _AbsensiPageState extends State<AbsensiPage> {
         });
       });
 
-
       getCurrentLocation();
     });
 
-
-
+    setCustomMapPin();
 
     setState(() {
       _isLoading = false;
@@ -445,15 +442,5 @@ class _AbsensiPageState extends State<AbsensiPage> {
     );
   }
 
-  _renderView(BuildContext context) {
-    showBottomSheet(
-        context: context,
-        builder: (context) => Container(
-              color: Colors.red,
-            ));
-    setState(() {
-      _isLoading = false;
-    });
-  }
 
 }

@@ -31,10 +31,6 @@ class MainPage extends StatefulWidget {
 }
 
 
-
-
-
-
 class _MainPageState extends State<MainPage> {
 
   String _fullName;
@@ -50,17 +46,6 @@ class _MainPageState extends State<MainPage> {
 
 
 
-  static final CameraPosition initiallocation = CameraPosition(
-    target: LatLng(0, 0),
-    zoom: 14.4746,
-  );
-
-
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
 
 
   @override
@@ -338,22 +323,4 @@ class _MainPageState extends State<MainPage> {
   }
 
 
-
-//  _doCek() async{
-//    SharedPreferencesHelper.getDoLogin().then((member) async{
-//      final memberModels = MemberModels.fromJson(json.decode(member));
-//      setState(() {
-//        _fullName =  memberModels.data.nama_user;
-//      });
-//
-//      ReqHistoryAbsen params = ReqHistoryAbsen(
-//          id_pegawai: memberModels.data.id_user
-//      );
-//      todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
-//        AbsenModels absenModels = model;
-//        print(absenModels.data.length);
-//        print(status);
-//      });
-//    });
-//  }
 }

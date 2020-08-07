@@ -69,6 +69,7 @@ dev_dependencies:
   build_runner: ^1.0.0
   json_serializable: ^2.0.0
   flutter_launcher_icons: ^0.7.5
+  flutter_automation: ^1.1.4
 
 
 # For information on the generic Dart part of this file, see the
@@ -119,13 +120,15 @@ flutter:
     - assets/icons/icons_chat.png
     - assets/images/icon_toyoga.png
     - assets/images/icon_toyoga_t.png
-    - assets/images/bg_header 2.png
+    - assets/images/bg_header 2.pngl
     - assets/images/bg_box.png
     - assets/images/bg_splash.png
     - assets/images/time_management.png
     - assets/images/change_password.png
     - assets/images/employee.jpg
     - assets/images/settings.png
+    - assets/icons/pin_location.png
+    - assets/icons/marker_home.png
 
   fonts:
     - family: Helvetica
