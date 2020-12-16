@@ -87,7 +87,7 @@ class _ReportPageState extends State<ReportPage> {
                 child: Column(
                   children: <Widget>[
                     ClipOval(
-                          child: Image.asset('assets/images/employee.jpg',
+                          child: Image.asset('assets/icons/icons_peserta.png',
                           fit: BoxFit.cover,
                           matchTextDirection: true,
                           height: 120,

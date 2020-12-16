@@ -29,7 +29,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   bool _isLoading = false;
 
-  Widget _bgHeader(BuildContext context){
+  Widget _bgHeader(BuildContext context) {
     return new Container(
       child: Image.asset(
         'assets/images/change_password.png',
@@ -46,7 +46,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       appBar: AppBar(
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.white),
-        title: TextWidget(txt: allTranslations.text("txt_changepassword"), color: colorTitle()),
+        title: TextWidget(
+            txt: allTranslations.text("txt_changepassword"),
+            color: colorTitle()),
         backgroundColor: CorpToyogaColor,
         elevation: 0,
       ),
@@ -59,80 +61,85 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               children: <Widget>[
                 _bgHeader(context),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 0.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 5.0, horizontal: 0.0),
                   child: TextFormField(
                     controller: _oldPasswordController,
                     obscureText: _isHideOldPassword,
                     decoration: InputDecoration(
-                      labelText: allTranslations.text("txt_old_pass"),
-                      suffixIcon: IconButton(
-                        icon: _isHideOldPassword ? Icon(Icons.vpn_key) : Icon(Icons.remove_red_eye),
-                        onPressed: () {
-                          setState(() {
-                            if(_isHideOldPassword) {
-                              _isHideOldPassword = false;
-                            } else {
-                              _isHideOldPassword =true;
-                            }
-                          });
-                        },
-                      )
-                    ),
+                        labelText: allTranslations.text("txt_old_pass"),
+                        suffixIcon: IconButton(
+                          icon: _isHideOldPassword
+                              ? Icon(Icons.vpn_key)
+                              : Icon(Icons.remove_red_eye),
+                          onPressed: () {
+                            setState(() {
+                              if (_isHideOldPassword) {
+                                _isHideOldPassword = false;
+                              } else {
+                                _isHideOldPassword = true;
+                              }
+                            });
+                          },
+                        )),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 0.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 5.0, horizontal: 0.0),
                   child: TextFormField(
-                    controller : _newPasswordController,
+                    controller: _newPasswordController,
                     obscureText: _isHideNewPassword,
                     decoration: InputDecoration(
-                      labelText: allTranslations.text("txt_new_pass"),
-                      suffixIcon: IconButton(
-                        icon: _isHideNewPassword ? Icon(Icons.vpn_key) : Icon(Icons.remove_red_eye),
-                        onPressed: () {
-                          setState(() {
-                            if(_isHideNewPassword) {
-                              _isHideNewPassword = false;
-                            } else {
-                              _isHideNewPassword = true;
-                            }
-                          });
-                        },
-                      )
-                    ),
+                        labelText: allTranslations.text("txt_new_pass"),
+                        suffixIcon: IconButton(
+                          icon: _isHideNewPassword
+                              ? Icon(Icons.vpn_key)
+                              : Icon(Icons.remove_red_eye),
+                          onPressed: () {
+                            setState(() {
+                              if (_isHideNewPassword) {
+                                _isHideNewPassword = false;
+                              } else {
+                                _isHideNewPassword = true;
+                              }
+                            });
+                          },
+                        )),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 0.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 5.0, horizontal: 0.0),
                   child: TextFormField(
                     controller: _reNewPassController,
                     obscureText: _isHideReNewPassword,
                     decoration: InputDecoration(
-                      labelText: allTranslations.text("txt_renew_pass"),
-                      suffixIcon: IconButton(
-                        icon: _isHideReNewPassword ? Icon(Icons.vpn_key) : Icon(Icons.remove_red_eye),
-                        onPressed: () {
-                          setState(() {
-                            if(_isHideReNewPassword) {
-                              _isHideReNewPassword = false;
-                            } else {
-                              _isHideReNewPassword = true;
-                            }
-                          });
-                        },
-                      )
-                    ),
+                        labelText: allTranslations.text("txt_renew_pass"),
+                        suffixIcon: IconButton(
+                          icon: _isHideReNewPassword
+                              ? Icon(Icons.vpn_key)
+                              : Icon(Icons.remove_red_eye),
+                          onPressed: () {
+                            setState(() {
+                              if (_isHideReNewPassword) {
+                                _isHideReNewPassword = false;
+                              } else {
+                                _isHideReNewPassword = true;
+                              }
+                            });
+                          },
+                        )),
                   ),
                 ),
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsets.only(top : 20),
+                    padding: EdgeInsets.only(top: 20),
                     child: ButtonTheme(
                       child: new RaisedButton(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)
-                        ),
+                            borderRadius: BorderRadius.circular(5)),
                         child: TextWidget(
                           color: Colors.white,
                           txt: allTranslations.text("txt_ubah"),
@@ -163,7 +170,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       _isLoading = false;
     });
 
-    if(_newPasswordController.text != "" || _oldPasswordController.text != "" || _reNewPassController.text != "") {
+    if (_newPasswordController.text != "" ||
+        _oldPasswordController.text != "" ||
+        _reNewPassController.text != "") {
       print("not empty");
       SharedPreferencesHelper.getDoLogin().then((onValue) {
         final memberModels = MemberModels.fromJson(json.decode(onValue));
@@ -175,15 +184,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             password_old: _oldPasswordController.text,
             password_new: _newPasswordController.text,
             id_user: _idUser);
-            bloc.actForgotPass(request.toMap(),
-        (status, message) => {showErrorMessage(context, message, status)});
+        bloc.actForgotPass(request.toMap(),
+            (status, message) => {showErrorMessage(context, message, status)});
       });
     } else {
       showErrorMessage(context, "Password tidak sama", false);
     }
   }
 
-  void showErrorMessage(BuildContext context, String message, bool status){
+  void showErrorMessage(BuildContext context, String message, bool status) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -196,7 +205,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   decoration: new BoxDecoration(
                       color: Colors.white,
                       borderRadius:
-                      new BorderRadius.all(const Radius.circular(30.0))),
+                          new BorderRadius.all(const Radius.circular(30.0))),
                   child: Container(
                       width: MediaQuery.of(context).size.width * (3 / 2),
                       padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -208,36 +217,37 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: Column(
                               children: <Widget>[
-                                Text(status == true ? allTranslations.text("msg_password") : message,
-                                  style: TextStyle(
-                                      fontSize: 18
-                                  ),),
+                                Text(
+                                  status == true
+                                      ? allTranslations.text("msg_password")
+                                      : message,
+                                  style: TextStyle(fontSize: 18),
+                                ),
                                 SizedBox(
                                   height: 20,
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    if(status == true){
-                                      Navigator.pushNamedAndRemoveUntil(context, "/main_page", (_) => false);
-                                    }else{
+                                    if (status == true) {
+                                      Navigator.pushNamedAndRemoveUntil(
+                                          context, "/main_page", (_) => false);
+                                    } else {
                                       Navigator.of(context).pop();
                                     }
                                   },
                                   child: Container(
                                       width:
-                                      MediaQuery.of(context).size.width /
-                                          2,
+                                          MediaQuery.of(context).size.width / 2,
                                       height: 50,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
                                           borderRadius: new BorderRadius.all(
                                               const Radius.circular(30.0)),
                                           color: CorpToyogaColor),
-                                      child: Text("OK",
+                                      child: Text(
+                                        "OK",
                                         style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white
-                                        ),
+                                            fontSize: 14, color: Colors.white),
                                       )),
                                 )
                               ],

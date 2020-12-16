@@ -5,19 +5,19 @@ import 'package:rxdart/rxdart.dart';
 
 class AbsenBloc {
   final _repository = Repository();
-  final _getDoAbsen = PublishSubject<DefaultModel>();
+  final _getDoPengajuan = PublishSubject<DefaultModel>();
 
-  Stream<DefaultModel> get getUploadImageProfile => _getDoAbsen.stream;
+  Stream<DefaultModel> get getPengajuan => _getDoPengajuan.stream;
 
-  doAbsen(FormData data, Function callback) async {
+  doPengajuan(FormData data, Function callback) async {
 //    print(data);
-    DefaultModel model = await _repository.submitAbsen(formData: data);
-    _getDoAbsen.sink.add(model);
+    DefaultModel model = await _repository.submitPenajuan(formData: data);
+    _getDoPengajuan.sink.add(model);
     callback(model);
   }
 
   dispose() {
-    _getDoAbsen.close();
+    _getDoPengajuan.close();
   }
 }
 

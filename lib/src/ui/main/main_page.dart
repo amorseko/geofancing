@@ -9,6 +9,7 @@ import 'package:geofancing/src/bloc/absentoday_bloc.dart' as todayBloc;
 import 'package:geofancing/src/bloc/request/req_history_absen.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/ui/main/absen/report_page.dart';
+import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/utility/colors.dart';
 import 'package:geofancing/src/utility/sharedpreferences.dart';
@@ -23,30 +24,24 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geofancing/src/ui/main/absen/absensi_page.dart';
 import 'package:geofancing/src/ui/main/settings/settings_page.dart';
-
+import 'package:geofancing/src/ui/main/pengajuan_barang/pengajuan.dart';
 
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-
 class _MainPageState extends State<MainPage> {
-
   String _fullName;
   bool _isLoading = true;
   String waktu;
 
-  int jumlah =0;
+  int jumlah = 0;
   String _AbsenMasuk, _AbsenKeluar;
   GoogleMapController _controller;
   double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
   double _lat, _long;
-
-
-
-
 
   @override
   void initState() {
@@ -57,15 +52,14 @@ class _MainPageState extends State<MainPage> {
     new Timer(const Duration(milliseconds: 150), () {
       _initview();
     });
-
   }
 
-  Widget _buildCustomCover(Size screenSize){
+  Widget _buildCustomCover(Size screenSize) {
     return ClipPath(
       clipper: OvalBottomBorderClipper(),
       child: Container(
         height: screenSize.height / 4,
-        width: screenSize.width ,
+        width: screenSize.width,
         color: primaryColor,
         child: Image(
           fit: BoxFit.cover,
@@ -101,21 +95,38 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
-  Widget _buildFullName() {
-    TextStyle _nameTextStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 20.0,
-      fontWeight: FontWeight.w500,
-    );
 
-    return Text(
-      _fullName == null ? " " : _fullName,
-      style: _nameTextStyle,
+  Widget _buildFullName() {
+    return  Container(
+      height: 80.0,
+      width: 300.0,
+      color: Colors.transparent,
+      child: Container(
+          decoration: BoxDecoration(
+              color:  Colors.redAccent[700],
+              border: Border.all(color: Colors.white,width: 4,),
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          child: new Center(
+            child: new Text(_fullName == null ? " " : _fullName,
+              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500,),
+              textAlign: TextAlign.center,),
+          )),
     );
   }
+//  Widget _buildFullName() {
+//    TextStyle _nameTextStyle = TextStyle(
+//      color: Colors.black,
+//      fontSize: 20.0,
+//      fontWeight: FontWeight.w500,
+//    );
+//
+//    return Text(
+//      _fullName == null ? " " : _fullName,
+//      style: _nameTextStyle,
+//    );
+//  }
 
-
-  Widget _boxMenu(BuildContext context){
+  Widget _boxMenu(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
         child: GridView.count(
@@ -123,26 +134,34 @@ class _MainPageState extends State<MainPage> {
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
             crossAxisCount: 1,
-            childAspectRatio: 1.0/0.3,
+            childAspectRatio: 1.0 / 0.3,
             padding: const EdgeInsets.all(10),
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
             children: [
-//              {
-//                "icon": "assets/icons/icons_peserta.png",
-//                "title": allTranslations.text('btn_absen'),
-//                "type": "page",
-//                "page": AbsensiPage(action: "masuk",),
-//                "status": true,
-//                "color":0xFF74b9ff
-//              },
+              {
+                "icon": "assets/icons/icons_peserta.png",
+                "title": allTranslations.text("btn_history_request"),
+                "type": "page",
+                "page": PengajuanBarangPage(),
+                "status": true,
+                "color": 0xFF74b9ff
+              },
               {
                 "icon": "assets/icons/icons_riwayat.png",
-                "title": allTranslations.text('btn_report'),
+                "title": "History Absen",
                 "type": "page",
                 "page": ReportPage(),
                 "status": true,
-                "color":0xFFFE5661
+                "color": 0xFFFE5661
+              },
+              {
+                "icon": "assets/icons/ic_history_klaim.png",
+                "title": allTranslations.text("btn_pekerjaan"),
+                "type": "page",
+                "page": PekerjaanPage(),
+                "status": true,
+                "color": 0xFFFE5661
               }
             ].where((menu) => menu['status'] == true).map((listMenu) {
               return GestureDetector(
@@ -185,18 +204,18 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                       )));
-            }).toList())
-    );
+            }).toList()));
   }
 
-  Widget _bgBox(BuildContext context){
+  Widget _bgBox(BuildContext context) {
     return new Container(
       child: Image.asset(
         'assets/images/bg_box.png',
         width: MediaQuery.of(context).size.width,
+        fit: BoxFit.fill,
       ),
       alignment: FractionalOffset.topCenter,
-      decoration: BoxDecoration(color: Colors.transparent),
+      // decoration: BoxDecoration(color: Colors.transparent),
     );
   }
 
@@ -204,123 +223,138 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-        body: ProgressDialog(
+      body: ProgressDialog(
           inAsyncCall: _isLoading,
           child: SingleChildScrollView(
-            child: Stack(
-              children: <Widget>[
-                _buildCustomCover(screenSize),
-                Positioned(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 50.0, right: 10.0),
-                    child: Align(
-                      alignment: FractionalOffset.topRight,
-                      child: RawMaterialButton(
-                        elevation: 10,
-                        shape: new CircleBorder(),
-                        child: Image(
-                          image: AssetImage("assets/icons/icon_settings.png"),
-                          height: 30,
-                        ),
-                        padding: EdgeInsets.all(5),
-                        fillColor: Colors.white,
-                        onPressed: (){
-                          routeToWidget(context, new SettingsPage());
-                        },
-                      ),
-                    ),
-                  )
+              child: Stack(
+            children: <Widget>[
+              Container(
+                margin: new EdgeInsets.symmetric(vertical: 230.0),
+                child: new Center(
+                  child: new Image.asset(
+                    'assets/images/bg_box.png',
+                    width: screenSize.width,
+                    height: screenSize.height / 2,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                SafeArea(
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(height: screenSize.height / 7),
-                      _buildProfileImage(),
-                      SizedBox(height: 10),
-                      _buildFullName(),
-                      _boxMenu(context),
-                      _bgBox(context),
-                      Container(
+              ),
+              // Center(
+              //   child: new Image.asset(
+              //     'assets/images/bg_box.png',
+              //     width: screenSize.width,
+              //     height: screenSize.height / 2,
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
+              _buildCustomCover(screenSize),
+              Positioned(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 50.0, right: 10.0),
+                child: Align(
+                  alignment: FractionalOffset.topRight,
+                  child: RawMaterialButton(
+                    elevation: 10,
+                    shape: new CircleBorder(),
+                    child: Image(
+                      image: AssetImage("assets/icons/icon_settings.png"),
+                      height: 30,
+                    ),
+                    padding: EdgeInsets.all(5),
+                    fillColor: Colors.white,
+                    onPressed: () {
+                      routeToWidget(context, new SettingsPage());
+                    },
+                  ),
+                ),
+              )),
+              SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: screenSize.height / 7),
+                    _buildProfileImage(),
+                    SizedBox(height: 10),
+                    _buildFullName(),
+                    // _bgBox(context),
+                    _boxMenu(context),
+                    Container(
                         padding: EdgeInsets.all(10),
                         child: Card(
                           elevation: 5,
-                      )
-                      )
-                    ],
-                  ),
+                        ))
+                  ],
                 ),
-              ],
-            )
-          )
-        ),
+              ),
+            ],
+          ))),
       floatingActionButton: Container(
         padding: EdgeInsets.only(bottom: 50.0),
         child: Align(
           alignment: Alignment.bottomCenter,
-          child: _AbsenKeluar != "" ? Container(): FloatingActionButton.extended(
-            onPressed: (){
-              routeToWidget(context, AbsensiPage(action: _AbsenMasuk== "" ? "masuk":"pulang",));
-            },
-            backgroundColor: CorpToyogaColor,
-            icon: Icon(Icons.timer),
-            label: TextWidget(txt: _AbsenMasuk== "" ? allTranslations.text("txt_absen_masuk") : allTranslations.text("txt_absen_pulang"),txtSize: 13.5,color: Colors.white,),
-          ),
+          child: _AbsenKeluar != ""
+              ? Container()
+              : FloatingActionButton.extended(
+                  onPressed: () {
+                    routeToWidget(
+                        context,
+                        AbsensiPage(
+                          action: _AbsenMasuk == "" ? "masuk" : "pulang",
+                        ));
+                  },
+                  backgroundColor: CorpToyogaColor,
+                  icon: Icon(Icons.timer),
+                  label: TextWidget(
+                    txt: _AbsenMasuk == ""
+                        ? allTranslations.text("txt_absen_masuk")
+                        : allTranslations.text("txt_absen_pulang"),
+                    txtSize: 13.5,
+                    color: Colors.white,
+                  ),
+                ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-
     );
   }
 
   _initview() async {
-
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('y-MM-d').format(now);
     setState(() {
-      waktu  = formattedDate;
+      waktu = formattedDate;
       _isLoading = false;
     });
 
     print(waktu);
 
-    SharedPreferencesHelper.getDoLogin().then((member) async{
+    SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
-        _fullName =  memberModels.data.nama_user;
+        _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;
       });
 
-
-
-
       ReqHistoryAbsen params = ReqHistoryAbsen(
-          id_pegawai: memberModels.data.id_user,
-              tanggal : waktu
-      );
+          id_pegawai: memberModels.data.id_user, tanggal: waktu);
 
-     await todayBloc.bloc.doGetTodayAbsen(params.toMap(), (status, error, message, model){
-       AbsenModels absenModels = model;
-       print(absenModels.data.length);
-       setState(() {
-         jumlah  = absenModels.data.length;
-         if(jumlah != 0) {
-           _AbsenKeluar = absenModels.data[0].absen_keluar;
-           _AbsenMasuk = absenModels.data[0].absen_masuk;
-         } else {
-           _AbsenMasuk = "";
-           _AbsenKeluar = "";
-         }
-         print("data absen Masuk : " + _AbsenMasuk);
-         print("data jumlah : " + jumlah.toString());
-       });
-     });
-
-
+      await todayBloc.bloc.doGetTodayAbsen(params.toMap(),
+          (status, error, message, model) {
+        AbsenModels absenModels = model;
+        print(absenModels.data.length);
+        setState(() {
+          jumlah = absenModels.data.length;
+          if (jumlah != 0) {
+            _AbsenKeluar = absenModels.data[0].absen_keluar;
+            _AbsenMasuk = absenModels.data[0].absen_masuk;
+          } else {
+            _AbsenMasuk = "";
+            _AbsenKeluar = "";
+          }
+          print("data absen Masuk : " + _AbsenMasuk);
+          print("data jumlah : " + jumlah.toString());
+        });
+      });
     });
-
-
   }
-
-
 }

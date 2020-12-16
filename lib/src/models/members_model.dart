@@ -11,12 +11,10 @@ class MemberModels {
 
 //  List<_Data> data = [];
 
-  MemberModels(
-      {this.code,this.message, this.status, this.data});
+  MemberModels({this.code, this.message, this.status, this.data});
 
   factory MemberModels.fromJson(Map<String, dynamic> json) =>
       _$MemberModelsFromJson(json);
-
 
   Map<String, dynamic> toJson() => _$MemberModelsToJson(this);
 
@@ -27,20 +25,17 @@ class MemberModels {
 
 @JsonSerializable(nullable: true)
 class _Data {
-
   _Data(
-        {
-          this.username,
-          this.level,
-          this.nama_user,
-          this.id_user,
-          this.foto,
-          this.id_dealer,
-          this.token,
-          this.longitude,
-          this.latitude
-        }
-      );
+      {this.username,
+      this.level,
+      this.nama_user,
+      this.id_user,
+      this.foto,
+      this.id_dealer,
+      this.token,
+      this.longitude,
+      this.latitude,
+      this.user_khusus});
 
   @JsonKey(name: 'username')
   String username;
@@ -60,6 +55,8 @@ class _Data {
   double longitude;
   @JsonKey(name: 'latitude')
   double latitude;
+  @JsonKey(name: 'user_khusus')
+  String user_khusus;
 
   factory _Data.fromJson(Map<String, dynamic> json) => _$_DataFromJson(json);
 

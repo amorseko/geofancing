@@ -42,6 +42,8 @@ dependencies:
   ntp: ^1.0.7
   trust_location: ^2.0.11
   flutter_launcher_icons: ^0.7.5
+  popup_menu: ^1.0.5
+  multiselect_formfield: ^0.1.4
   #  permission: ^0.1.7
   #
 
@@ -120,7 +122,7 @@ flutter:
     - assets/icons/icons_chat.png
     - assets/images/icon_toyoga.png
     - assets/images/icon_toyoga_t.png
-    - assets/images/bg_header 2.pngl
+    - assets/images/bg_header 2.png
     - assets/images/bg_box.png
     - assets/images/bg_splash.png
     - assets/images/time_management.png
@@ -129,6 +131,7 @@ flutter:
     - assets/images/settings.png
     - assets/icons/pin_location.png
     - assets/icons/marker_home.png
+    - assets/images/list_image.jpg
 
   fonts:
     - family: Helvetica

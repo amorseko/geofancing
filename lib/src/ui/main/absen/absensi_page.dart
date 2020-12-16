@@ -39,6 +39,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
   bool _isLoading = true;
   int jarak;
   String _fullName;
+  String _AksesKhusus;
   double _lat, _long;
   final pref.Distance distance = new pref.Distance();
   LatLng _latlng;
@@ -76,8 +77,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //  Marker _buildingMarker;
 //  Marker _doMarker;
 
-
-
   StreamSubscription _locationSubscription;
 
   final pref.Distance sDistance = new pref.Distance();
@@ -107,7 +106,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
     formattedDate = DateFormat('y-MM-d').format(_myTime);
   }
 
-  Future<void>isMockLocation() async {
+  Future<void> isMockLocation() async {
     bool _detectMockLocation;
 
     _detectMockLocation = await TrustLocation.isMockLocation;
@@ -115,16 +114,15 @@ class _AbsensiPageState extends State<AbsensiPage> {
     _isMockLocation = _detectMockLocation;
 
 //    setState(() {
-      if(_isMockLocation == true) {
-        showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
-        _isButtonDisable = false;
-      } else {
-        _isButtonDisable = true;
-      }
+    if (_isMockLocation == true) {
+      showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
+      _isButtonDisable = false;
+    } else {
+      _isButtonDisable = true;
+    }
 //    });
     print("data mock ${_isMockLocation}");
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +141,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-
             GoogleMap(
                 mapType: MapType.normal,
                 zoomControlsEnabled: false,
@@ -191,15 +188,16 @@ class _AbsensiPageState extends State<AbsensiPage> {
                         ),
                         Container(
                           child: TextWidget(
-                            txt: "Jarak dengan kantor anda " +  _totalMeters.toString() + " m",
+                            txt: "Jarak dengan kantor anda " +
+                                _totalMeters.toString() +
+                                " m",
                             txtSize: 16,
                             color: CorpToyogaColor,
                           ),
                           padding: const EdgeInsets.only(bottom: 15),
                         ),
-
                         Container(
-                          width: MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
@@ -208,7 +206,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
                                   color: Colors.white,
                                   textColor: CorpToyogaColor,
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width / 4,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
                                     child: TextWidget(
                                       txt: "Refresh",
                                       txtSize: 15,
@@ -223,13 +222,18 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //                      child: Container(),
                                 ),
                                 RaisedButton(
-                                  onPressed: () => _isButtonDisable ? _ValidationChecking(_totalMeters,_latlng) : null,
+                                  onPressed: () => _isButtonDisable
+                                      ? _ValidationChecking(
+                                          _totalMeters, _latlng)
+                                      : null,
                                   color: CorpToyogaColor,
                                   textColor: Colors.white,
                                   child: Container(
-                                    width: MediaQuery.of(context).size.width / 4,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
                                     child: TextWidget(
-                                      txt: allTranslations.text('btn_attendance'),
+                                      txt: allTranslations
+                                          .text('btn_attendance'),
                                       txtSize: 12,
                                       color: Colors.white,
                                       weight: FontWeight.bold,
@@ -243,8 +247,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
                                 ),
                               ],
                             ),
-                            padding: const EdgeInsets.only(bottom: 15)
-                        ),
+                            padding: const EdgeInsets.only(bottom: 15)),
                       ],
                     ),
                   ),
@@ -258,8 +261,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
   }
 
   Future<Uint8List> getMarker() async {
-    ByteData byteData =
-        await DefaultAssetBundle.of(context).load("assets/icons/pin_location.png");
+    ByteData byteData = await DefaultAssetBundle.of(context)
+        .load("assets/icons/pin_location.png");
     return byteData.buffer.asUint8List();
   }
 
@@ -269,18 +272,17 @@ class _AbsensiPageState extends State<AbsensiPage> {
         'assets/icons/marker_home.png');
   }
 
-
-  void updateMarkerAndCircle(LocationData newLocationData, Uint8List imageData, int jarak) async{
+  void updateMarkerAndCircle(
+      LocationData newLocationData, Uint8List imageData, int jarak) async {
     LatLng latlngCirlce = LatLng(_long, _lat);
     _latlng = LatLng(newLocationData.latitude, newLocationData.longitude);
-    _latlng2 = LatLng(_lat,_long);
+    _latlng2 = LatLng(_lat, _long);
 
     double resultJarak = jarak.toDouble();
 
     print("data jarak to double " + resultJarak.toString());
 
     setState(() {
-
       _markers.addAll([
         Marker(
             markerId: MarkerId('home'),
@@ -292,13 +294,14 @@ class _AbsensiPageState extends State<AbsensiPage> {
             anchor: Offset(0.5, 0.5),
             icon: BitmapDescriptor.fromBytes(imageData)),
         Marker(
-            markerId: MarkerId('working'),
-            position: _latlng2,
-            draggable: false,
-            zIndex: 2,
-            flat: true,
-            anchor: Offset(0.5, 0.5),
-            icon: pinLocationIcon,),
+          markerId: MarkerId('working'),
+          position: _latlng2,
+          draggable: false,
+          zIndex: 2,
+          flat: true,
+          anchor: Offset(0.5, 0.5),
+          icon: pinLocationIcon,
+        ),
       ]);
 
       circle = Circle(
@@ -310,50 +313,56 @@ class _AbsensiPageState extends State<AbsensiPage> {
           fillColor: Colors.blue.withAlpha(70));
     });
 
-    _totalMeters = sDistance(
-        new pref.LatLng(_lat, _long),
+    _totalMeters = sDistance(new pref.LatLng(_lat, _long),
         new pref.LatLng(newLocationData.latitude, newLocationData.longitude));
-
-
   }
-
 
   void getCurrentLocation() async {
     try {
       Uint8List imageData = await getMarker();
 
-      _locationTracker.changeSettings(accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
+      _locationTracker.changeSettings(
+          accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
       var posisi = await _locationTracker.getLocation();
-
 
       _controller.animateCamera(CameraUpdate.newCameraPosition(
           new CameraPosition(
               target: LatLng(posisi.latitude, posisi.longitude),
               tilt: 0,
-              zoom: 18.00))
-      );
+              zoom: 18.00)));
 
-      print("Lokasi : " + posisi.latitude.toString() + "," + posisi.longitude.toString());
-
+      print("Lokasi : " +
+          posisi.latitude.toString() +
+          "," +
+          posisi.longitude.toString());
 
       updateMarkerAndCircle(posisi, imageData, jarak);
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
       }
-
-
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint("Permission Denied");
       }
     }
   }
+
   _ValidationChecking(double _Meters, LatLng ltlng) {
-    if(_Meters == null || _Meters > jarak) {
-      showAlertDialog(context, allTranslations.text("txt_notif_absen"));
-    }else{
-      Utils.routeToWidget(context, TakeFotoPage(action: widget.action,RangeAbsen: _totalMeters.toString()));
+    if (_AksesKhusus != "Y") {
+      if (_Meters == null || _Meters > jarak) {
+        showAlertDialog(context, allTranslations.text("txt_notif_absen"));
+      } else {
+        Utils.routeToWidget(
+            context,
+            TakeFotoPage(
+                action: widget.action, RangeAbsen: _totalMeters.toString()));
+      }
+    } else {
+      Utils.routeToWidget(
+          context,
+          TakeFotoPage(
+              action: widget.action, RangeAbsen: _totalMeters.toString()));
     }
   }
 
@@ -367,16 +376,15 @@ class _AbsensiPageState extends State<AbsensiPage> {
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;
+        _AksesKhusus = memberModels.data.user_khusus;
+        print(_AksesKhusus);
       });
 
-
-      reqJarak params = reqJarak(
-          app_id: appid
-      );
+      reqJarak params = reqJarak(app_id: appid);
 
       await bloc.doJarak(params.toMap(), (status, message, model) {
         setState(() {
-          jarak  = model.data[0].jarak;
+          jarak = model.data[0].jarak;
           print("data jarak : " + jarak.toString());
         });
       });
@@ -390,7 +398,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _isLoading = false;
     });
   }
-
 
   Future<Uint8List> getBytesFromCanvas(int width, int height) async {
     final PictureRecorder pictureRecorder = PictureRecorder();
@@ -413,13 +420,11 @@ class _AbsensiPageState extends State<AbsensiPage> {
   }
 
   showAlertDialog(BuildContext context, message) {
-
     // set up the button
     Widget okButton = FlatButton(
       child: Text("OK"),
       onPressed: () {
         Navigator.of(context).pop();
-
       },
     );
 
@@ -432,7 +437,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
       ],
     );
 
-
     // show the dialog
     showDialog(
       context: context,
@@ -441,6 +445,4 @@ class _AbsensiPageState extends State<AbsensiPage> {
       },
     );
   }
-
-
 }

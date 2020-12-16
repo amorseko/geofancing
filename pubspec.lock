@@ -476,6 +476,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.6+3"
+  multiselect_formfield:
+    dependency: "direct main"
+    description:
+      name: multiselect_formfield
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   nested:
     dependency: transitive
     description:
@@ -616,6 +623,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.0"
+  popup_menu:
+    dependency: "direct main"
+    description:
+      name: popup_menu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   process:
     dependency: transitive
     description:

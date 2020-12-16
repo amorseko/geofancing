@@ -2,7 +2,7 @@ import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class ChangePassBloc{
+class ChangePassBloc {
   final _repository = Repository();
   final _changePassword = PublishSubject<StandartModels>();
 

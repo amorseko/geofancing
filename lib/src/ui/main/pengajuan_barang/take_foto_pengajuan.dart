@@ -1,34 +1,36 @@
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:geofancing/src/models/members_model.dart';
-import 'package:geofancing/src/ui/main/absen/submit_absen_page.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
+import 'package:geofancing/src/widgets/ProgressDialog.dart';
+import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/utility/utils.dart';
+import 'package:geofancing/src/ui/main/pengajuan_barang/submit_pengajuan.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-class TakeFotoPage extends StatefulWidget {
-  String action;
-  String RangeAbsen;
+class TakeFotoPengajuan extends StatefulWidget {
+  String idBarang;
+  String idJenisBarang;
+  String tglTransaksi;
   @override
-  _TakeFotoPageState createState() => _TakeFotoPageState();
-
-  TakeFotoPage({this.action, this.RangeAbsen});
+  _TakeFotoPengajuan createState() => _TakeFotoPengajuan();
+  TakeFotoPengajuan({this.idBarang, this.idJenisBarang, this.tglTransaksi});
 }
 
-class _TakeFotoPageState extends State<TakeFotoPage> {
+class _TakeFotoPengajuan extends State<TakeFotoPengajuan> {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
   bool isCameraReady = false;
   bool showCapturedPhoto = false;
   var ImagePath;
-  String name, id_user;
+  String id_user;
 
   Future<void> _initializeCamera() async {
     final cameras = await availableCameras();
@@ -51,6 +53,8 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
         id_user = user.data.id_user;
       });
     });
+
+    print(widget.tglTransaksi);
   }
 
   void onCaptureButtonPressed(BuildContext context) async {
@@ -68,10 +72,12 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
 
       routeToWidget(
           context,
-          SubmitAbsenPage(
-              imagePath: ImagePath,
-              action: widget.action,
-              RangeAbsen: widget.RangeAbsen.toString()));
+          SubmitPengajuanPage(
+            imagePath: ImagePath,
+            idBarang: widget.idBarang,
+            idJenisBarang: widget.idJenisBarang,
+            tglTransaksi: widget.tglTransaksi,
+          ));
 
       setState(() {
         showCapturedPhoto = true;
@@ -79,12 +85,6 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
     } catch (e) {
       print(e);
     }
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
   }
 
   @override
@@ -106,8 +106,7 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
 //          automaticallyImplyLeading: false,
           brightness: Brightness.light,
           iconTheme: IconThemeData(color: Colors.white),
-          title: Text(allTranslations.text("btn_absen"),
-              style: TextStyle(color: Colors.white)),
+          title: Text("", style: TextStyle(color: Colors.white)),
           centerTitle: true,
           backgroundColor: CorpToyogaColor),
       body: Stack(

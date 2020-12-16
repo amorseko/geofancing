@@ -34,7 +34,8 @@ _Data _$_DataFromJson(Map<String, dynamic> json) {
       id_dealer: json['id_dealer'] as String,
       token: json['token'] as String,
       longitude: (json['longitude'] as num)?.toDouble(),
-      latitude: (json['latitude'] as num)?.toDouble());
+      latitude: (json['latitude'] as num)?.toDouble(),
+      user_khusus: json['user_khusus'] as String);
 }
 
 Map<String, dynamic> _$_DataToJson(_Data instance) => <String, dynamic>{
@@ -46,5 +47,6 @@ Map<String, dynamic> _$_DataToJson(_Data instance) => <String, dynamic>{
       'id_dealer': instance.id_dealer,
       'token': instance.token,
       'longitude': instance.longitude,
-      'latitude': instance.latitude
+      'latitude': instance.latitude,
+      'user_khusus': instance.user_khusus
     };
