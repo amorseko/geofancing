@@ -5,9 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
+import 'package:geofancing/src/models/getversion_model.dart';
 import 'package:geofancing/src/models/history_model.dart';
 import 'package:geofancing/src/models/history_pekerjaan.dart';
 import 'package:geofancing/src/models/jenis_pekerjaan_model.dart';
+import 'package:geofancing/src/models/profile_model.dart';
 import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/models/members_model.dart';
@@ -465,4 +467,51 @@ class ApiProvider {
       print(_handleError(error));
     }
   }
+
+  Future<StandartModels> checkUser({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response =
+          await _dio.post("/check_user.php", data: json.encode(body));
+      return StandartModels.fromJson(response.data);
+    } catch (error, _) {
+      return StandartModels.withError(_handleError(error));
+    }
+  }
+
+  Future<StandartModels> changeProfile({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response =
+      await _dio.post("/change_profile.php", data: json.encode(body));
+      return StandartModels.fromJson(response.data);
+    } catch (error, _) {
+      return StandartModels.withError(_handleError(error));
+    }
+  }
+
+  Future<ProfileModels> profile({Map<String, dynamic> body}) async {
+//    final _dio = await _syncConn();
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response = await _dio.post("/fetch_profile.php", data: json.encode(body));
+      print(response.data.toString());
+      return ProfileModels.fromJson(response.data);
+    } catch (error, _) {
+      return ProfileModels.withError(_handleError(error));
+    }
+  }
+
+  Future<GetVersionModel> getVersion({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response =
+      await _dio.post("app_version.php", data: json.encode(body));
+      print(response.data);
+      return GetVersionModel.fromJson(response.data);
+    } catch (error, _) {
+      return GetVersionModel.withError(_handleError(error));
+    }
+  }
+
 }

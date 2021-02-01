@@ -121,6 +121,7 @@ class _FormPengajuanPage extends State<FormPengajuanPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           brightness: Brightness.light,
           iconTheme: IconThemeData(color: Colors.white),
@@ -367,6 +368,8 @@ class _FormPengajuanPage extends State<FormPengajuanPage> {
                                     _idBarang = widget.id_barang;
                                   }
 
+                                  print(KondisiBarang);
+
                                   if (_idBarang == "") {
                                     print("data kosong ");
                                   } else {
@@ -379,6 +382,7 @@ class _FormPengajuanPage extends State<FormPengajuanPage> {
                                               imagePath: "",
                                               idBarang: _idBarang,
                                               idJenisBarang: JenisPart,
+                                              KondisiBarang: KondisiBarang,
                                               tglTransaksi: _date.text,
                                             )).then((value) {
                                             setPotrait();
@@ -459,11 +463,18 @@ class _FormPengajuanPage extends State<FormPengajuanPage> {
         setState(() {
           _isLoading = false;
         });
+
+
         if (model.status != "success") {
-          showErrorMessage(context, model.message, model.status);
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text("Error : " + model.message)));
+//          showErrorMessage(context, model.message, model.status);
         } else {
           _disableButton = false;
-          clearFields();
+
+          _scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text("Success !")));
+          //clearFields();
         }
       });
     } else {

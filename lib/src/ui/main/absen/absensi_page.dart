@@ -49,7 +49,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   bool _isMockLocation = false;
 
-  bool _isButtonDisabled = false;
+//  bool _isButtonDisabled = true;
 
   double _totalMeters = 0;
   Location _locationTracker = Location();
@@ -91,10 +91,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   void initState() {
     super.initState();
-    _isButtonDisabled = true;
+//    _isButtonDisabled = true;
     new Timer(const Duration(milliseconds: 150), () {
       _inivtiew();
     });
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => isMockLocation());
   }
 
   Future<void> NTPTime() async {
@@ -341,6 +344,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
       }
+
+//      await isMockLocation();
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint("Permission Denied");
@@ -371,7 +376,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
         NTPTime();
-        isMockLocation();
 
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;

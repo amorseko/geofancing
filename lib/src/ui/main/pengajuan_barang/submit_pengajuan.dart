@@ -21,11 +21,16 @@ class SubmitPengajuanPage extends StatefulWidget {
   String idBarang;
   String idJenisBarang;
   String tglTransaksi;
+  String KondisiBarang;
 
   @override
   _SubmitPengajuanPage createState() => _SubmitPengajuanPage();
   SubmitPengajuanPage(
-      {this.imagePath, this.idBarang, this.idJenisBarang, this.tglTransaksi});
+      {this.imagePath,
+      this.idBarang,
+      this.idJenisBarang,
+      this.tglTransaksi,
+      this.KondisiBarang});
 }
 
 class _SubmitPengajuanPage extends State<SubmitPengajuanPage> {
@@ -104,20 +109,23 @@ class _SubmitPengajuanPage extends State<SubmitPengajuanPage> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      routeToWidget(
-                          context,
-                          TakeFotoPengajuan(
-                            idBarang: widget.idBarang,
-                            idJenisBarang: widget.idJenisBarang,
-                            tglTransaksi: widget.tglTransaksi,
-                          )).then((value) {
-                        setPotrait();
-                      });
+                      if (widget.KondisiBarang == "1") {
+                        routeToWidget(
+                            context,
+                            TakeFotoPengajuan(
+                              idBarang: widget.idBarang,
+                              KondisiBarang:widget.KondisiBarang,
+                              idJenisBarang: widget.idJenisBarang,
+                              tglTransaksi: widget.tglTransaksi,
+                            )).then((value) {
+                          setPotrait();
+                        });
+                      }
                     },
                     child: Container(
                       width: 200.0,
                       height: 200.0,
-                      decoration: widget.imagePath != ""
+                      decoration: widget.KondisiBarang == "1" && widget.imagePath != ""
                           ? BoxDecoration(
                               border:
                                   Border.all(color: CorpToyogaColor, width: 2),
@@ -125,12 +133,13 @@ class _SubmitPengajuanPage extends State<SubmitPengajuanPage> {
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
                                   image: FileImage(File(widget.imagePath))))
-                          : BoxDecoration(
+                          : widget.KondisiBarang == "1" && widget.imagePath == "" ?
+                      BoxDecoration(
                               border:
                                   Border.all(color: CorpToyogaColor, width: 2),
                               shape: BoxShape.circle,
-                            ),
-                      child: widget.imagePath == ""
+                            ) : BoxDecoration(),
+                      child: widget.imagePath == "" && widget.KondisiBarang == "1"
                           ? Icon(Icons.camera_alt,
                               color: Colors.grey, size: 70.0)
                           : new Offstage(),

@@ -10,31 +10,23 @@ class AbsenModels {
 
   List<AbsenTodayData> data = [];
 
-  AbsenModels(
-      {this.status,this.error, this.message, this.data});
+  AbsenModels({this.status, this.error, this.message, this.data});
 
   factory AbsenModels.fromJson(Map<String, dynamic> json) =>
       _$AbsenModelsFromJson(json);
 
-
   Map<String, dynamic> toJson() => _$AbsenModelsToJson(this);
-
-
 }
 
 @JsonSerializable(nullable: true)
 class AbsenTodayData {
-
   AbsenTodayData(
-      {
-        this.absen_masuk,
-        this.absen_keluar,
-        this.koordinat_masuk,
-        this.koordinat_keluar,
-        this.stt_absen,
-        this.tanggal
-      }
-      );
+      {this.absen_masuk,
+      this.absen_keluar,
+      this.koordinat_masuk,
+      this.koordinat_keluar,
+      this.stt_absen,
+      this.tanggal});
 
   @JsonKey(name: 'absen_masuk')
   String absen_masuk;
@@ -49,8 +41,8 @@ class AbsenTodayData {
   @JsonKey(name: 'tanggal')
   String tanggal;
 
-
-  factory AbsenTodayData.fromJson(Map<String, dynamic> json) => _$AbsenTodayDataFromJson(json);
+  factory AbsenTodayData.fromJson(Map<String, dynamic> json) =>
+      _$AbsenTodayDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$AbsenTodayDataToJson(this);
 }

@@ -114,7 +114,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
               SizedBox(
                 height: 20,
               ),
-              _bgTime(context),
+              // _bgTime(context),
               Container(
                 width: MediaQuery.of(context).size.width / 2,
                 child: ButtonTheme(
@@ -168,6 +168,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     if (enable) {
       return TextFormField(
         controller: _txtEntry,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: "Entry",
         ),

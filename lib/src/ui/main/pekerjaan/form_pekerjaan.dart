@@ -135,6 +135,10 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
                               "display": "FL",
                               "value": "Flushing",
                             },
+                            {
+                              "display": "CR",
+                              "value": "Car Wash",
+                            },
                           ],
                           required: true,
                           hintWidget: Text('Please choose one or more'),

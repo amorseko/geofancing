@@ -19,9 +19,10 @@ class TakeFotoPengajuan extends StatefulWidget {
   String idBarang;
   String idJenisBarang;
   String tglTransaksi;
+  String KondisiBarang;
   @override
   _TakeFotoPengajuan createState() => _TakeFotoPengajuan();
-  TakeFotoPengajuan({this.idBarang, this.idJenisBarang, this.tglTransaksi});
+  TakeFotoPengajuan({this.idBarang, this.idJenisBarang, this.tglTransaksi, this.KondisiBarang});
 }
 
 class _TakeFotoPengajuan extends State<TakeFotoPengajuan> {
@@ -77,6 +78,7 @@ class _TakeFotoPengajuan extends State<TakeFotoPengajuan> {
             idBarang: widget.idBarang,
             idJenisBarang: widget.idJenisBarang,
             tglTransaksi: widget.tglTransaksi,
+              KondisiBarang:widget.KondisiBarang
           ));
 
       setState(() {

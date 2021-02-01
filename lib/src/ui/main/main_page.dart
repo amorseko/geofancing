@@ -6,10 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/absentoday_bloc.dart' as todayBloc;
+import 'package:geofancing/src/bloc/bloc_checkuser.dart';
 import 'package:geofancing/src/bloc/request/req_history_absen.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/ui/main/absen/report_page.dart';
 import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
+import 'package:geofancing/src/ui/pre_login.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/utility/colors.dart';
 import 'package:geofancing/src/utility/sharedpreferences.dart';
@@ -25,6 +27,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:geofancing/src/ui/main/absen/absensi_page.dart';
 import 'package:geofancing/src/ui/main/settings/settings_page.dart';
 import 'package:geofancing/src/ui/main/pengajuan_barang/pengajuan.dart';
+import 'package:geofancing/src/models/getversion_model.dart';
+import 'package:geofancing/src/bloc/getversion_bloc.dart' as _blocVersion;
+import 'package:package_info/package_info.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -42,7 +47,9 @@ class _MainPageState extends State<MainPage> {
   double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
   double _lat, _long;
+  String _username, _idUser;
 
+  final CheckUserBloc = ChangePassBloc();
   @override
   void initState() {
     // TODO: implement initState
@@ -51,7 +58,116 @@ class _MainPageState extends State<MainPage> {
     setPotrait();
     new Timer(const Duration(milliseconds: 150), () {
       _initview();
+      checkVersion();
     });
+  }
+
+  checkVersion() {
+    _blocVersion.bloc.getVersion({"app_id": appid}, (model, status, message) {
+      getVersion(model, status, message);
+    });
+  }
+
+  getVersion(GetVersionModel model, status, message) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+//    debug.
+    //print("data package : " + int.parse(packageInfo.buildNumber));
+    if (int.parse(packageInfo.buildNumber) <
+        int.parse(Platform.isAndroid
+            ? model.data.data.android.version_code
+            : model.data.data.ios.version_code)) {
+      showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (BuildContext context) {
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+                top: MediaQuery.of(context).size.height / 2 - 100,
+                child: Container(
+                  height: 300,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius:
+                    BorderRadius.vertical(top: Radius.elliptical(150, 30)),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: Column(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        child: Image.asset('assets/icons/close_popup.png'),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(50.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.lightBlueAccent,
+                              blurRadius: 10.0,
+                              spreadRadius: 5.0,
+                              offset: Offset(0.0, 0.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      child: TextWidget(
+                        txt: "Version " +
+                            model.data.data.android.version_name +
+                            " is Available",
+                        txtSize: 20,
+                        color: Colors.lightBlueAccent,
+                        weight: FontWeight.bold,
+                      ),
+                      padding: const EdgeInsets.only(bottom: 15),
+                    ),
+                    Container(
+                        child: RaisedButton(
+                          onPressed: () async {
+                            String url = model.data.data.android.url;
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          color: Colors.lightBlueAccent,
+                          textColor: Colors.white,
+                          child: TextWidget(
+                            txt: "UPDATE NOW",
+                            txtSize: 15,
+                            color: Colors.white,
+                            weight: FontWeight.bold,
+                          ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+//                      child: Container(),
+                        ),
+                        padding: const EdgeInsets.only(bottom: 15)),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Widget _buildCustomCover(Size screenSize) {
@@ -97,19 +213,28 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _buildFullName() {
-    return  Container(
+    return Container(
       height: 80.0,
       width: 300.0,
       color: Colors.transparent,
       child: Container(
           decoration: BoxDecoration(
-              color:  Colors.redAccent[700],
-              border: Border.all(color: Colors.white,width: 4,),
+              color: Colors.redAccent[700],
+              border: Border.all(
+                color: Colors.white,
+                width: 4,
+              ),
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           child: new Center(
-            child: new Text(_fullName == null ? " " : _fullName,
-              style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w500,),
-              textAlign: TextAlign.center,),
+            child: new Text(
+              _fullName == null ? " " : _fullName,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
           )),
     );
   }
@@ -317,6 +442,13 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  _logout() {
+    SharedPreferencesHelper.clearAllPreference();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => PreLoginActivity()),
+        (Route<dynamic> route) => false);
+  }
+
   _initview() async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('y-MM-d').format(now);
@@ -333,6 +465,8 @@ class _MainPageState extends State<MainPage> {
         _fullName = memberModels.data.nama_user;
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;
+        _username = memberModels.data.username;
+        _idUser = memberModels.data.id_user;
       });
 
       ReqHistoryAbsen params = ReqHistoryAbsen(
@@ -354,6 +488,18 @@ class _MainPageState extends State<MainPage> {
           print("data absen Masuk : " + _AbsenMasuk);
           print("data jumlah : " + jumlah.toString());
         });
+      });
+
+      var data = {
+        "id_user": _idUser,
+        "username": _username,
+      };
+      await CheckUserBloc.actForgotPass(data, (status, message) {
+        
+        print(message);
+        if (message == "not avail") {
+          _logout();
+        }
       });
     });
   }
