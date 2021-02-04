@@ -71,7 +71,7 @@ class _MainPageState extends State<MainPage> {
   getVersion(GetVersionModel model, status, message) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 //    debug.
-    //print("data package : " + int.parse(packageInfo.buildNumber));
+    print("data package : " + packageInfo.buildNumber);
     if (int.parse(packageInfo.buildNumber) <
         int.parse(Platform.isAndroid
             ? model.data.data.android.version_code

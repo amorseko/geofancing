@@ -96,8 +96,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _inivtiew();
     });
 
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => isMockLocation());
+
   }
 
   Future<void> NTPTime() async {
@@ -129,6 +128,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => isMockLocation());
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -261,6 +262,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
         ),
       ),
     );
+
   }
 
   Future<Uint8List> getMarker() async {

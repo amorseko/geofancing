@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
 
@@ -29,20 +30,53 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
   bool showCapturedPhoto = false;
   var ImagePath;
   String name, id_user;
+  List<CameraDescription> _availableCameras;
 
-  Future<void> _initializeCamera() async {
-    final cameras = await availableCameras();
-//    final firstCamera = cameras.last;
-    final firstCamera = cameras[1];
-    _controller = CameraController(firstCamera, ResolutionPreset.high);
-    _initializeControllerFuture = _controller.initialize();
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      isCameraReady = true;
-    });
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Future<void> _getAvailableCameras() async{
+//    WidgetsFlutterBinding.ensureInitialized();
+    _availableCameras = await availableCameras();
+    _initCamera(_availableCameras.first);
   }
+
+  Future<void> _initCamera(CameraDescription description) async{
+    _controller = CameraController(description, ResolutionPreset.max);
+
+    try{
+      await _controller.initialize();
+      _initializeControllerFuture = _controller.initialize();
+      if (!mounted) {
+        return;
+      }
+      // to notify the widgets that camera has been initialized and now camera preview can be done
+      setState((){
+        isCameraReady = true;
+      });
+    }
+    catch(e){
+      print(e);
+    }
+  }
+
+
+
+
+//  Future<void> _initializeCamera() async {
+//    final cameras = await availableCameras();
+////    cameras = await availableCameras();
+////    final firstCamera = cameras.last;
+//    final firstCamera = cameras[1];
+//    _controller = CameraController(firstCamera, ResolutionPreset.high);
+//    _initializeControllerFuture = _controller.initialize();
+//    if (!mounted) {
+//      return;
+//    }
+//    setState(() {
+//      isCameraReady = true;
+//    });
+//  }
 
   initData() {
     SharedPreferencesHelper.getDoLogin().then((value) {
@@ -52,6 +86,8 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
       });
     });
   }
+
+
 
   void onCaptureButtonPressed(BuildContext context) async {
     //on camera button press
@@ -91,17 +127,48 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    _initializeCamera();
+//    new Timer(const Duration(milliseconds: 150), () {
+//      _initializeCamera();
+      _getAvailableCameras();
+//    });
     initData();
   }
 
+  void _toggleCameraLens() {
+    // get current lens direction (front / rear)
+    final lensDirection = _controller.description.lensDirection;
+    CameraDescription newDescription;
+    if (lensDirection == CameraLensDirection.front) {
+      print("disini");
+      newDescription = _availableCameras.firstWhere((description) => description
+          .lensDirection == CameraLensDirection.back);
+    }
+    else {
+      print("disana");
+      newDescription = _availableCameras.firstWhere((description) => description
+          .lensDirection == CameraLensDirection.front);
+    }
+
+    if (newDescription != null) {
+      _initCamera(newDescription);
+    }
+    else {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Asked camera not available')));
+      print('Asked camera not available');
+    }
+  }
+
+  void showInSnackBar(String message) {
+    // ignore: deprecated_member_use
+    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final deviceRatio = size.width / size.height;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
 //          automaticallyImplyLeading: false,
           brightness: Brightness.light,
@@ -132,24 +199,53 @@ class _TakeFotoPageState extends State<TakeFotoPage> {
               }
             },
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                margin: EdgeInsets.only(bottom: 100),
-                child: MaterialButton(
-                  onPressed: () {
-                    onCaptureButtonPressed(context);
-                  },
-                  color: CorpToyogaColor,
-                  textColor: Colors.white,
-                  child: Icon(
-                    Icons.camera_alt,
-                    size: 36,
-                  ),
-                  padding: EdgeInsets.all(16),
-                  shape: CircleBorder(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 100),
+                      child: MaterialButton(
+                        onPressed: () {
+                          _toggleCameraLens();
+//                         setState(()  {
+////                           _controller = CameraController(cameras.,ResolutionPreset.high);
+//                         });
+                        },
+                        color: CorpToyogaColor,
+                        textColor: Colors.white,
+                        child: Icon(
+                          Icons.switch_camera,
+                          size: 36,
+                        ),
+                        padding: EdgeInsets.all(16),
+                        shape: CircleBorder(),
+                      ),
+                    )
                 ),
-              ))
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 100),
+                      child: MaterialButton(
+                        onPressed: () {
+                          onCaptureButtonPressed(context);
+                        },
+                        color: CorpToyogaColor,
+                        textColor: Colors.white,
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 36,
+                        ),
+                        padding: EdgeInsets.all(16),
+                        shape: CircleBorder(),
+                      ),
+                    )
+                )
+              ],
+          ),
+
         ],
       ),
     );
