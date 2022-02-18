@@ -12,7 +12,7 @@ class BlocProvider<T> extends InheritedWidget {
 
   static T of<T>(BuildContext context) {
     final type = _typeOf<BlocProvider<T>>();
-    final BlocProvider<T> provider = context.inheritFromWidgetOfExactType(type);
+    final BlocProvider<T> provider = context.dependOnInheritedWidgetOfExactType(aspect : type);
     if (provider == null) throw StateError('Inherited Provider does not exist');
     return provider._bloc;
   }

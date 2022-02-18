@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/absentoday_bloc.dart' as todayBloc;
 import 'package:geofancing/src/bloc/bloc_checkuser.dart';
+import 'package:geofancing/src/bloc/get_config_features_bloc.dart';
 import 'package:geofancing/src/bloc/request/req_history_absen.dart';
 import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/models/config_get_features.dart';
 import 'package:geofancing/src/ui/main/absen/report_page.dart';
 import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
 import 'package:geofancing/src/ui/pre_login.dart';
@@ -31,6 +33,14 @@ import 'package:geofancing/src/models/getversion_model.dart';
 import 'package:geofancing/src/bloc/getversion_bloc.dart' as _blocVersion;
 import 'package:package_info/package_info.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<dynamic> onBackgroundMessage(Map<String, dynamic> message) {
+
+}
+
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
@@ -49,6 +59,51 @@ class _MainPageState extends State<MainPage> {
   double _lat, _long;
   String _username, _idUser;
 
+  final _blocFeatures = ConfigGetFeaturesBloc();
+  static List Features = List();
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  _registerOnFirebase() {
+    _firebaseMessaging.subscribeToTopic('notifUpdate');
+    _firebaseMessaging.getToken().then((token) {
+      print(token);
+    }
+    );
+  }
+
+  Future onSelectNotification(String payload) async {
+    print(payload);
+    if(payload != "")
+    {
+      _launchURL(payload);
+//      routeToWidget(context,ListNotifPage()).then((value) {
+//        setPotrait();
+//      });
+    }
+  }
+
+  Future<void> _demoNotification(dynamic PayLoad) async {
+    final dynamic data = jsonDecode(PayLoad['data']['data']);
+    print(PayLoad);
+    final dynamic notification = jsonDecode(PayLoad['data']['notification']);
+    final dynamic dataNotifUrl = jsonDecode(PayLoad['data']['data']);
+    final int idNotification = data['id'] != null ? int.parse(data['id']) : 1;
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'Toyoga Apps', 'notification', 'List Notification',
+        importance: Importance.max,
+        playSound: true,
+        showProgress: true,
+        priority: Priority.high,
+        ticker: 'test ticker');
+
+    var iOSChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics, iOS : iOSChannelSpecifics);
+    await flutterLocalNotificationsPlugin
+        .show(0, notification['title'], notification['body'], platformChannelSpecifics, payload: dataNotifUrl['url']);
+  }
+
   final CheckUserBloc = ChangePassBloc();
   @override
   void initState() {
@@ -58,9 +113,58 @@ class _MainPageState extends State<MainPage> {
     setPotrait();
     new Timer(const Duration(milliseconds: 150), () {
       _initview();
-      checkVersion();
+
+      getMessage();
+
     });
   }
+
+  void showNotification(dynamic Payload) async {
+    await _demoNotification(Payload);
+  }
+
+  _launchURL(String URLData) async {
+    //const url = 'https://flutter.io';
+    if (await canLaunch(URLData)) {
+      await launch(URLData);
+    } else {
+      throw 'Could not launch $URLData';
+    }
+  }
+
+  void getMessage() {
+//    final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
+    var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          await showNotification(message);
+//
+        },
+        onBackgroundMessage: onBackgroundMessage,
+        onResume: (Map<String, dynamic> message) async {
+          print('on resume $message');
+          await showNotification(message);
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print('on launch $message');
+          await showNotification(message);
+        }
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _blocFeatures.dispose();
+  }
+
 
   checkVersion() {
     _blocVersion.bloc.getVersion({"app_id": appid}, (model, status, message) {
@@ -254,7 +358,8 @@ class _MainPageState extends State<MainPage> {
   Widget _boxMenu(BuildContext context) {
     return Container(
         width: MediaQuery.of(context).size.width,
-        child: GridView.count(
+//        child: Features.length > 0?
+        child: Features.length > 0?GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
@@ -269,7 +374,7 @@ class _MainPageState extends State<MainPage> {
                 "title": allTranslations.text("btn_history_request"),
                 "type": "page",
                 "page": PengajuanBarangPage(),
-                "status": true,
+                "status": findData(Features, "m0002")[0].status,
                 "color": 0xFF74b9ff
               },
               {
@@ -277,7 +382,7 @@ class _MainPageState extends State<MainPage> {
                 "title": "History Absen",
                 "type": "page",
                 "page": ReportPage(),
-                "status": true,
+                "status": findData(Features, "m0003")[0].status,
                 "color": 0xFFFE5661
               },
               {
@@ -285,7 +390,7 @@ class _MainPageState extends State<MainPage> {
                 "title": allTranslations.text("btn_pekerjaan"),
                 "type": "page",
                 "page": PekerjaanPage(),
-                "status": true,
+                "status": findData(Features, "m0004")[0].status,
                 "color": 0xFFFE5661
               }
             ].where((menu) => menu['status'] == true).map((listMenu) {
@@ -329,7 +434,7 @@ class _MainPageState extends State<MainPage> {
                           ],
                         ),
                       )));
-            }).toList()));
+            }).toList()):null);
   }
 
   Widget _bgBox(BuildContext context) {
@@ -412,33 +517,60 @@ class _MainPageState extends State<MainPage> {
               ),
             ],
           ))),
-      floatingActionButton: Container(
-        padding: EdgeInsets.only(bottom: 50.0),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: _AbsenKeluar != ""
-              ? Container()
-              : FloatingActionButton.extended(
-                  onPressed: () {
-                    routeToWidget(
-                        context,
-                        AbsensiPage(
-                          action: _AbsenMasuk == "" ? "masuk" : "pulang",
-                        ));
-                  },
-                  backgroundColor: CorpToyogaColor,
-                  icon: Icon(Icons.timer),
-                  label: TextWidget(
-                    txt: _AbsenMasuk == ""
-                        ? allTranslations.text("txt_absen_masuk")
-                        : allTranslations.text("txt_absen_pulang"),
-                    txtSize: 13.5,
-                    color: Colors.white,
-                  ),
-                ),
-        ),
-      ),
+            floatingActionButton: findData(Features, "m0001")[0].status == true ? Container(
+              padding: EdgeInsets.only(bottom: 50.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _AbsenKeluar != ""
+                    ? Container()
+                    : FloatingActionButton.extended(
+                        onPressed: () {
+                          routeToWidget(
+                              context,
+                              AbsensiPage(
+                                action: _AbsenMasuk == "" ? "masuk" : "pulang",
+                              ));
+                        },
+                        backgroundColor: CorpToyogaColor,
+                        icon: Icon(Icons.timer),
+                        label: TextWidget(
+                          txt: _AbsenMasuk == ""
+                              ? allTranslations.text("txt_absen_masuk")
+                              : allTranslations.text("txt_absen_pulang"),
+                          txtSize: 13.5,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//      floatingActionButton: Container(
+//        padding: EdgeInsets.only(bottom: 50.0),
+//        child: Align(
+//          alignment: Alignment.bottomCenter,
+//          child: _AbsenKeluar != ""
+//              ? Container()
+//              : FloatingActionButton.extended(
+//                  onPressed: () {
+//                    routeToWidget(
+//                        context,
+//                        AbsensiPage(
+//                          action: _AbsenMasuk == "" ? "masuk" : "pulang",
+//                        ));
+//                  },
+//                  backgroundColor: CorpToyogaColor,
+//                  icon: Icon(Icons.timer),
+//                  label: TextWidget(
+//                    txt: _AbsenMasuk == ""
+//                        ? allTranslations.text("txt_absen_masuk")
+//                        : allTranslations.text("txt_absen_pulang"),
+//                    txtSize: 13.5,
+//                    color: Colors.white,
+//                  ),
+//                ),
+//        ),
+//      ),
+//      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -450,6 +582,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   _initview() async {
+
+
+
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('y-MM-d').format(now);
     setState(() {
@@ -459,6 +594,17 @@ class _MainPageState extends State<MainPage> {
 
     print(waktu);
 
+    SharedPreferencesHelper.getFeature().then((feature){
+      print("data : " + feature);
+      final configGetFeaturesModel  = ConfigGetFeaturesModel.fromJson(json.decode(feature));
+      Features = configGetFeaturesModel.data;
+
+      setState(() {
+        Features = configGetFeaturesModel.data;
+
+      });
+    });
+
     SharedPreferencesHelper.getDoLogin().then((member) async {
       final memberModels = MemberModels.fromJson(json.decode(member));
       setState(() {
@@ -467,6 +613,15 @@ class _MainPageState extends State<MainPage> {
         _lat = memberModels.data.latitude;
         _username = memberModels.data.username;
         _idUser = memberModels.data.id_user;
+        _firebaseMessaging.unsubscribeFromTopic('notifUpdate');
+        _firebaseMessaging.subscribeToTopic('notifUpdate');
+        _firebaseMessaging.getToken().then((token) {
+          print(token);
+        });
+//        if(_idUser != null)
+//        {
+//          _firebaseMessaging.subscribeToTopic('all');
+//        }
       });
 
       ReqHistoryAbsen params = ReqHistoryAbsen(
@@ -501,6 +656,9 @@ class _MainPageState extends State<MainPage> {
           _logout();
         }
       });
+
+     // findData(Features, "m0005")[0].status == true ? checkVersion() : null;
+
     });
   }
 }

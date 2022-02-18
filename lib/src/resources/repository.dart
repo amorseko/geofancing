@@ -7,6 +7,7 @@ import 'package:geofancing/src/models/history_barang_model.dart';
 import 'package:geofancing/src/models/history_model.dart';
 import 'package:geofancing/src/models/history_pekerjaan.dart';
 import 'package:geofancing/src/models/jenis_pekerjaan_model.dart';
+import 'package:geofancing/src/models/list_bank_model.dart';
 import 'package:geofancing/src/models/profile_model.dart';
 import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/resources/api_provider.dart';
@@ -19,6 +20,7 @@ import 'package:geofancing/src/models/list_barang_model.dart';
 import 'package:geofancing/src/models/satuan_model.dart';
 import 'package:geofancing/src/models/id_barang_detail_model.dart';
 import 'package:geofancing/src/models/list_barang_detail_model.dart';
+import 'package:geofancing/src/models/config_get_features.dart';
 
 class Repository {
   final apiProvider = ApiProvider();
@@ -102,4 +104,10 @@ class Repository {
 
   Future<GetVersionModel> getVersion({Map<String, dynamic> body}) =>
       apiProvider.getVersion(body: body);
+
+
+  Future<ConfigGetFeaturesModel> fetchConfigGetFeatures() => apiProvider.fetchconfiggetfeaturesApi();
+
+  Future<ListBankModels> getListBank({Map<String, dynamic> body}) =>
+      apiProvider.fetchListBank(body: body);
 }

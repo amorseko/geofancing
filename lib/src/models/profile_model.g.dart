@@ -33,7 +33,11 @@ ListDataProfile _$ListDataProfileFromJson(Map<String, dynamic> json) {
       no_sepatu: json['no_sepatu'] as String,
       u_werpack: json['u_werpack'] as String,
       no_bpjs: json['no_bpjs'] as String,
-      alamat_pegawai: json['alamat_pegawai'] as String);
+      alamat_pegawai: json['alamat_pegawai'] as String,
+      ibu_kandung: json['ibu_kandung'] as String,
+      no_rek: json['no_rek'] as String,
+      an_rek: json['an_rek'] as String,
+      kd_bank: json['kd_bank'] as String);
 }
 
 Map<String, dynamic> _$ListDataProfileToJson(ListDataProfile instance) =>
@@ -43,5 +47,9 @@ Map<String, dynamic> _$ListDataProfileToJson(ListDataProfile instance) =>
       'no_sepatu': instance.no_sepatu,
       'u_werpack': instance.u_werpack,
       'no_bpjs': instance.no_bpjs,
-      'alamat_pegawai': instance.alamat_pegawai
+      'alamat_pegawai': instance.alamat_pegawai,
+      'ibu_kandung': instance.ibu_kandung,
+      'no_rek': instance.no_rek,
+      'an_rek': instance.an_rek,
+      'kd_bank': instance.kd_bank
     };

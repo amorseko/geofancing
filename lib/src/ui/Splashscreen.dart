@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geofancing/src/bloc/get_config_features_bloc.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/ui/pre_login.dart';
 import 'package:geofancing/src/widgets/Strings.dart';
@@ -24,6 +25,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final langBloc = LanguageBloc();
   final CheckUserBloc = ChangePassBloc();
+  final configBloc  = ConfigGetFeaturesBloc();
 
   startTime() async {
     var _duration = new Duration(seconds: 4);
@@ -63,6 +65,10 @@ class _SplashScreenState extends State<SplashScreen> {
             if (message == "not avail") {
               _logout();
             }
+          });
+
+          configBloc.configGetFeature((model){
+            SharedPreferencesHelper.setFeature(json.encode(model.toJson()));
           });
           Navigator.of(context).pushReplacementNamed('/main_page');
         } else {

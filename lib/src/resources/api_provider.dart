@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/models/config_get_features.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
 import 'package:geofancing/src/models/getversion_model.dart';
 import 'package:geofancing/src/models/history_model.dart';
 import 'package:geofancing/src/models/history_pekerjaan.dart';
 import 'package:geofancing/src/models/jenis_pekerjaan_model.dart';
+import 'package:geofancing/src/models/list_bank_model.dart';
 import 'package:geofancing/src/models/profile_model.dart';
 import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
@@ -31,7 +33,9 @@ class ApiProvider {
 //   String _baseUrl = 'http://13.229.237.174/api/';
   // String _baseUrl = 'http://api-tayoga.septamedia.com/';
 //  String _baseUrl = "http://192.168.0.107/api_geof/ancing/";
-  String _baseUrl = 'https://api-toyoga.toyoga.co.id/';
+//   String _baseUrl = 'https://api-toyoga.toyoga.co.id/';
+
+  String _baseUrl = "https://api-toyoga.toyoga.id/";
 
   ApiProvider() {
     SharedPreferencesHelper.getToken().then((token) {
@@ -511,6 +515,33 @@ class ApiProvider {
       return GetVersionModel.fromJson(response.data);
     } catch (error, _) {
       return GetVersionModel.withError(_handleError(error));
+    }
+  }
+
+  Future<ConfigGetFeaturesModel> fetchconfiggetfeaturesApi() async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      final response = await _dio.post("/features.php");
+      print(response.data);
+      return ConfigGetFeaturesModel.fromJson(response.data);
+    } catch (error, stack) {
+      print("Error");
+      print(stack.toString());
+      return ConfigGetFeaturesModel.withError(_handleError(error));
+    }
+  }
+
+  Future<ListBankModels> fetchListBank({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    print(body);
+    try {
+      final response = await _dio.post(
+          "list_bank.php", data: json.encode(body)
+      );
+      print(response.data);
+      return ListBankModels.fromJson(response.data);
+    } catch (error, _) {
+//      return _handleError(error);
     }
   }
 

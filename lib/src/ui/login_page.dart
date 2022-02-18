@@ -14,6 +14,7 @@ import 'package:geofancing/src/utility/utils.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geofancing/src/bloc/request/req_do_login.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
+import 'package:geofancing/src/bloc/get_config_features_bloc.dart' as featureBloc;
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.white),
@@ -184,6 +185,9 @@ class _LoginPageState extends State<LoginPage> {
 //    print("data nya : " + code);
     if (status) {
       print("Status Login");
+      await featureBloc.bloc.configGetFeature((model){
+        SharedPreferencesHelper.setFeature(json.encode(model.toJson()));
+      });
       Navigator.pushNamedAndRemoveUntil(context, "/main_page", (_) => false);
     } else if (message == 'User Not Found') {
       _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));;

@@ -32,6 +32,10 @@ class ListDataProfile {
         this.u_werpack,
         this.no_bpjs,
         this.alamat_pegawai,
+        this.ibu_kandung,
+        this.no_rek,
+        this.an_rek,
+        this.kd_bank,
       });
 
   @JsonKey(name: 'nik')
@@ -46,6 +50,14 @@ class ListDataProfile {
   String no_bpjs;
   @JsonKey(name: 'alamat_pegawai')
   String alamat_pegawai;
+  @JsonKey(name: 'ibu_kandung')
+  String ibu_kandung;
+  @JsonKey(name: 'no_rek')
+  String no_rek;
+  @JsonKey(name: 'an_rek')
+  String an_rek;
+  @JsonKey(name: 'kd_bank')
+  String kd_bank;
 
   factory ListDataProfile.fromJson(Map<String, dynamic> json) => _$ListDataProfileFromJson(json);
 

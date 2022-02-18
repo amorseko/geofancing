@@ -31,7 +31,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
   String name, id_user, id_dealer;
   String waktu = "";
   bool _isLoading = false;
-  bool _isHide = true;
+  bool _isHide = false;
   Location _locationTracker = Location();
   TextEditingController _txtEntry = new TextEditingController();
 
@@ -43,7 +43,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     initView();
   }
 
-  void _toggle() {
+  void _toggle() async {
     setState(() {
       widget.action == "masuk" ? _isHide = false : _isHide = true;
     });
@@ -148,11 +148,12 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
       final member = MemberModels.fromJson(json.decode(value));
       setState(() {
 //        NTPTime();
-        _toggle();
+       // _toggle();
         waktu = DateFormat('y-MM-d kk:mm:ss').format(startDate);
         name = member.data.nama_user;
         id_user = member.data.id_user;
         id_dealer = member.data.id_dealer;
+        widget.action == "masuk" ? _isHide = false : _isHide = true;
       });
     });
 

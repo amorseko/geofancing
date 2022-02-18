@@ -112,7 +112,6 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 5.0, horizontal: 0.0),
                         child: MultiSelectFormField(
-                          autovalidate: false,
                           title: Text("Select Type Pekerjaan"),
                           dataSource: [
                             {

@@ -94,4 +94,19 @@ class SharedPreferencesHelper {
     return preferences.getString(_username) ?? '';
   }
 
+  /// ------------------------------------------------------------
+  /// Set Get Feature Preference
+  /// ------------------------------------------------------------
+
+  static Future<bool> setFeature(String value) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.setString(_feature, value);
+  }
+
+  static Future<String> getFeature() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString(_feature) ?? '';
+  }
+
+
 }
