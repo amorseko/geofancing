@@ -46,6 +46,7 @@ dependencies:
   multiselect_formfield: ^0.1.4
   firebase_messaging: ^7.0.3
   flutter_local_notifications: ^3.0.3
+  connectivity: ^3.0.6
 
   #  permission: ^0.1.7
   #
@@ -138,6 +139,7 @@ flutter:
     - assets/images/list_image.jpg
     - assets/icons/icon_profile.png
     - assets/images/img_changeprofile.jpg
+    - assets/images/img_no_network.png
 
   fonts:
     - family: Helvetica

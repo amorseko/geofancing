@@ -6,6 +6,8 @@ import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
 import 'package:geofancing/src/ui/pre_login.dart';
 import 'package:geofancing/src/ui/Splashscreen.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
+import 'package:geofancing/src/ui/main/additional_page/offline_page.dart';
+import 'package:geofancing/src/ui/Splashscreen.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
         '/prelogin_menu': (BuildContext context) => new PreLoginActivity(),
         '/login_menu': (BuildContext context) => new LoginPage(),
         '/pekerjaan_page': (BuildContext context) => new PekerjaanPage(),
+        '/offline_page': (BuildContext context) => new OfflinePage(),
+        '/splashscreen': (BuildContext context) => new SplashScreen(),
       },
     );
   }

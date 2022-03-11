@@ -14,8 +14,11 @@ import 'package:geofancing/src/utility/allTranslations.dart';
 import 'package:geofancing/src/bloc/language_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:ntp/ntp.dart';
+import 'package:provider/provider.dart';
 import 'package:trust_location/trust_location.dart';
 import 'package:geofancing/src/bloc/bloc_checkuser.dart';
+import 'package:geofancing/src/utility/network_status_service.dart';
+import 'package:geofancing/src/widgets/network_aware_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -34,48 +37,54 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() async {
-//    Navigator.of(context).pushReplacementNamed('/prelogin_menu');
+    try {
+      final result = await InternetAddress.lookup('google.com');
 
-    DateTime now = await NTP.now();
-    DateTime _LocalTime = DateTime.now();
-    String Localtime = DateFormat('y-MM-d').format(_LocalTime);
-    String dFormat = DateFormat('y-MM-d').format(now);
-    print('NTP DateTime : ' + dFormat + " LocalTime : " + Localtime);
-    bool isMockLocation = await TrustLocation.isMockLocation;
+      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        DateTime now = await NTP.now();
+        DateTime _LocalTime = DateTime.now();
+        String Localtime = DateFormat('y-MM-d').format(_LocalTime);
+        String dFormat = DateFormat('y-MM-d').format(now);
+        bool isMockLocation = await TrustLocation.isMockLocation;
 
-    if (isMockLocation == true) {
-      showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
-    }
+        if (isMockLocation == true) {
+          showAlertDialog(context, allTranslations.text("txt_ilegal_program"));
+        }
 
-    if (dFormat != Localtime) {
-      showAlertDialog(
-          context, "Your time is not syncron please open the settings !");
-    } else {
-      SharedPreferencesHelper.getDoLogin().then((onValue) {
-        print(onValue);
+        if (dFormat != Localtime) {
+          showAlertDialog(
+              context, "Your time is not syncron please open the settings !");
+        } else {
+          SharedPreferencesHelper.getDoLogin().then((onValue) {
+            print(onValue);
 
-        if (onValue.isNotEmpty) {
-          final memberModels = MemberModels.fromJson(json.decode(onValue));
-          var data = {
-            "id_user": memberModels.data.id_user,
-            "username": memberModels.data.username,
-          };
-          CheckUserBloc.actForgotPass(data, (status, message) {
-            print(message);
-            if (message == "not avail") {
-              _logout();
+            if (onValue.isNotEmpty) {
+              final memberModels = MemberModels.fromJson(json.decode(onValue));
+              var data = {
+                "id_user": memberModels.data.id_user,
+                "username": memberModels.data.username,
+              };
+              CheckUserBloc.actForgotPass(data, (status, message) {
+                print(message);
+                if (message == "not avail") {
+                  _logout();
+                }
+              });
+
+              configBloc.configGetFeature((model){
+                SharedPreferencesHelper.setFeature(json.encode(model.toJson()));
+              });
+              Navigator.of(context).pushReplacementNamed('/main_page');
+            } else {
+              Navigator.of(context).pushReplacementNamed('/login_menu');
             }
           });
-
-          configBloc.configGetFeature((model){
-            SharedPreferencesHelper.setFeature(json.encode(model.toJson()));
-          });
-          Navigator.of(context).pushReplacementNamed('/main_page');
-        } else {
-          Navigator.of(context).pushReplacementNamed('/login_menu');
         }
-      });
+      }
+    } on SocketException catch (_) {
+      Navigator.of(context).pushReplacementNamed('/offline_page');
     }
+
   }
 
   _logout() {
@@ -89,21 +98,44 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    getLang();
+    asyncGetLang();
   }
 
-  getLang() {
-    var data = {"app_id": appid};
-    langBloc.getLang(data, (model) {
-      var result = model;
-      print(result['data']);
-      SharedPreferencesHelper.setLanguage(json.encode(result['data']))
-          .then((value) async {
-        await allTranslations.init();
-        startTime();
-      });
-    });
+
+  void asyncGetLang() async {
+    await getLang();
+  }
+
+  getLang() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+
+      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        var data = {"app_id": appid};
+        try {
+          langBloc.getLang(data, (model) {
+            var result = model;
+            if(result['data'] == null) {
+              Navigator.of(context).pushReplacementNamed('/offline_page');
+            } else {
+              print(result['data']);
+              SharedPreferencesHelper.setLanguage(json.encode(result['data']))
+                  .then((value) async {
+                await allTranslations.init();
+                startTime();
+              });
+            }
+
+          });
+        } catch (_) {
+          Navigator.of(context).pushReplacementNamed('/offline_page');
+        }
+
+      }
+    } on SocketException catch (_) {
+      Navigator.of(context).pushReplacementNamed('/offline_page');
+    }
+
   }
 
   @override
