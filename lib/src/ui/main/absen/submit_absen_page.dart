@@ -186,7 +186,7 @@ class _SubmitAbsenPageState extends State<SubmitAbsenPage> {
     });
 
     _locationTracker.changeSettings(
-        accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
+        accuracy: LocationAccuracy.high, interval: 0, distanceFilter: 0);
     var posisi = await _locationTracker.getLocation();
     String lokasiAbsen =
         posisi.latitude.toString() + ", " + posisi.longitude.toString();

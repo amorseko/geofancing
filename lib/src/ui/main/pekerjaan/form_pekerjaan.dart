@@ -29,7 +29,7 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
   String _idUser, _idDealer;
   List _myActivities;
   String _myActivitiesResult;
-  File _imageSpk, _imageNoPol;
+  XFile _imageSpk, _imageNoPol;
 
   TextEditingController _txtNoSpk = new TextEditingController();
   TextEditingController _txtNoPol = new TextEditingController();
@@ -193,7 +193,7 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
                                         shape: BoxShape.circle,
                                         image: new DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: FileImage(_imageSpk)))
+                                            image: FileImage(File(_imageSpk.path))))
                                     : BoxDecoration(
                                         border: Border.all(
                                             color: CorpToyogaColor, width: 2),
@@ -231,7 +231,7 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
                                         shape: BoxShape.circle,
                                         image: new DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: FileImage(_imageNoPol)))
+                                            image: FileImage(File(_imageNoPol.path))))
                                     : BoxDecoration(
                                         border: Border.all(
                                             color: CorpToyogaColor, width: 2),
@@ -277,7 +277,9 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
 
   Future getImageSPK() async {
     print("onpressed");
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final ImagePicker _picker = ImagePicker();
+
+    var image =await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       _imageSpk = image;
       print("this is a image path : ${_imageSpk.path}");
@@ -287,7 +289,10 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
 
   Future getImageNoPol() async {
     print("onpressed");
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final ImagePicker _picker = ImagePicker();
+
+    var image =await _picker.pickImage(source: ImageSource.camera);
+
     setState(() {
       _imageNoPol = image;
       print("this is a image path : ${_imageNoPol.path}");

@@ -26,7 +26,7 @@ class FormPictPekerjaanPage extends StatefulWidget {
 class _FormPictPekerjaanPage extends State<FormPictPekerjaanPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
-  File _imageSpk, _imageNoPol;
+  XFile _imageSpk, _imageNoPol;
   String _imageUrlNoPol, _imageUrlSPK;
 
   final _DataImagePekerjaan = ListSelectedImage();
@@ -88,7 +88,7 @@ class _FormPictPekerjaanPage extends State<FormPictPekerjaanPage> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(_imageSpk)))
+                                  image: FileImage(File(_imageSpk.path))))
                           : _imageUrlSPK != ""
                               ? BoxDecoration(
                                   border: Border.all(
@@ -134,7 +134,7 @@ class _FormPictPekerjaanPage extends State<FormPictPekerjaanPage> {
                               shape: BoxShape.circle,
                               image: new DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(_imageNoPol)))
+                                  image: FileImage(File(_imageNoPol.path))))
                           : _imageUrlNoPol != ""
                               ? BoxDecoration(
                                   border: Border.all(
@@ -189,7 +189,9 @@ class _FormPictPekerjaanPage extends State<FormPictPekerjaanPage> {
 
   Future getImageSPK() async {
     print("onpressed");
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final ImagePicker _picker = ImagePicker();
+
+    var image = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       _imageSpk = image;
       print("this is a image path : ${_imageSpk.path}");
@@ -199,7 +201,9 @@ class _FormPictPekerjaanPage extends State<FormPictPekerjaanPage> {
 
   Future getImageNoPol() async {
     print("onpressed");
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final ImagePicker _picker = ImagePicker();
+
+    var image = await _picker.pickImage(source: ImageSource.camera);
     setState(() {
       _imageNoPol = image;
       print("this is a image path : ${_imageNoPol.path}");

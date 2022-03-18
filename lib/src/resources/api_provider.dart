@@ -86,30 +86,31 @@ class ApiProvider {
   }
 
   String _handleError(error) {
-    print(error);
     String errorDescription = "";
     if (error is DioError) {
       switch (error.type) {
-        case DioErrorType.CANCEL:
-          errorDescription = "Request to API server was cancelled";
+        case DioErrorType.cancel:
+          errorDescription = "Request cancelled";
           break;
-        case DioErrorType.CONNECT_TIMEOUT:
-          errorDescription = "Connection timeout with API server";
+        case DioErrorType.connectTimeout:
+          errorDescription = "Connection timeout";
           break;
-        case DioErrorType.DEFAULT:
+        case DioErrorType.other:
+          errorDescription = "Please check internet connection";
+          break;
+        case DioErrorType.receiveTimeout:
+          errorDescription = "Receive timeout";
+          break;
+        case DioErrorType.response:
           errorDescription =
-              "Connection to API server failed due to internet connection";
+          "Received invalid status code: ${error.response.statusCode}";
           break;
-        case DioErrorType.RECEIVE_TIMEOUT:
-          errorDescription = "Receive timeout in connection with API server";
-          break;
-        case DioErrorType.RESPONSE:
-          errorDescription =
-              "Received invalid status code: ${error.response.statusCode}";
+        default:
+          errorDescription = "Not Found Method";
           break;
       }
     } else {
-      errorDescription = "Unexpected error occured " + error.toString();
+      errorDescription = "Unexpected error occured ";
     }
     return errorDescription;
   }
@@ -117,25 +118,26 @@ class ApiProvider {
   void _setupLoggingInterceptor() {
     int maxCharactersPerLine = 200;
 
-    _dio.interceptors
-        .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-      SharedPreferencesHelper.getToken().then((token) {
+    _dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+      SharedPreferencesHelper.getToken()
+          .then((token) {
         options.headers['Authorization'] = token;
-//            options.headers['Authorization']="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBpZCI6ImFwcHNfTkh0Mm94IiwiY2FyZCI6IjgwMDAxOTU4MDA1ODcxOTkiLCJleHAiOjE1ODI3NDQ3MjcsInByb2plY3RpZCI6InJhbWF5YW5hX1JCSW0iLCJ1c2VyaWQiOiJkOTgwcGcifQ.f6lCh0Yg6dwgDLk1ksRGXvR3c76u0e5lVEO4ygzH_Yc";
         print("--> ${options.method} ${options.path}");
         print("Header: ${options.headers}");
         print("Content type: ${options.contentType}");
         print("Body: ${options.data}");
         print("<-- END HTTP");
       });
-      return options;
-    }, onResponse: (Response response) {
+      return handler.next(options);
+    }, onResponse: (response, handler) {
       print(
-          "<-- ${response.statusCode} ${response.request.method} ${response.request.path}");
+          "<-- ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.path}");
       String responseAsString = response.data.toString();
+
+      ///Logging to Firebase
       if (responseAsString.length > maxCharactersPerLine) {
         int iterations =
-            (responseAsString.length / maxCharactersPerLine).floor();
+        (responseAsString.length / maxCharactersPerLine).floor();
         for (int i = 0; i <= iterations; i++) {
           int endingIndex = i * maxCharactersPerLine + maxCharactersPerLine;
           if (endingIndex > responseAsString.length) {
@@ -148,8 +150,13 @@ class ApiProvider {
         print(response.data);
       }
       print("<-- END HTTP");
-    }, onError: (DioError error) {
-      print(error);
+      return handler.next(response);
+    }, onError: (DioError e, handler) {
+      print(
+          'ERROR[${e.response?.statusCode}] => PATH: ${e.requestOptions.path}');
+
+
+      return handler.next(e);
     }));
   }
 

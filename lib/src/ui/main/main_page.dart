@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   _registerOnFirebase() {
     _firebaseMessaging.subscribeToTopic('notifUpdate');
     _firebaseMessaging.getToken().then((token) {
@@ -93,7 +93,7 @@ class _MainPageState extends State<MainPage> {
     final dynamic dataNotifUrl = jsonDecode(PayLoad['data']['data']);
     final int idNotification = data['id'] != null ? int.parse(data['id']) : 1;
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-        'Toyoga Apps', 'notification', 'List Notification',
+        'Toyoga Apps', 'notification',
         importance: Importance.max,
         playSound: true,
         showProgress: true,
@@ -134,7 +134,7 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  void getMessage() {
+  void getMessage() async{
 //    final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
     var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = new IOSInitializationSettings();
@@ -143,20 +143,44 @@ class _MainPageState extends State<MainPage> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
 
-    _firebaseMessaging.configure(
-        onMessage: (Map<String, dynamic> message) async {
-          await showNotification(message);
-//
-        },
-        onBackgroundMessage: onBackgroundMessage,
-        onResume: (Map<String, dynamic> message) async {
-          print('on resume $message');
-          await showNotification(message);
-        },
-        onLaunch: (Map<String, dynamic> message) async {
-          print('on launch $message');
-          await showNotification(message);
-        }
+//     _firebaseMessaging.configure(
+//         onMessage: (Map<String, dynamic> message) async {
+//           await showNotification(message);
+// //
+//         },
+//         onBackgroundMessage: onBackgroundMessage,
+//         onResume: (Map<String, dynamic> message) async {
+//           print('on resume $message');
+//           await showNotification(message);
+//         },
+//         onLaunch: (Map<String, dynamic> message) async {
+//           print('on launch $message');
+//           await showNotification(message);
+//         }
+//     );
+    if (Platform.isIOS) await iOSPermission();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
+      await showNotification(message.data);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async{
+      await showNotification(message.data);
+    });
+
+    _firebaseMessaging.setForegroundNotificationPresentationOptions(
+        alert: true, sound: true);
+  }
+
+  Future<void> iOSPermission() async {
+    await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
     );
   }
 

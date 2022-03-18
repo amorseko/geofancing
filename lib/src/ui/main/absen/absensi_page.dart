@@ -397,7 +397,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       Uint8List imageData = await getMarker();
 
       _locationTracker.changeSettings(
-          accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
+          accuracy: LocationAccuracy.high, interval: 0, distanceFilter: 0);
       var posisi = await _locationTracker.getLocation();
       print(posisi);
       _controller.animateCamera(CameraUpdate.newCameraPosition(

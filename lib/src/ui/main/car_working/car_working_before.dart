@@ -54,7 +54,7 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
   List listImage = List();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  File _imageFile;
+  XFile _imageFile;
   bool isVideo = false;
 
   bool _isLoading = true;
@@ -1814,19 +1814,20 @@ Widget _hasilCheck(BuildContext context) {
 
 
   Future<void> captureImage(String type) async {
-      final File image = await ImagePicker.pickImage(
-          source: ImageSource.camera, imageQuality: 20);
-      print(image.lengthSync());
+    final ImagePicker _picker = ImagePicker();
+
+      final XFile image =await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
+      // final File image = await ImagePicker.pickImage(
+      //     source: ImageSource.camera, imageQuality: 20);
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
 
       DateTime now = DateTime.now();
       String imageName = type  + "_" + DateFormat('yyyyMMddkkmmss').format(now) + '.jpg';
-      print(imageName);
-      final File newImage = await image.copy('$appDocPath/$imageName');
+      final File newImage = await File(image.path).copy('$appDocPath/$imageName');
 
 
-      final File newImage2 = await image.copy('$appDocPath/$imageName');
+      final File newImage2 = await File(image.path).copy('$appDocPath/$imageName');
       ImageProperties properties = await FlutterNativeImage.getImageProperties(newImage2.path);
       File compressedFile = await FlutterNativeImage.compressImage(newImage2.path, quality: 20,
           targetWidth: 300,
@@ -1858,7 +1859,9 @@ Widget _hasilCheck(BuildContext context) {
   }
 
   Future<void> retrieveLostData() async {
-    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    final ImagePicker _picker = ImagePicker();
+
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }

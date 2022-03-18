@@ -9,7 +9,7 @@ class HistoryCarWorkingModels {
   bool error;
   String message;
 
-  List<HistoryCarWorking> data = [];
+  List<HistoryCarWorkingData> data = [];
 
   HistoryCarWorkingModels({this.status, this.error, this.message, this.data});
 
