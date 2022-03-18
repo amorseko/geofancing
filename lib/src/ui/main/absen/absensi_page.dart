@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:geofancing/src/bloc/request/req_jarak.dart';
 import 'package:geofancing/src/models/standart_model.dart';
@@ -25,6 +27,9 @@ import 'package:geofancing/src/models/jarak_model.dart';
 import 'package:geofancing/src/bloc/jarak_bloc.dart';
 import 'package:ntp/ntp.dart';
 import 'package:trust_location/trust_location.dart';
+import 'package:geofancing/src/widgets/TextWidget.dart';
+import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class AbsensiPage extends StatefulWidget {
   String action;
@@ -84,6 +89,13 @@ class _AbsensiPageState extends State<AbsensiPage> {
   double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
 
+  final ButtonWidgetLoadController _btnRetryController = new ButtonWidgetLoadController();
+
+  bool hasInternet = false;
+  ConnectivityResult resultOfConnectivity = ConnectivityResult.none;
+  StreamSubscription subscription;
+  StreamSubscription internetSubscription;
+
   static final CameraPosition initiallocation = CameraPosition(
     target: LatLng(0, 0),
     zoom: 14.4746,
@@ -94,9 +106,17 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //    _isButtonDisabled = true;
     new Timer(const Duration(milliseconds: 150), () {
       _inivtiew();
+
     });
 
 
+  }
+
+   dispose() {
+    super.dispose();
+
+    subscription.cancel();
+    internetSubscription.cancel();
   }
 
   Future<void> NTPTime() async {
@@ -123,7 +143,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _isButtonDisable = true;
     }
 //    });
-    print("data mock ${_isMockLocation}");
+//     print("data mock ${_isMockLocation}");
   }
 
   @override
@@ -133,8 +153,6 @@ class _AbsensiPageState extends State<AbsensiPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-//          automaticallyImplyLeading: false,
-          brightness: Brightness.light,
           iconTheme: IconThemeData(color: Colors.white),
           title: Text(allTranslations.text("btn_absen"),
               style: TextStyle(color: Colors.white)),
@@ -142,7 +160,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
           backgroundColor: CorpToyogaColor),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
-        child: Stack(
+        child: this.hasInternet ? Stack(
           fit: StackFit.expand,
           children: <Widget>[
             GoogleMap(
@@ -153,109 +171,147 @@ class _AbsensiPageState extends State<AbsensiPage> {
                 circles: Set.of((circle != null ? [circle] : [])),
                 onMapCreated: (GoogleMapController controller) {
                   _controller = controller;
-                }),
+                }
+            ),
             Container(
-              padding: EdgeInsets.only(left: 10, bottom: 20, right: 10),
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Positioned(
-                    bottom: 0,
-                    child: Card(
-                      elevation: 5,
-                      child: Container(
-                        height: 150,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.vertical(
-                              top: Radius.elliptical(150, 30)),
+                padding: EdgeInsets.only(left: 10, bottom: 20, right: 10),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Positioned(
+                      bottom: 0,
+                      child: Card(
+                        elevation: 5,
+                        child: Container(
+                          height: 150,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.elliptical(150, 30)),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    child: Column(
-                      children: <Widget>[
-                        SizedBox(height: 20),
-                        Container(
-                          child: TextWidget(
-                            txt: allTranslations.text('txt_tanggal') +
-                                " : " +
-                                formattedDate,
-                            txtSize: 20,
-                            color: CorpToyogaColor,
-                            weight: FontWeight.bold,
-                          ),
-                          padding: const EdgeInsets.only(bottom: 15),
-                        ),
-                        Container(
-                          child: TextWidget(
-                            txt: "Jarak dengan kantor anda " +
-                                _totalMeters.toString() +
-                                " m",
-                            txtSize: 16,
-                            color: CorpToyogaColor,
-                          ),
-                          padding: const EdgeInsets.only(bottom: 15),
-                        ),
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                RaisedButton(
-                                  onPressed: () => getCurrentLocation(),
-                                  color: Colors.white,
-                                  textColor: CorpToyogaColor,
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    child: TextWidget(
-                                      txt: "Refresh",
-                                      txtSize: 15,
-                                      color: CorpToyogaColor,
-                                      weight: FontWeight.bold,
-                                    ),
-                                  ),
-//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-//                      child: Container(),
-                                ),
-                                RaisedButton(
-                                  onPressed: () => _isButtonDisable
-                                      ? _ValidationChecking(
-                                          _totalMeters, _latlng)
-                                      : null,
-                                  color: CorpToyogaColor,
-                                  textColor: Colors.white,
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    child: TextWidget(
-                                      txt: allTranslations
-                                          .text('btn_attendance'),
-                                      txtSize: 12,
-                                      color: Colors.white,
-                                      weight: FontWeight.bold,
-                                    ),
-                                  ),
-//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-//                      child: Container(),
-                                ),
-                              ],
+                    Positioned(
+                      bottom: 0,
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 20),
+                          Container(
+                            child: TextWidget(
+                              txt: allTranslations.text('txt_tanggal') +
+                                  " : " +
+                                  formattedDate,
+                              txtSize: 20,
+                              color: CorpToyogaColor,
+                              weight: FontWeight.bold,
                             ),
-                            padding: const EdgeInsets.only(bottom: 15)),
-                      ],
+                            padding: const EdgeInsets.only(bottom: 15),
+                          ),
+                          Container(
+                            child: TextWidget(
+                              txt: "Jarak dengan kantor anda " +
+                                  _totalMeters.toString() +
+                                  " m",
+                              txtSize: 16,
+                              color: CorpToyogaColor,
+                            ),
+                            padding: const EdgeInsets.only(bottom: 15),
+                          ),
+                          Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  RaisedButton(
+                                    onPressed: () => getCurrentLocation(),
+                                    color: Colors.white,
+                                    textColor: CorpToyogaColor,
+                                    child: Container(
+                                      width:
+                                      MediaQuery.of(context).size.width / 4,
+                                      child: TextWidget(
+                                        txt: "Refresh",
+                                        txtSize: 15,
+                                        color: CorpToyogaColor,
+                                        weight: FontWeight.bold,
+                                      ),
+                                    ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+//                      child: Container(),
+                                  ),
+                                  RaisedButton(
+                                    onPressed: () => _isButtonDisable
+                                        ? _ValidationChecking(
+                                        _totalMeters, _latlng)
+                                        : null,
+                                    color: CorpToyogaColor,
+                                    textColor: Colors.white,
+                                    child: Container(
+                                      width:
+                                      MediaQuery.of(context).size.width / 4,
+                                      child: TextWidget(
+                                        txt: allTranslations
+                                            .text('btn_attendance'),
+                                        txtSize: 12,
+                                        color: Colors.white,
+                                        weight: FontWeight.bold,
+                                      ),
+                                    ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+//                      child: Container(),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.only(bottom: 15)),
+                        ],
+                      ),
                     ),
+                  ],
+                )
+            ),
+          ],
+        ) : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Image.asset(
+                    "assets/images/img_no_network.png",
+                    fit: BoxFit.cover,
                   ),
-                ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom : 32, left: 21, right: 21),
+              child: Align(
+                alignment: AlignmentDirectional.bottomCenter,
+                child: ButtonWidgetLoad(
+                    child: TextWidget(
+                      txt: "RETRY",
+                      color: Colors.white,
+                      txtSize: 14,
+                      fontFamily: 'Bold',
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    borderRadius: 15.0,
+                    color: Colors.redAccent[400],
+                    successColor: Colors.redAccent[400],
+                    controller: _btnRetryController,
+                    onPressed: () => _navigationPage()
+                ),
               ),
             )
           ],
@@ -263,6 +319,20 @@ class _AbsensiPageState extends State<AbsensiPage> {
       ),
     );
 
+  }
+
+  _navigationPage() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+
+      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // Navigator.pop(context);
+        // Navigator.of(context, rootNavigator: true).pop(context);
+        Navigator.of(context).pop();
+      }
+    } on SocketException catch (_) {
+      Navigator.of(context).pushReplacementNamed('/splashscreen');
+    }
   }
 
   Future<Uint8List> getMarker() async {
@@ -285,7 +355,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
     double resultJarak = jarak.toDouble();
 
-    print("data jarak to double " + resultJarak.toString());
+    // print("data jarak to double " + resultJarak.toString());
 
     setState(() {
       _markers.addAll([
@@ -329,17 +399,17 @@ class _AbsensiPageState extends State<AbsensiPage> {
       _locationTracker.changeSettings(
           accuracy: LocationAccuracy.HIGH, interval: 0, distanceFilter: 0);
       var posisi = await _locationTracker.getLocation();
-
+      print(posisi);
       _controller.animateCamera(CameraUpdate.newCameraPosition(
           new CameraPosition(
               target: LatLng(posisi.latitude, posisi.longitude),
               tilt: 0,
               zoom: 18.00)));
 
-      print("Lokasi : " +
-          posisi.latitude.toString() +
-          "," +
-          posisi.longitude.toString());
+      // print("Lokasi : " +
+      //     posisi.latitude.toString() +
+      //     "," +
+      //     posisi.longitude.toString());
 
       updateMarkerAndCircle(posisi, imageData, jarak);
 
@@ -383,7 +453,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
         _long = memberModels.data.longitude;
         _lat = memberModels.data.latitude;
         _AksesKhusus = memberModels.data.user_khusus;
-        print(_AksesKhusus);
+        // print(_AksesKhusus);
       });
 
       reqJarak params = reqJarak(app_id: appid);
@@ -391,14 +461,31 @@ class _AbsensiPageState extends State<AbsensiPage> {
       await bloc.doJarak(params.toMap(), (status, message, model) {
         setState(() {
           jarak = model.data[0].jarak;
-          print("data jarak : " + jarak.toString());
+          // print("data jarak : " + jarak.toString());
+        });
+      });
+      subscription = Connectivity().onConnectivityChanged.listen((result) {
+        // Got a new connectivity status!
+        setState(() {
+          this.resultOfConnectivity  = result;
+          print("data connecitvity : $result");
         });
       });
 
+      internetSubscription = InternetConnectionChecker().onStatusChange.listen((status){
+          final hasInternet = status == InternetConnectionStatus.connected;
+
+          setState(() {
+            this.hasInternet = hasInternet;
+            print("data status $hasInternet");
+          });
+      });
+
       getCurrentLocation();
+      setCustomMapPin();
     });
 
-    setCustomMapPin();
+
 
     setState(() {
       _isLoading = false;

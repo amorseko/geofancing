@@ -10,4 +10,6 @@ const whiteColor = const Color(0xFFFFFFFF);
 const blackColor = const Color(0xFF000000);
 const CorpToyogaColor = const Color(0xFFFE5661);
 const CorpSecondToyoga = const Color(0xFF6056FE);
+const colorWhite = Colors.white;
+const colorBlack = Colors.black;
 //const TurquoiseColor = const Color(0XFF1ABC9C);

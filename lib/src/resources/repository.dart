@@ -110,4 +110,7 @@ class Repository {
 
   Future<ListBankModels> getListBank({Map<String, dynamic> body}) =>
       apiProvider.fetchListBank(body: body);
+
+  Future<DefaultModel> submitCarBefore({FormData formData}) =>
+      apiProvider.submitCarBefore(formData: formData);
 }

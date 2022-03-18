@@ -12,6 +12,7 @@ import 'package:geofancing/src/bloc/request/req_history_absen.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/config_get_features.dart';
 import 'package:geofancing/src/ui/main/absen/report_page.dart';
+import 'package:geofancing/src/ui/main/car_working/list_working_car_before.dart';
 import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
 import 'package:geofancing/src/ui/pre_login.dart';
 import 'package:geofancing/src/utility/allTranslations.dart';
@@ -32,6 +33,7 @@ import 'package:geofancing/src/ui/main/pengajuan_barang/pengajuan.dart';
 import 'package:geofancing/src/models/getversion_model.dart';
 import 'package:geofancing/src/bloc/getversion_bloc.dart' as _blocVersion;
 import 'package:package_info/package_info.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_before.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -166,9 +168,9 @@ class _MainPageState extends State<MainPage> {
   }
 
 
-  checkVersion() {
-    _blocVersion.bloc.getVersion({"app_id": appid}, (model, status, message) {
-      getVersion(model, status, message);
+  checkVersion() async {
+     _blocVersion.bloc.getVersion({"app_id": appid}, (model, status, message) async {
+      await getVersion(model, status, message);
     });
   }
 
@@ -390,6 +392,14 @@ class _MainPageState extends State<MainPage> {
                 "title": allTranslations.text("btn_pekerjaan"),
                 "type": "page",
                 "page": PekerjaanPage(),
+                "status": findData(Features, "m0004")[0].status,
+                "color": 0xFFFE5661
+              },
+              {
+                "icon": "assets/icons/ic_history_klaim.png",
+                "title": "Car Checking",
+                "type": "page",
+                "page": ListWorkingCarBefore(),
                 "status": findData(Features, "m0004")[0].status,
                 "color": 0xFFFE5661
               }
@@ -656,6 +666,8 @@ class _MainPageState extends State<MainPage> {
           _logout();
         }
       });
+
+      await checkVersion();
 
      // findData(Features, "m0005")[0].status == true ? checkVersion() : null;
 

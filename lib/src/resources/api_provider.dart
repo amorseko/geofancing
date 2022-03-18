@@ -545,4 +545,19 @@ class ApiProvider {
     }
   }
 
+  Future<DefaultModel> submitCarBefore({FormData formData}) async {
+    final _dioSecond = await _syncConnWithoutToken();
+    try {
+      print(formData);
+      final response = await _dioSecond
+          .post(_baseUrl + "save_car_working_before.php", data: formData);
+      print("response pb temp : $response");
+      print(response.data.toString());
+      return DefaultModel.fromJson(response.data);
+    } catch (error, _) {
+      print("error kesini :");
+      print(_handleError(error));
+    }
+  }
+
 }

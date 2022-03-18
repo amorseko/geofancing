@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geofancing/src/ui/login_page.dart';
+import 'package:geofancing/src/ui/main/car_working/list_working_car_before.dart';
 import 'package:geofancing/src/ui/main/main_page.dart';
 import 'package:geofancing/src/ui/main/pekerjaan/pekerjaan.dart';
 import 'package:geofancing/src/ui/pre_login.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         '/pekerjaan_page': (BuildContext context) => new PekerjaanPage(),
         '/offline_page': (BuildContext context) => new OfflinePage(),
         '/splashscreen': (BuildContext context) => new SplashScreen(),
+        '/list_working_car_before': (BuildContext context) => new ListWorkingCarBefore(),
       },
     );
   }
