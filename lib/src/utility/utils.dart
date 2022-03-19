@@ -220,3 +220,12 @@ cupertinoAlertDialog(BuildContext context, String title, String content,
         );
       });
 }
+
+Widget dataNotFound(BuildContext context) {
+  return Center(
+    child: Image.asset(
+      'assets/images/not_found.png',
+      height: MediaQuery.of(context).size.height / 3,
+    ),
+  );
+}

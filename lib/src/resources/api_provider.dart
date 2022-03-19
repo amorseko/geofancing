@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/models/car_working_model.dart';
 import 'package:geofancing/src/models/config_get_features.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
@@ -564,6 +565,20 @@ class ApiProvider {
     } catch (error, _) {
       print("error kesini :");
       print(_handleError(error));
+    }
+  }
+
+  Future<HistoryCarWorkingModels> fetchHistoryCarWorking({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+
+    try {
+      final response =
+      await _dio.post("/history_working_car_before.php", data: json.encode(body));
+
+      print(response.data);
+      return HistoryCarWorkingModels.fromJson(response.data);
+    } catch (error, _) {
+     // return _handleError(error);
     }
   }
 

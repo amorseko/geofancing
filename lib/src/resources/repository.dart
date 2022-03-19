@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
+import 'package:geofancing/src/models/car_working_model.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
 import 'package:geofancing/src/models/getversion_model.dart';
@@ -113,4 +114,8 @@ class Repository {
 
   Future<DefaultModel> submitCarBefore({FormData formData}) =>
       apiProvider.submitCarBefore(formData: formData);
+
+  Future<HistoryCarWorkingModels> historyCarWorking(
+      {Map<String, dynamic> body}) =>
+      apiProvider.fetchHistoryCarWorking(body: body);
 }
