@@ -8,11 +8,13 @@ import 'package:geofancing/src/models/history_pekerjaan.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
+import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/utility/utils.dart';
 import 'package:geofancing/src/bloc/bloc_car_working.dart';
 import 'package:geofancing/src/models/car_working_model.dart';
+import 'package:geofancing/src/widgets/circle_view.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
@@ -33,12 +35,16 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
 
   HistoryCarWorkingModels _carWorkingModels;
 
+
+  final ButtonWidgetLoadController _btnAccept = new ButtonWidgetLoadController();
+  final ButtonWidgetLoadController _btnEdit = new ButtonWidgetLoadController();
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void initState() {
     // TODO: implement initState
     super.initState();
-    new Timer(const Duration(milliseconds: 100), ()
+    new Timer(const Duration(milliseconds: 150), ()
     {
       initView();
     });
@@ -120,7 +126,14 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                       )
                     ),
                   )
-                )
+                ),
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    // Add your onPressed code here!
+                  },
+                  backgroundColor: CorpToyogaColor,
+                  child: const Icon(Icons.add),
+                ),
               )
             ],
         ),
@@ -203,7 +216,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                           weight: FontWeight.bold),
                       SizedBox(height: 5),
                       TextWidget(
-                          txt: data.request_time,
+                          txt: data.input_date,
                           txtSize: 9.5,
                           weight: FontWeight.bold),
                       SizedBox(height: 5),
@@ -245,6 +258,35 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                         weight: FontWeight.bold,
                       ),
                       SizedBox(height: 10),
+                      TextWidget(
+                        txt: "Nomor Polisi",
+                        txtSize: 12,
+                        color: colorBlack,
+                        align: TextAlign.left,
+                      ),
+                      TextWidget(
+                        txt: data.nopol,
+                        txtSize: 12,
+                        color:
+                        _indexTab == 0 ? CorpToyogaColor : CorpToyogaColor2,
+                        align: TextAlign.right,
+                        weight: FontWeight.bold,
+                      ),
+                      SizedBox(height: 10),
+                      TextWidget(
+                        txt: "Model Mobil",
+                        txtSize: 12,
+                        color: colorBlack,
+                        align: TextAlign.left,
+                      ),
+                      TextWidget(
+                        txt: data.model,
+                        txtSize: 12,
+                        color:
+                          _indexTab == 0 ? CorpToyogaColor : CorpToyogaColor2,
+                        align: TextAlign.right,
+                        weight: FontWeight.bold,
+                      ),
                     ],
                   ),
                 )
@@ -307,9 +349,9 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   }
 
   initView(){
-    SharedPreferencesHelper.getDoLogin().then((value) async {
+    SharedPreferencesHelper.getDoLogin().then((value)  {
       final member = MemberModels.fromJson(json.decode(value));
-      await _setListData(member.data.id_user);
+      _setListData(member.data.id_user);
     });
 
   }
@@ -320,12 +362,14 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
         method: "list"
     );
 
-    bloc.getsHistoryCarWorking(params.toMap(), (model) async {
-      await _setData(model);
+    print(userId);
+
+    bloc.getsHistoryCarWorking({"id_user": userId, "method" : "list"}, (model) async {
+       _setData(model);
     });
   }
 
-  _setData(HistoryCarWorkingModels models) async {
+  _setData(HistoryCarWorkingModels models)  {
     setState(() {
       _carWorkingModels = models;
       _isLoading = false;

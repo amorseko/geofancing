@@ -9,7 +9,7 @@ class HistoryCarWorkingModels {
   bool error;
   String message;
 
-  List<HistoryCarWorkingData> data = [];
+  List<HistoryCarWorkingData> data;
 
   HistoryCarWorkingModels({this.status, this.error, this.message, this.data});
 
@@ -17,6 +17,10 @@ class HistoryCarWorkingModels {
   _$HistoryCarWorkingModelsFromJson(json);
 
   Map<String, dynamic> toJson() => _$HistoryCarWorkingModelsToJson(this);
+
+  HistoryCarWorkingModels.withError(String error)
+      : message = error,
+        error = false;
 }
 
 @JsonSerializable(nullable: true)

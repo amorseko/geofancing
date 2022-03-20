@@ -572,6 +572,7 @@ class ApiProvider {
     final _dio = await _syncConnWithoutToken();
 
     try {
+      print(body);
       final response =
       await _dio.post("/history_working_car_before.php", data: json.encode(body));
 
@@ -579,6 +580,8 @@ class ApiProvider {
       return HistoryCarWorkingModels.fromJson(response.data);
     } catch (error, _) {
      // return _handleError(error);
+      print(error.toString());
+      return HistoryCarWorkingModels.withError(_handleError(error));
     }
   }
 

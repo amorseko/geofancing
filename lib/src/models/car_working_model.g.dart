@@ -12,7 +12,10 @@ HistoryCarWorkingModels _$HistoryCarWorkingModelsFromJson(
     status: json['status'] as String,
     error: json['error'] as bool,
     message: json['message'] as String,
-    data: json['data'] as List,
+    data: (json['data'] as List)
+        ?.map(
+            (e) => e == null ? null : HistoryCarWorkingData.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
