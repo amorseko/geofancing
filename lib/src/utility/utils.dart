@@ -229,3 +229,9 @@ Widget dataNotFound(BuildContext context) {
     ),
   );
 }
+
+Widget snackBar() {
+  return SnackBar(
+    content: Text("Close app"),
+  );
+}
