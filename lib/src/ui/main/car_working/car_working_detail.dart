@@ -33,6 +33,8 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
   HistoryCarWorkingModels _detailCarWorking;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final ButtonWidgetLoadController _btnAcceptController = new ButtonWidgetLoadController();
+
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -184,7 +186,33 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                                   ]
                               ),
                             ),
-                          // for (var sImageUrl in  _detailCarWorking.data[0].list_foto.split(', '))
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom : 32, left: 21, right: 21),
+                            child: Align(
+                              alignment: AlignmentDirectional.bottomCenter,
+                              child: ButtonWidgetLoad(
+                                  child: TextWidget(
+                                    txt: "ACCEPT",
+                                    color: Colors.white,
+                                    txtSize: 14,
+                                    fontFamily: 'Bold',
+                                  ),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  borderRadius: 15.0,
+                                  color: Colors.redAccent[400],
+                                  successColor: Colors.redAccent[400],
+                                  controller: _btnAcceptController,
+                                  onPressed: () => {},
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
                         ],
                       ) : Container(),
                 ),

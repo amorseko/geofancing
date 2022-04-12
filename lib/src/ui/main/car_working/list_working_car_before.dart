@@ -34,6 +34,16 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
 
   HistoryCarWorkingModels _carWorkingModels;
 
+  List listWorkingQuery = List();
+  List listWorking = List();
+
+  Icon actionIcon = new Icon(
+    Icons.search,
+    color: colorTitle(),
+  );
+
+  final TextEditingController _searchQuery = new TextEditingController();
+  bool _IsSearching = false;
 
   final ButtonWidgetLoadController _btnAccept = new ButtonWidgetLoadController();
   final ButtonWidgetLoadController _btnEdit = new ButtonWidgetLoadController();
@@ -49,9 +59,29 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
     });
   }
 
+  Widget appBarTitle = TextWidget(
+      txt: "History Car Working", color: Colors.white, txtSize: 18,);
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _handleSearchEnd() {
+    setState(() {
+      this.actionIcon = new Icon(
+        Icons.search,
+        color: colorTitle(),
+      );
+      this.appBarTitle = TextWidget(
+        txt: "History Car Working",
+        color: Colors.white,
+        txtSize: 18,
+      );
+      _IsSearching = false;
+      _searchQuery.clear();
+
+    });
   }
 
   @override
@@ -80,11 +110,57 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                       iconTheme: IconThemeData(color:Colors.white),
                       backgroundColor: Colors.transparent,
                       elevation: 0,
-                      title: TextWidget(
-                        txt: "History Car Working",
-                        txtSize: 18,
-                        color: Colors.white
-                      ),
+                      title: appBarTitle,
+                      actions: <Widget>[
+                        IconButton(
+                          onPressed: () {
+                          setState(() {
+                            if (this.actionIcon.icon == Icons.search) {
+                              _IsSearching = true;
+                              this.actionIcon = new Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              );
+
+                              this.appBarTitle = new TextField(
+                                  onChanged: (text) {
+                                    setState(() {
+
+                                      switch(_indexTab) {
+                                        case 0 : {
+                                          return _data(context ,'0', text.toUpperCase());
+                                          break;
+                                        }
+                                        case 1 : {
+                                          return _data(context ,'1', text.toUpperCase());
+                                          break;
+                                        }
+                                      }
+                                      // _carWorkingModels.data.where((dataWorking) =>
+                                      //     dataWorking.nopol
+                                      //         .toLowerCase()
+                                      //         .contains(text.toLowerCase()))
+                                      //     .toList();
+                                    });
+                                  },
+                                  controller: _searchQuery,
+                                  style: new TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  decoration: new InputDecoration(
+                                            hintText: "Search...",
+                                            hintStyle: new TextStyle(
+                                            color: Colors.white,
+                                            fontSize:
+                                            MediaQuery.of(context).size.width / 30),
+                                  ),
+                              );
+                            } else {
+                              _handleSearchEnd();
+                            }
+                          });
+                        }, icon: actionIcon,)
+                      ],
                     )
                   )
                 ),
@@ -143,25 +219,26 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   Widget body(BuildContext context) {
     switch(_indexTab) {
       case 0 : {
-        return _data(context ,'0');
+        return _data(context ,'0', _searchQuery.text);
         break;
       }
       case 1 : {
-        return _data(context ,'1');
+        return _data(context ,'1',_searchQuery.text);
         break;
       }
     }
   }
 
-  Widget _data(BuildContext context, String status) {
+  Widget _data(BuildContext context, String status, String query) {
+    print(query);
     return Expanded(
       child: _carWorkingModels.toString() != 'null' ?
       Container(
-        child: _carWorkingModels.data.toString() != 'null' ? _carWorkingModels.data.where((data) => data.status == status).length > 0 ?
+        child: _carWorkingModels.data.toString() != 'null' ? _carWorkingModels.data.where((data) => data.status == status && data.nopol.toUpperCase().contains(query)).length > 0 ?
         ListView(
             scrollDirection: Axis.vertical,
             children: _carWorkingModels.data
-                .where((data) => data.status == status)
+                .where((data) => data.status == status && data.nopol.toUpperCase().contains(query))
                 .map((data) => createList(data, context))
                 .toList()
         ) : ListView(
