@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/request/req_history_car_working.dart';
 import 'package:geofancing/src/models/members_model.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_after.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
@@ -266,7 +267,12 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   Widget createList(data, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq));
+        if(data.status == "1") {
+          routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+        } else {
+          routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq));
+        }
+
       },
       child: Container(
         padding: EdgeInsets.all(10),

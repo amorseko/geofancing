@@ -921,6 +921,8 @@ Widget _hasilCheck(BuildContext context) {
                 child: Card(
                   color: Colors.grey[200],
                   child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Container(
                           height: 40,

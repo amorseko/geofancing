@@ -585,4 +585,17 @@ class ApiProvider {
     }
   }
 
+  Future<StandartModels> changeStatusWorkingCar({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+    try {
+      // print(body.toString());
+      final response =
+      await _dio.post("/accept_working.php", data: json.encode(body));
+      print(response.data);
+      return StandartModels.fromJson(response.data);
+    } catch (error, _) {
+      return StandartModels.withError(_handleError(error));
+    }
+  }
+
 }

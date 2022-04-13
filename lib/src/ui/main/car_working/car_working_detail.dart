@@ -10,13 +10,15 @@ import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/bloc/bloc_car_working.dart';
+import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/models/car_working_model.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
+import 'package:geofancing/src/widgets/additional_widgets.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
 import 'package:geofancing/src/widgets/DoubleBackToCloseApp.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:geofancing/src/widgets/additional_widgets.dart';
+import 'package:geofancing/src/bloc/change_status_working_bloc.dart' as blocCarWorking;
 
 class DetailWorkingCar extends StatefulWidget {
   String id_uniq;
@@ -206,7 +208,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                                   color: Colors.redAccent[400],
                                   successColor: Colors.redAccent[400],
                                   controller: _btnAcceptController,
-                                  onPressed: () => {},
+                                  onPressed: () =>  _onAccept(context) ,
                               ),
                             ),
                           ),
@@ -532,4 +534,44 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       ],
     );
   }
+
+  _onAccept(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    
+    var data = {"id_uniq" : widget.id_uniq};
+
+
+    blocCarWorking.bloc.actChangeStatusWorking(data, (status, message)  {
+
+      if(status) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(message), backgroundColor: Colors.green
+        ));
+
+        Navigator.of(context).pushNamedAndRemoveUntil('/list_working_car_before', (Route<dynamic> route) => false);
+
+      } else {
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(message), backgroundColor: Colors.red
+        ));
+
+      }
+
+      _btnAcceptController.reset();
+    });
+
+
+  }
+
 }

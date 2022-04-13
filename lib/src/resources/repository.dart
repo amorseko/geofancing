@@ -118,4 +118,7 @@ class Repository {
   Future<HistoryCarWorkingModels> historyCarWorking(
       {Map<String, dynamic> body}) =>
       apiProvider.fetchHistoryCarWorking(body: body);
+
+  Future<StandartModels> actChangeStatusWorkingCar({Map<String, dynamic> body}) =>
+      apiProvider.changeStatusWorkingCar(body: body);
 }
