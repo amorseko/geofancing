@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/car_working_model.dart';
+import 'package:geofancing/src/models/car_working_model_done.dart';
 import 'package:geofancing/src/models/config_get_features.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
@@ -585,6 +586,23 @@ class ApiProvider {
     }
   }
 
+  Future<HistoryCarWorkingModelsDone> fetchHistoryCarWorkingDone({Map<String, dynamic> body}) async {
+    final _dio = await _syncConnWithoutToken();
+
+    try {
+      print(body);
+      final response =
+      await _dio.post("/history_working_car_before.php", data: json.encode(body));
+
+      print(response.data);
+      return HistoryCarWorkingModelsDone.fromJson(response.data);
+    } catch (error, _) {
+      // return _handleError(error);
+      print(error.toString());
+      return HistoryCarWorkingModelsDone.withError(_handleError(error));
+    }
+  }
+
   Future<StandartModels> changeStatusWorkingCar({Map<String, dynamic> body}) async {
     final _dio = await _syncConnWithoutToken();
     try {
@@ -595,6 +613,21 @@ class ApiProvider {
       return StandartModels.fromJson(response.data);
     } catch (error, _) {
       return StandartModels.withError(_handleError(error));
+    }
+  }
+
+  Future<DefaultModel> submitCarAfter({FormData formData}) async {
+    final _dioSecond = await _syncConnWithoutToken();
+    try {
+      print(formData);
+      final response = await _dioSecond
+          .post(_baseUrl + "save_car_working_after.php", data: formData);
+      print("response pb temp : $response");
+      print(response.data.toString());
+      return DefaultModel.fromJson(response.data);
+    } catch (error, _) {
+      print("error kesini :");
+      print(_handleError(error));
     }
   }
 

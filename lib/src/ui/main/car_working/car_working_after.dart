@@ -15,7 +15,7 @@ import 'package:geofancing/src/bloc/bloc_car_working.dart' as blocCarWorking;
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
 import 'package:geofancing/src/models/car_working_model.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:geofancing/src/bloc/car_before_save_bloc.dart';
+import 'package:geofancing/src/bloc/car_after_save_bloc.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/additional_widgets.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
@@ -141,7 +141,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       setState(() {
         _idUser = member.data.id_user;
         _namaUserController.text = member.data.nama_user;
-        _namaSAController.text = "";
+        _namaSAController.text = "Mujahidin";
       });
       var data = {"id_uniq" : widget.idUniq, "method" : "detail", "id_user" : _idUser};
       blocCarWorking.bloc.getsHistoryCarWorking(data, (model) async {
@@ -485,6 +485,10 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                         height: 16,
                       ),
                       _catatanPerbaikan(context),
+                      SizedBox(
+                        height: 16
+                      ),
+                      _buttonBottom(context)
                     ],
                   ),
                 ),
@@ -1951,6 +1955,30 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
     );
   }
 
+  Widget _buttonBottom(BuildContext context) {
+    return Align(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
+          width: MediaQuery.of(context).size.width / 2,
+          child: ButtonWidgetLoad(
+            child: TextWidget(
+              txt: "SAVE",
+              color: Colors.white,
+              txtSize: 14,
+              fontFamily: 'Bold',
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            borderRadius: 15.0,
+            color: Colors.redAccent[400],
+            successColor: Colors.redAccent[400],
+            controller: _btnSaveController,
+            onPressed: () => _onSaveData(context),
+          ),
+        )
+    );
+  }
+
   Future<void> captureImage(String type) async {
     final ImagePicker _picker = ImagePicker();
 
@@ -2067,5 +2095,176 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       listImage
           .sort((a, b) => a['name'].toString().compareTo(b['name'].toString()));
     });
+  }
+
+  _onSaveData(BuildContext context) async {
+    // if(_namaSAController.text == "") {
+    //   _showAlert(context, "Nama SA Tidak Boleh Kosong !");
+    //   return;
+    // }
+
+    if(_namaUserController.text == "") {
+      _showAlert(context, "Nama User Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_nopolController.text == "") {
+      _showAlert(context, "Nomor Polisi Kendaraan Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_modelMobilController.text == "") {
+      _showAlert(context, "Model Mobile Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_kmController.text == "") {
+      _showAlert(context, "KM Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_hpController.text == "") {
+      _showAlert(context, "HP Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_lpController.text == "") {
+      _showAlert(context, "LP Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_suhuController.text == "") {
+      _showAlert(context, "Suhu Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_windSpeedController.text == "") {
+      _showAlert(context, "Windpseed Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_filterController.text == "") {
+      _showAlert(context, "Filter Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_blowerController.text == "") {
+      _showAlert(context, "Blower Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_perawatanController.text == ""){
+      _showAlert(context, "Saran Perawatan Tidak Boleh Kosong !");
+      return;
+    }
+
+    if(_penggantianController.text == "") {
+      _showAlert(context, "Saran Penggantian Tidak Boleh Kosong !");
+      return;
+    }
+
+    listImage.forEach((element) {
+      print(element);
+      if(element['path'] == "") {
+        if(element['type'] == "D001") {
+          _showAlert(context, "Foto KM Tidak Boleh Kosong !");
+          return;
+        }
+
+        if(element['type'] == "D002") {
+          _showAlert(context, "Foto Tampak Depan Tidak Boleh Kosong !");
+          return;
+        }
+
+        if(element['type'] == "D003") {
+          _showAlert(context, "Foto Filter Tidak Boleh Kosong !");
+          return;
+        }
+
+        if(element['type'] == "D004") {
+          _showAlert(context, "Foto Suhu/Windspeed Tidak Boleh Kosong !");
+          return;
+        }
+
+        if(element['type'] == "D005") {
+          _showAlert(context, "Foto Blower Tidak Boleh Kosong !");
+          return;
+        }
+      }
+    });
+
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    var formData = FormData.fromMap({
+      'id_user': _idUser,
+      'id_sa': '123',
+      'id_uniq_before' : widget.idUniq,
+      'nopol' : _nopolController.text,
+      'model' : _modelMobilController.text,
+      'KM' : _kmController.text,
+      'HP' : _hpController.text,
+      'LP' : _lpController.text,
+      'suhu' : _suhuController.text,
+      'windspeed' : _windSpeedController.text,
+      'filter' : _filterController.text,
+      'blower' : _blowerController.text,
+      'perawatan' : _perawatanController.text,
+      'penggantian' : _penggantianController.text,
+    });
+
+    listImage.forEach((element) {
+      if(element['path'].contains('https') == false) {
+        formData.files.addAll([
+          MapEntry("foto_mobil[]", MultipartFile.fromFileSync(element['path'])),
+        ]);
+      }
+    });
+    _btnSaveController.reset();
+
+    bloc.doPengajuan(formData, (callback) {
+      DefaultModel model = callback;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+
+      if(model.status == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(model.message), backgroundColor: Colors.green
+        ));
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/list_working_car_before', (Route<dynamic> route) => false);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(model.message), backgroundColor: Colors.red
+        ));
+      }
+
+
+    });
+
+  }
+
+  void _showAlert(BuildContext context, String _textAlert) {
+    _btnSaveController.reset();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Alert"),
+          content: Text(_textAlert),
+        )
+    );
+  }
+
+  void createSnackBar(BuildContext context, String message) {
+    final snackBar = new SnackBar(content: new Text(message),
+        backgroundColor: Colors.red);
+
+    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }

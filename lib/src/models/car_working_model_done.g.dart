@@ -1,27 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'car_working_model.dart';
+part of 'car_working_model_done.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-HistoryCarWorkingModels _$HistoryCarWorkingModelsFromJson(
+HistoryCarWorkingModelsDone _$HistoryCarWorkingModelsDoneFromJson(
     Map<String, dynamic> json) {
-  return HistoryCarWorkingModels(
+  return HistoryCarWorkingModelsDone(
     status: json['status'] as String,
     error: json['error'] as bool,
     message: json['message'] as String,
-    data: (json['data'] as List)
-        ?.map((e) => e == null
-            ? null
-            : HistoryCarWorkingData.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    data: json['data'] == null
+        ? null
+        : HistoryCarWorkingData.fromJson(json['data'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$HistoryCarWorkingModelsToJson(
-        HistoryCarWorkingModels instance) =>
+Map<String, dynamic> _$HistoryCarWorkingModelsDoneToJson(
+        HistoryCarWorkingModelsDone instance) =>
     <String, dynamic>{
       'status': instance.status,
       'error': instance.error,
@@ -46,7 +44,10 @@ HistoryCarWorkingData _$HistoryCarWorkingDataFromJson(
     penggantian: json['penggantian'] as String,
     input_date: json['input_date'] as String,
     status: json['status'] as String,
-    list_foto: json['list_foto'] as String,
+    list_foto: (json['list_foto'] as List)
+        ?.map((e) =>
+            e == null ? null : _ListFoto.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   )..hp = json['hp'] as String;
 }
 
@@ -69,4 +70,17 @@ Map<String, dynamic> _$HistoryCarWorkingDataToJson(
       'input_date': instance.input_date,
       'status': instance.status,
       'list_foto': instance.list_foto,
+    };
+
+_ListFoto _$_ListFotoFromJson(Map<String, dynamic> json) {
+  return _ListFoto(
+    code: json['code'] as String,
+    foto: json['foto'] as String,
+  )..file_name = json['file_name'] as String;
+}
+
+Map<String, dynamic> _$_ListFotoToJson(_ListFoto instance) => <String, dynamic>{
+      'code': instance.code,
+      'foto': instance.foto,
+      'file_name': instance.file_name,
     };

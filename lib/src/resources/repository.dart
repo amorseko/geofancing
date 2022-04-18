@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:geofancing/src/models/absen_model.dart';
 import 'package:geofancing/src/models/car_working_model.dart';
+import 'package:geofancing/src/models/car_working_model_done.dart';
 import 'package:geofancing/src/models/default_model.dart';
 import 'package:geofancing/src/models/get_picture_model.dart';
 import 'package:geofancing/src/models/getversion_model.dart';
@@ -119,6 +120,13 @@ class Repository {
       {Map<String, dynamic> body}) =>
       apiProvider.fetchHistoryCarWorking(body: body);
 
+  Future<HistoryCarWorkingModelsDone> historyCarWorkingDone(
+      {Map<String, dynamic> body}) =>
+      apiProvider.fetchHistoryCarWorkingDone(body: body);
+
   Future<StandartModels> actChangeStatusWorkingCar({Map<String, dynamic> body}) =>
       apiProvider.changeStatusWorkingCar(body: body);
+
+  Future<DefaultModel> submitCarAfter({FormData formData}) =>
+      apiProvider.submitCarAfter(formData: formData);
 }

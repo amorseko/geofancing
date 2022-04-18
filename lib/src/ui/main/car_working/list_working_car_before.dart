@@ -7,6 +7,7 @@ import 'package:geofancing/src/bloc/request/req_history_car_working.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_after.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_detail_done.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
@@ -136,6 +137,10 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                                           return _data(context ,'1', text.toUpperCase());
                                           break;
                                         }
+                                        case 2 : {
+                                          return _data(context ,'2', text.toUpperCase());
+                                          break;
+                                        }
                                       }
                                       // _carWorkingModels.data.where((dataWorking) =>
                                       //     dataWorking.nopol
@@ -227,15 +232,21 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
         return _data(context ,'1',_searchQuery.text);
         break;
       }
+      case 2 : {
+        return _data(context ,'2',_searchQuery.text);
+        break;
+      }
     }
   }
 
   Widget _data(BuildContext context, String status, String query) {
-    print(query);
+    print("data status $status");
+
     return Expanded(
       child: _carWorkingModels.toString() != 'null' ?
       Container(
-        child: _carWorkingModels.data.toString() != 'null' ? _carWorkingModels.data.where((data) => data.status == status && data.nopol.toUpperCase().contains(query)).length > 0 ?
+        child: _carWorkingModels.data.toString() != 'null' ?
+                _carWorkingModels.data.where((data) => data.status == status && data.nopol.toUpperCase().contains(query)).length > 0  ?
         ListView(
             scrollDirection: Axis.vertical,
             children: _carWorkingModels.data
@@ -269,8 +280,10 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       onTap: () {
         if(data.status == "1") {
           routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
-        } else {
+        } else if(data.status == "0") {
           routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq));
+        }  else if(data.status == "2") {
+          routeToWidget(context, DetailWorkingCarDone(id_uniq : data.id_uniq));
         }
 
       },
@@ -380,6 +393,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
     );
   }
 
+
   Widget _myTab(BuildContext context) {
     return Row(
       crossAxisAlignment:  CrossAxisAlignment.center,
@@ -413,6 +427,21 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                 weight:  _indexTab == 1 ? FontWeight.bold: null
             )
           )
+        ),
+        Expanded(
+            child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _indexTab = 2;
+                  });
+                },
+                child: TextWidget(
+                    txt: "Post Checking (Done)",
+                    txtSize: _indexTab == 2 ? 15 : 13,
+                    color: Colors.white,
+                    weight:  _indexTab == 2 ? FontWeight.bold: null
+                )
+            )
         )
       ],
     );
@@ -426,6 +455,10 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       }
       case 1 : {
         return "Post Checking";
+        break;
+      }
+      case 2 : {
+        return "Post Checking (Done)";
         break;
       }
     }

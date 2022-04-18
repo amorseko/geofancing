@@ -1,24 +1,24 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'car_working_model.g.dart';
+part 'car_working_model_done.g.dart';
 
 @JsonSerializable(nullable: true)
-class HistoryCarWorkingModels {
+class HistoryCarWorkingModelsDone {
 
   String status;
   bool error;
   String message;
 
-  List<HistoryCarWorkingData> data;
+  HistoryCarWorkingData data;
 
-  HistoryCarWorkingModels({this.status, this.error, this.message, this.data});
+  HistoryCarWorkingModelsDone({this.status, this.error, this.message, this.data});
 
-  factory HistoryCarWorkingModels.fromJson(Map<String, dynamic> json) =>
-  _$HistoryCarWorkingModelsFromJson(json);
+  factory HistoryCarWorkingModelsDone.fromJson(Map<String, dynamic> json) =>
+      _$HistoryCarWorkingModelsDoneFromJson(json);
 
-  Map<String, dynamic> toJson() => _$HistoryCarWorkingModelsToJson(this);
+  Map<String, dynamic> toJson() => _$HistoryCarWorkingModelsDoneToJson(this);
 
-  HistoryCarWorkingModels.withError(String error)
+  HistoryCarWorkingModelsDone.withError(String error)
       : message = error,
         error = false;
 }
@@ -26,6 +26,7 @@ class HistoryCarWorkingModels {
 @JsonSerializable(nullable: true)
 class HistoryCarWorkingData {
 
+  // List<_ListFoto> list_foto = [];
   HistoryCarWorkingData(
       {
         this.id,
@@ -76,8 +77,11 @@ class HistoryCarWorkingData {
   String input_date;
   @JsonKey(name: 'status')
   String status;
-  @JsonKey(name: 'list_foto')
-  String list_foto;
+  // @JsonKey(name: 'list_foto')
+  // String list_foto;
+
+
+  List<_ListFoto> list_foto;
 
   factory HistoryCarWorkingData.fromJson(Map<String, dynamic> json) =>
       _$HistoryCarWorkingDataFromJson(json);
@@ -85,4 +89,20 @@ class HistoryCarWorkingData {
   Map<String, dynamic> toJson() => _$HistoryCarWorkingDataToJson(this);
 }
 
+
+@JsonSerializable(nullable: true)
+class _ListFoto {
+  _ListFoto({this.code, this.foto});
+
+  @JsonKey(name: 'code')
+  String code;
+  @JsonKey(name: 'foto')
+  String foto;
+  @JsonKey(name: 'file_name')
+  String file_name;
+
+  factory _ListFoto.fromJson(Map<String, dynamic> json) => _$_ListFotoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$_ListFotoToJson(this);
+}
 

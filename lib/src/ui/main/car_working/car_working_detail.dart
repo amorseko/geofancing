@@ -9,10 +9,10 @@ import 'package:geofancing/src/utility/utils.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/widgets/TextWidget.dart';
 import 'package:geofancing/src/models/members_model.dart';
-import 'package:geofancing/src/bloc/bloc_car_working.dart';
+import 'package:geofancing/src/bloc/BlocCarWorkingDone.dart';
 import 'package:geofancing/src/models/standart_model.dart';
 import 'package:geofancing/src/widgets/ProgressDialog.dart';
-import 'package:geofancing/src/models/car_working_model.dart';
+import 'package:geofancing/src/models/car_working_model_done.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/additional_widgets.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
@@ -32,7 +32,7 @@ class DetailWorkingCar extends StatefulWidget {
 class _DetailWorkingCar extends State<DetailWorkingCar> {
   bool _isLoading = true;
   String _idUser;
-  HistoryCarWorkingModels _detailCarWorking;
+  HistoryCarWorkingModelsDone _detailCarWorking;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final ButtonWidgetLoadController _btnAcceptController = new ButtonWidgetLoadController();
@@ -61,8 +61,8 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       setState(() {
         _idUser = member.data.id_user;
       });
-      var data = {"id_uniq" : widget.id_uniq, "method" : "detail", "id_user" : _idUser};
-      bloc.getsHistoryCarWorking(data, (model) {
+      var data = {"id_uniq" : widget.id_uniq, "method" : "detail_after", "id_user" : _idUser};
+      bloc.getsHistoryCarWorkingDone(data, (model) {
         getData(model);
       });
     });
@@ -70,7 +70,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
 
   }
 
-  getData(HistoryCarWorkingModels models) {
+  getData(HistoryCarWorkingModelsDone models) {
     setState((){
       _detailCarWorking = models;
     });
@@ -155,39 +155,156 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
 
                               )
                           ),
-                          for (var i = 0; i <  _detailCarWorking.data[0].list_foto.split(', ').length; i++)
-                            Container(
-                              child: Column(
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                data.code == 'D001' && data.foto != "").length > 0 ? Column(
+                                  mainAxisAlignment:MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
+                                    SizedBox(height: 20),
                                     Container(
-                                      width: double.infinity,
-                                      child: _detailCarWorking.data[0].list_foto.split(', ')[i] != null || _detailCarWorking.data[0].list_foto.split(', ')[i] != "" ?
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(height: 20,),
-                                          Container(
-                                              height: 40,
-                                              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                              child: TextWidget(
-                                                  txt: _textImage(i.toString()),
-                                                  color: Colors.black,
-                                                  txtSize: 18,
-                                                  weight: FontWeight.bold
-                                              )
-                                          ),
-                                          Container(
-                                              child: _attachPhoto(
-                                                  context, _detailCarWorking.data[0].list_foto.split(', ')[i]
-                                              )
-                                          )
-                                        ],
-                                      ) : SizedBox(),
-                                    )
-                                  ]
-                              ),
-                            ),
+                                        height: 40,
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: TextWidget(
+                                          txt: "Foto KM ",
+                                          color: colorBlack,
+                                          txtSize: 18,
+                                          weight: FontWeight.bold,
+                                        )
+                                    ),
+                                    Container(
+                                        child: _attachPhoto(
+                                            context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D001').toList()
+                                        )
+                                    ),
+                                  ],
+                                ) : SizedBox(),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                data.code == 'D002' && data.foto != "").length > 0 ? Column(
+                                  mainAxisAlignment:MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 20),
+                                    Container(
+                                        height: 40,
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: TextWidget(
+                                          txt: "Foto Tampak Depan ",
+                                          color: colorBlack,
+                                          txtSize: 18,
+                                          weight: FontWeight.bold,
+                                        )
+                                    ),
+                                    Container(
+                                        child: _attachPhoto(
+                                            context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D002').toList()
+                                        )
+                                    ),
+                                  ],
+                                ) : SizedBox(),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                data.code == 'D003' && data.foto != "").length > 0 ? Column(
+                                  mainAxisAlignment:MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 20),
+                                    Container(
+                                        height: 40,
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: TextWidget(
+                                          txt: "Foto Filter ",
+                                          color: colorBlack,
+                                          txtSize: 18,
+                                          weight: FontWeight.bold,
+                                        )
+                                    ),
+                                    Container(
+                                        child: _attachPhoto(
+                                            context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D003').toList()
+                                        )
+                                    ),
+                                  ],
+                                ) : SizedBox(),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                data.code == 'D004' && data.foto != "").length > 0 ? Column(
+                                  mainAxisAlignment:MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 20),
+                                    Container(
+                                        height: 40,
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: TextWidget(
+                                          txt: "Foto Suhu/Windspeed ",
+                                          color: colorBlack,
+                                          txtSize: 18,
+                                          weight: FontWeight.bold,
+                                        )
+                                    ),
+                                    Container(
+                                        child: _attachPhoto(
+                                            context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D004').toList()
+                                        )
+                                    ),
+                                  ],
+                                ) : SizedBox(),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                data.code == 'D005' && data.foto != "").length > 0 ? Column(
+                                  mainAxisAlignment:MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 20),
+                                    Container(
+                                        height: 40,
+                                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                        child: TextWidget(
+                                          txt: "Foto Blower ",
+                                          color: colorBlack,
+                                          txtSize: 18,
+                                          weight: FontWeight.bold,
+                                        )
+                                    ),
+                                    Container(
+                                        child: _attachPhoto(
+                                            context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D005').toList()
+                                        )
+                                    ),
+                                  ],
+                                ) : SizedBox(),
+                              )
+                            ],
+                          ),
                           SizedBox(
                             height: 30,
                           ),
@@ -226,49 +343,122 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
     );
   }
 
-  Widget _attachPhoto(BuildContext context, String dataImage) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: 80,
-        maxHeight: double.infinity,
-        maxWidth: double.infinity,
-        minWidth: 50
-      ),
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: 1,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1),
+  Widget _attachPhoto(BuildContext context, data) {
+
+    // String code = data[0].code;
+    // print("data " + data.);
+    // print("data " +  data[0].foto.toString());
+    List image = data[0].foto.split(',');
+    List name = data[0].file_name.split(',');
+    if (image.length > 6) {
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+            minHeight: 80, // Set as you want or you can remove it also.
+            maxHeight: double.infinity,
+            maxWidth: double.infinity,
+            minWidth: 50),
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: 6,
+          gridDelegate:
+          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 5) {
+              return GestureDetector(
+                onTap: () {
+                  showListImage(context, image, name);
+                },
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              colorFilter: new ColorFilter.mode(
+                                  Colors.black.withOpacity(0.2),
+                                  BlendMode.dstATop),
+                              image: NetworkImage(image[index]),
+                              fit: BoxFit.cover,
+                            ),
+                            color: colorBlack),
+                        width: double.infinity),
+                    Align(
+                      alignment: Alignment.center,
+                      child: TextWidget(
+                        txt: "+" + (image.length - 6).toString(),
+                        color: colorWhite,
+                        txtSize: 50,
+                      ),
+                    )
+                  ],
+                ),
+              );
+            } else {
+              return Container(
+                  width: double.infinity,
+                  child: GestureDetector(
+                    onTap: () {
+//                      routeToWidget(context, FullScreenImage(image: image[index],title: name[index]));
+                      showImage(context, image[index], name[index], false);
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: image[index],
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover),
+                        ),
+                      ),
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(strokeWidth: 10),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                    ),
+                  ));
+            }
+          },
+        ),
+      );
+    } else {
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+            minHeight: 80, // Set as you want or you can remove it also.
+            maxHeight: double.infinity,
+            maxWidth: double.infinity,
+            minWidth: 50),
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: image.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: (image.length > 3) ? 3 : image.length),
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                showImage(context, dataImage, "1", false);
+                showImage(context, image[index], name[index], false);
               },
               child: CachedNetworkImage(
-                imageUrl: dataImage,
+                imageUrl: image[index],
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: imageProvider,
-                        fit: BoxFit.cover,
-                    )
-                  )
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
                 ),
                 placeholder: (context, url) => SizedBox(
                     height: 10.0,
                     width: 10.0,
                     child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(Colors.blue),
-                        strokeWidth: 5.0)
-                ),
+                        strokeWidth: 5.0)),
                 errorWidget: (context, url, error) => Icon(Icons.error),
-              )
+              ),
             );
           },
-      )
-    );
+        ),
+      );
+    }
   }
 
   Widget _contentRepair(BuildContext context) {
@@ -291,7 +481,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].perawatan,
+                      txt: _detailCarWorking.data.perawatan,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -310,7 +500,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                     align: TextAlign.left,
                   ),
                   TextWidget(
-                    txt: _detailCarWorking.data[0].penggantian,
+                    txt: _detailCarWorking.data.penggantian,
                     txtSize: 12,
                     color: Colors.black,
                     align: TextAlign.right,
@@ -369,7 +559,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                     align: TextAlign.left,
                   ),
                   TextWidget(
-                    txt: _detailCarWorking.data[0].nopol,
+                    txt: _detailCarWorking.data.nopol,
                     txtSize: 12,
                     color: Colors.black,
                     align: TextAlign.right,
@@ -388,7 +578,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].model,
+                      txt: _detailCarWorking.data.model,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -407,7 +597,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].km,
+                      txt: _detailCarWorking.data.km,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -426,7 +616,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].hp,
+                      txt: _detailCarWorking.data.hp,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -445,7 +635,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].lp,
+                      txt: _detailCarWorking.data.lp,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -464,7 +654,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].suhu,
+                      txt: _detailCarWorking.data.suhu,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -483,7 +673,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].windspeed,
+                      txt: _detailCarWorking.data.windspeed,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -502,7 +692,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].filter,
+                      txt: _detailCarWorking.data.filter,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
@@ -521,7 +711,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                       align: TextAlign.left,
                     ),
                     TextWidget(
-                      txt: _detailCarWorking.data[0].blower,
+                      txt: _detailCarWorking.data.blower,
                       txtSize: 12,
                       color: Colors.black,
                       align: TextAlign.right,
