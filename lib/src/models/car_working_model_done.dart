@@ -43,6 +43,8 @@ class HistoryCarWorkingData {
         this.penggantian,
         this.input_date,
         this.status,
+        this.no_spk,
+        this.type_working,
         this.list_foto,
       }
       );
@@ -77,8 +79,10 @@ class HistoryCarWorkingData {
   String input_date;
   @JsonKey(name: 'status')
   String status;
-  // @JsonKey(name: 'list_foto')
-  // String list_foto;
+  @JsonKey(name: 'no_spk')
+  String no_spk;
+  @JsonKey(name: 'type_working')
+  String type_working;
 
 
   List<_ListFoto> list_foto;

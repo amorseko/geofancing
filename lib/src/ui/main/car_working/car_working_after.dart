@@ -56,6 +56,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
   final _lpNormalController = TextEditingController();
   final _suhuNormalController = TextEditingController();
   final _windSpeedNormalController = TextEditingController();
+  final _noSpkController = TextEditingController();
 
   List listImage = List();
 
@@ -141,7 +142,10 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       setState(() {
         _idUser = member.data.id_user;
         _namaUserController.text = member.data.nama_user;
-        _namaSAController.text = "Mujahidin";
+        _hpNormalController.text = "200 - 250";
+        _lpNormalController.text = "20 - 40";
+        _suhuNormalController.text = "< 7";
+        _windSpeedNormalController.text = "2.0";
       });
       var data = {"id_uniq" : widget.idUniq, "method" : "detail", "id_user" : _idUser};
       blocCarWorking.bloc.getsHistoryCarWorking(data, (model) async {
@@ -158,31 +162,33 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       _nopolController.text = models.data[0].nopol;
       _modelMobilController.text = models.data[0].model;
       _kmController.text = models.data[0].km;
+      _noSpkController.text = models.data[0].no_spk;
+      _namaSAController.text = models.data[0].id_sa;
 
-      if(models.error == false) {
-        for (var i = 0; i <  models.data[0].list_foto.split(', ').length; i++) {
-          if(models.data[0].list_foto.split(', ')[i].toString() != "" || models.data[0].list_foto.split(', ')[i] != null) {
-            var urlImage = models.data[0].list_foto.split(', ')[i].toString();
-            var imageName = urlImage.substring(urlImage.lastIndexOf("/") + 1, urlImage.length);
-            int idx = imageName.indexOf("_");
-            var codeFile = imageName.substring(0,idx).trim();
-
-            // Image.network(urlImage);
-
-            listImage.add({
-              "name": imageName,
-              "path": urlImage,
-              "path_compressed": NetworkImage(urlImage),
-              "status": true,
-              "proses": false,
-              "delete": false,
-              "type": codeFile
-            });
-
-            setOrder(codeFile);
-          }
-        }
-      }
+      // if(models.error == false) {
+      //   for (var i = 0; i <  models.data[0].list_foto.split(', ').length; i++) {
+      //     if(models.data[0].list_foto.split(', ')[i].toString() != "" || models.data[0].list_foto.split(', ')[i] != null) {
+      //       var urlImage = models.data[0].list_foto.split(', ')[i].toString();
+      //       var imageName = urlImage.substring(urlImage.lastIndexOf("/") + 1, urlImage.length);
+      //       int idx = imageName.indexOf("_");
+      //       var codeFile = imageName.substring(0,idx).trim();
+      //
+      //       // Image.network(urlImage);
+      //
+      //       listImage.add({
+      //         "name": imageName,
+      //         "path": urlImage,
+      //         "path_compressed": NetworkImage(urlImage),
+      //         "status": true,
+      //         "proses": false,
+      //         "delete": false,
+      //         "type": codeFile
+      //       });
+      //
+      //       setOrder(codeFile);
+      //     }
+      //   }
+      // }
       // listImage.removeWhere((item) => item['name'] == name);
       // listImage.add({
       //   "name": model.data.file.last.filename,
@@ -280,6 +286,26 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                                 height: 10,
                               ),
                               Row(
+                                children:<Widget>[
+                                  new Expanded(
+                                    child: new TextWidget(
+                                      txt: "No SPK",
+                                      align: TextAlign.justify
+                                    )
+                                  ),
+                                  new Expanded(
+                                    flex: 3,
+                                    child: new TextFieldWidget(
+                                      _noSpkController,
+                                      hint: "No SPK",
+                                    )
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
                                   children: <Widget> [
                                     new Expanded(
                                         child: new TextWidget(
@@ -292,7 +318,6 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                                         child: new TextFieldWidget(
                                           _namaSAController,
                                           hint: "Nama SA",
-                                          readOnly : true,
                                         )
                                     )
                                   ]
@@ -372,57 +397,37 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                       SizedBox(
                         height: 20,
                       ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 80,
-                          // Set as you want or you can remove it also.
-                          maxHeight: double.infinity,
-                        ),
-                        child: _kmWidget(context),
+                      // ConstrainedBox(
+                      //   constraints: BoxConstraints(
+                      //     minHeight: 80,
+                      //     // Set as you want or you can remove it also.
+                      //     maxHeight: double.infinity,
+                      //   ),
+                      //   child: _kmWidget(context),
+                      // ),
+                      // SizedBox(
+                      //   height: 20,
+                      // ),
+                      Row(
+                        children: <Widget>[
+                          _kmWidget(context),
+                          _tampakDepan(context),
+
+                        ],
                       ),
-                      SizedBox(
-                        height: 20,
+                      SizedBox(height: 20,),
+                      Row(
+                        children: <Widget> [
+                          _filterWidget(context),
+                          _suhuWindspeedWidget(context),
+                        ]
                       ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 80,
-                          // Set as you want or you can remove it also.
-                          maxHeight: double.infinity,
-                        ),
-                        child: _tampakDepan(context),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 80,
-                          // Set as you want or you can remove it also.
-                          maxHeight: double.infinity,
-                        ),
-                        child: _filterWidget(context),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 80,
-                          // Set as you want or you can remove it also.
-                          maxHeight: double.infinity,
-                        ),
-                        child: _suhuWindspeedWidget(context),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: 80,
-                          // Set as you want or you can remove it also.
-                          maxHeight: double.infinity,
-                        ),
-                        child: _blowerWidget(context),
+                      SizedBox(height: 20,),
+                      Row(
+                        children: <Widget>[
+                          _blowerWidget(context),
+
+                        ],
                       ),
                       SizedBox(
                         height: 20,
@@ -647,410 +652,364 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
     );
   }
 
+
+
   Widget _kmWidget(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width / 20,
-        right: MediaQuery.of(context).size.width / 20
-      ),
-      decoration: BoxDecoration(
-        color:Colors.grey[200],
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black12,
-            offset: const Offset(0.0, 2.0),
-            blurRadius: 2.0,
-            spreadRadius: 2.0
-          )
-        ],
-        borderRadius: new BorderRadius.only(
-          topRight: Radius.circular(10.0),
-          topLeft: Radius.circular(10.0)
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment:  MainAxisAlignment.start,
-        children: <Widget> [
-          Container(
-              height: 40,
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-              child: Row(
-                  children: <Widget>[
-                    TextWidget(
-                      txt: "KM",
-                      color: Colors.black,
-                      weight: FontWeight.bold,
-                    ),
-                    TextWidget(
-                      txt: " *",
-                      color: Colors.red,
-                      txtSize: 18,
-                      weight: FontWeight.bold,
-                    ),
-                  ]
-              )
-          ),
-          Container(
-            color: Colors.grey[200],
-            width: double.infinity,
-            padding: EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextWidget(
-                          txt: "Photo",
-                          color: Colors.red,
-                          txtSize: 12,
-                          weight: FontWeight.bold)
-                    ],
+    return Expanded(
+        child: Stack(
+            children: <Widget> [
+              SizedBox(
+                height: 193,
+                width: 180,
+                child: Card(
+                  color: Colors.grey[200],
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                            height: 40,
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                                children: <Widget>[
+                                  TextWidget(
+                                    txt: "KM",
+                                    color: Colors.black,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  TextWidget(
+                                    txt: " *",
+                                    color: Colors.red,
+                                    txtSize: 18,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ]
+                            )
+                        ),
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Stack(
+                            children: <Widget>[
+                              GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 1,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: listImage
+                                    .where((data) => data['type'] == 'D001')
+                                    .map((f) {
+                                  if (f['name'] == "button") {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        captureImage('D001');
+                                      },
+                                      child: Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black12,
+                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                          new BorderRadius.all(Radius.circular(10.0)),
+                                        ),
+                                        child: Center(
+                                            child: IconButton(
+                                              icon: Icon(Icons.add_a_photo),
+                                              onPressed: () {
+                                                captureImage('D001');
+                                              },
+                                            )),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black12,
+                                            offset: const Offset(0.0, 2.0),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                          ),
+                                        ],
+                                        borderRadius:
+                                        new BorderRadius.all(Radius.circular(10.0)),
+                                      ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: double.infinity,
+                                            child: f['status'] == false
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "KM" + f['name'], true);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "KM" + f['name'], false);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    print(f['name']);
+                                                    deleteFile(f['path']);
+                                                    setState(() {
+                                                      listImage.removeWhere((item) =>
+                                                      item['name'] == f['name']);
+                                                    });
+                                                    setCam('D001');
+                                                  },
+                                                  child: Icon(Icons.delete,
+                                                      color: Colors.red, size: 15)),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: f['status'] != false
+                                                ? Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                                size: 15,
+                                              ),
+                                            )
+                                                : Container(),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: f['proses'] == true
+                                                ? CircularProgressIndicator()
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
+                              ),
+                            ],
+                          ),
+
+                        ),
+                      ]
                   ),
                 ),
-                SizedBox(height: 20),
-                GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0,
-                  children: listImage
-                      .where((data) => data['type'] == 'D001')
-                      .map((f) {
-                        if (f['name'] == "button") {
-                          return GestureDetector(
-                            onTap: () {
-                              captureImage('D001');
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black12,
-                                    offset: const Offset(0.0, 2.0),
-                                    blurRadius: 2.0,
-                                    spreadRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: new BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: Center(
-                                child: IconButton(
-                                  icon: Icon(Icons.add_a_photo, color: Colors.black),
-                                  onPressed: () {
-                                    captureImage('D001');
-                                  },
-                                )
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0.0, 2.0),
-                                  blurRadius: 2.0,
-                                  spreadRadius: 2.0,
-                                ),
-                              ],
-                              borderRadius:
-                              new BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  child: f['status'] == false
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "KM" + f['name'], true);
-                                    },
-                                    child: Image.file(File(f['path']),
-                                        fit: BoxFit.fitWidth),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "KM" + f['name'], false);
-                                    },
-                                    child: Image.network(f['path'],
-                                        fit: BoxFit.fitWidth),
-                                  ),
-                                ),
-                                f['delete'] ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                            print(f['name']);
-                                            setState(() {
-                                              listImage.removeWhere((item) =>
-                                              item['name'] == f['name']);
-                                            });
-                                            setCam('D001');
-
-                                        },
-                                        child: Icon(Icons.delete,color: Colors.red, size: 15)
-                                    ),
-                                  ),
-                                ) : Align(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: f['status'] != false
-                                      ? Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                      size: 15,
-                                    ),
-                                  )
-                                      : Container(),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: f['proses'] == true
-                                      ? CircularProgressIndicator()
-                                      : null,
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }).toList(),
-                ),
-
-              ],
-            ),
-          ),
-        ]
-      )
+              ),
+            ]
+        )
     );
   }
 
+
   Widget _tampakDepan(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 20,
-            right: MediaQuery.of(context).size.width / 20
-        ),
-        decoration: BoxDecoration(
-          color:Colors.grey[200],
-          boxShadow: [
-            new BoxShadow(
-                color: Colors.black12,
-                offset: const Offset(0.0, 2.0),
-                blurRadius: 2.0,
-                spreadRadius: 2.0
-            )
-          ],
-          borderRadius: new BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              topLeft: Radius.circular(10.0)
-          ),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:  MainAxisAlignment.start,
+    return Expanded(
+        child: Stack(
             children: <Widget> [
-              Container(
-                  height: 40,
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Row(
+              SizedBox(
+                height: 193,
+                width: 180,
+                child: Card(
+                  color: Colors.grey[200],
+                  child: Column(
                       children: <Widget>[
-                        TextWidget(
-                          txt: "Tampak Depan",
-                          color: Colors.black,
-                          weight: FontWeight.bold,
+                        Container(
+                            height: 40,
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                                children: <Widget>[
+                                  TextWidget(
+                                    txt: "Tampak Depan",
+                                    color: Colors.black,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  TextWidget(
+                                    txt: " *",
+                                    color: Colors.red,
+                                    txtSize: 18,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ]
+                            )
                         ),
-                        TextWidget(
-                          txt: " *",
-                          color: Colors.red,
-                          txtSize: 18,
-                          weight: FontWeight.bold,
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Stack(
+                            children: <Widget>[
+                              GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 1,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: listImage
+                                    .where((data) => data['type'] == 'D002')
+                                    .map((f) {
+                                  if (f['name'] == "button") {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        captureImage('D002');
+                                      },
+                                      child: Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black12,
+                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                          new BorderRadius.all(Radius.circular(10.0)),
+                                        ),
+                                        child: Center(
+                                            child: IconButton(
+                                              icon: Icon(Icons.add_a_photo),
+                                              onPressed: () {
+                                                captureImage('D002');
+                                              },
+                                            )),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black12,
+                                            offset: const Offset(0.0, 2.0),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                          ),
+                                        ],
+                                        borderRadius:
+                                        new BorderRadius.all(Radius.circular(10.0)),
+                                      ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: double.infinity,
+                                            child: f['status'] == false
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "TDP" + f['name'], true);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "TDP" + f['name'], false);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    print(f['name']);
+                                                    deleteFile(f['path']);
+                                                    setState(() {
+                                                      listImage.removeWhere((item) =>
+                                                      item['name'] == f['name']);
+                                                    });
+                                                    setCam('D002');
+                                                  },
+                                                  child: Icon(Icons.delete,
+                                                      color: Colors.red, size: 15)),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: f['status'] != false
+                                                ? Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                                size: 15,
+                                              ),
+                                            )
+                                                : Container(),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: f['proses'] == true
+                                                ? CircularProgressIndicator()
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
+                              ),
+                            ],
+                          ),
+
                         ),
                       ]
-                  )
-              ),
-              Container(
-                color: Colors.grey[200],
-                width: double.infinity,
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextWidget(
-                              txt: "Photo",
-                              color: Colors.red,
-                              txtSize: 12,
-                              weight: FontWeight.bold)
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                      children: listImage
-                          .where((data) => data['type'] == 'D002')
-                          .map((f) {
-                        if (f['name'] == "button") {
-                          return GestureDetector(
-                            onTap: () {
-                              captureImage('D002');
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black12,
-                                    offset: const Offset(0.0, 2.0),
-                                    blurRadius: 2.0,
-                                    spreadRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: new BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: Center(
-                                  child: IconButton(
-                                    icon: Icon(Icons.add_a_photo, color: Colors.black),
-                                    onPressed: () {
-                                      captureImage('D002');
-                                    },
-                                  )
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0.0, 2.0),
-                                  blurRadius: 2.0,
-                                  spreadRadius: 2.0,
-                                ),
-                              ],
-                              borderRadius:
-                              new BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  child: f['status'] == false
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "TDP" + f['name'], true);
-                                    },
-                                    child: Image.file(File(f['path']),
-                                        fit: BoxFit.fitWidth),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "TDP" + f['name'], false);
-                                    },
-                                    child: Image.network(f['path'],
-                                        fit: BoxFit.fitWidth),
-                                  ),
-                                ),
-                                f['delete'] ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            listImage.removeWhere((item) =>
-                                            item['name'] == f['name']);
-                                          });
-                                          setCam('D002');
-
-                                        },
-                                        child: Icon(Icons.delete,color: Colors.red, size: 15)
-                                    ),
-                                  ),
-                                ) : Align(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: f['status'] != false
-                                      ? Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                      size: 15,
-                                    ),
-                                  )
-                                      : Container(),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: f['proses'] == true
-                                      ? CircularProgressIndicator()
-                                      : null,
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }).toList(),
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ]
@@ -1059,203 +1018,178 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
   }
 
   Widget _filterWidget(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 20,
-            right: MediaQuery.of(context).size.width / 20
-        ),
-        decoration: BoxDecoration(
-          color:Colors.grey[200],
-          boxShadow: [
-            new BoxShadow(
-                color: Colors.black12,
-                offset: const Offset(0.0, 2.0),
-                blurRadius: 2.0,
-                spreadRadius: 2.0
-            )
-          ],
-          borderRadius: new BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              topLeft: Radius.circular(10.0)
-          ),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:  MainAxisAlignment.start,
+    return Expanded(
+        child: Stack(
             children: <Widget> [
-              Container(
-                  height: 40,
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Row(
+              SizedBox(
+                height: 193,
+                width: 180,
+                child: Card(
+                  color: Colors.grey[200],
+                  child: Column(
                       children: <Widget>[
-                        TextWidget(
-                          txt: "Filter",
-                          color: Colors.black,
-                          weight: FontWeight.bold,
+                        Container(
+                            height: 40,
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                                children: <Widget>[
+                                  TextWidget(
+                                    txt: "Filter",
+                                    color: Colors.black,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  TextWidget(
+                                    txt: " *",
+                                    color: Colors.red,
+                                    txtSize: 18,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ]
+                            )
                         ),
-                        TextWidget(
-                          txt: " *",
-                          color: Colors.red,
-                          txtSize: 18,
-                          weight: FontWeight.bold,
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Stack(
+                            children: <Widget>[
+                              GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 1,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: listImage
+                                    .where((data) => data['type'] == 'D003')
+                                    .map((f) {
+                                  if (f['name'] == "button") {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        captureImage('D003');
+                                      },
+                                      child: Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black12,
+                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                          new BorderRadius.all(Radius.circular(10.0)),
+                                        ),
+                                        child: Center(
+                                            child: IconButton(
+                                              icon: Icon(Icons.add_a_photo),
+                                              onPressed: () {
+                                                captureImage('D003');
+                                              },
+                                            )),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black12,
+                                            offset: const Offset(0.0, 2.0),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                          ),
+                                        ],
+                                        borderRadius:
+                                        new BorderRadius.all(Radius.circular(10.0)),
+                                      ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: double.infinity,
+                                            child: f['status'] == false
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "FIL" + f['name'], true);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "FIL" + f['name'], false);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    print(f['name']);
+                                                    deleteFile(f['path']);
+                                                    setState(() {
+                                                      listImage.removeWhere((item) =>
+                                                      item['name'] == f['name']);
+                                                    });
+                                                    setCam('D003');
+                                                  },
+                                                  child: Icon(Icons.delete,
+                                                      color: Colors.red, size: 15)),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: f['status'] != false
+                                                ? Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                                size: 15,
+                                              ),
+                                            )
+                                                : Container(),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: f['proses'] == true
+                                                ? CircularProgressIndicator()
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
+                              ),
+                            ],
+                          ),
+
                         ),
                       ]
-                  )
-              ),
-              Container(
-                color: Colors.grey[200],
-                width: double.infinity,
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextWidget(
-                              txt: "Photo",
-                              color: Colors.red,
-                              txtSize: 12,
-                              weight: FontWeight.bold)
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                      children: listImage
-                          .where((data) => data['type'] == 'D003')
-                          .map((f) {
-                        if (f['name'] == "button") {
-                          return GestureDetector(
-                            onTap: () {
-                              captureImage('D003');
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black12,
-                                    offset: const Offset(0.0, 2.0),
-                                    blurRadius: 2.0,
-                                    spreadRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: new BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: Center(
-                                  child: IconButton(
-                                    icon: Icon(Icons.add_a_photo, color: Colors.black),
-                                    onPressed: () {
-                                      captureImage('D003');
-                                    },
-                                  )
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0.0, 2.0),
-                                  blurRadius: 2.0,
-                                  spreadRadius: 2.0,
-                                ),
-                              ],
-                              borderRadius:
-                              new BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  child: f['status'] == false
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "FIL" + f['name'], true);
-                                    },
-                                    child: Image.file(File(f['path']),
-                                        fit: BoxFit.fitWidth),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "FIL" + f['name'], false);
-                                    },
-                                    child: Image.network(f['path'],
-                                        fit: BoxFit.fitWidth),
-                                  ),
-                                ),
-                                f['delete'] ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            listImage.removeWhere((item) =>
-                                            item['name'] == f['name']);
-                                          });
-                                          setCam('D003');
-
-                                        },
-                                        child: Icon(Icons.delete,color: Colors.red, size: 15)
-                                    ),
-                                  ),
-                                ) : Align(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: f['status'] != false
-                                      ? Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                      size: 15,
-                                    ),
-                                  )
-                                      : Container(),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: f['proses'] == true
-                                      ? CircularProgressIndicator()
-                                      : null,
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }).toList(),
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ]
@@ -1264,203 +1198,178 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
   }
 
   Widget _suhuWindspeedWidget(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 20,
-            right: MediaQuery.of(context).size.width / 20
-        ),
-        decoration: BoxDecoration(
-          color:Colors.grey[200],
-          boxShadow: [
-            new BoxShadow(
-                color: Colors.black12,
-                offset: const Offset(0.0, 2.0),
-                blurRadius: 2.0,
-                spreadRadius: 2.0
-            )
-          ],
-          borderRadius: new BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              topLeft: Radius.circular(10.0)
-          ),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:  MainAxisAlignment.start,
+    return Expanded(
+        child: Stack(
             children: <Widget> [
-              Container(
-                  height: 40,
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Row(
+              SizedBox(
+                height: 193,
+                width: 180,
+                child: Card(
+                  color: Colors.grey[200],
+                  child: Column(
                       children: <Widget>[
-                        TextWidget(
-                          txt: "Suhu/Windspeed",
-                          color: Colors.black,
-                          weight: FontWeight.bold,
+                        Container(
+                            height: 40,
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                                children: <Widget>[
+                                  TextWidget(
+                                    txt: "Suhu/Windspeed",
+                                    color: Colors.black,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  TextWidget(
+                                    txt: " *",
+                                    color: Colors.red,
+                                    txtSize: 18,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ]
+                            )
                         ),
-                        TextWidget(
-                          txt: " *",
-                          color: Colors.red,
-                          txtSize: 18,
-                          weight: FontWeight.bold,
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Stack(
+                            children: <Widget>[
+                              GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 1,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: listImage
+                                    .where((data) => data['type'] == 'D004')
+                                    .map((f) {
+                                  if (f['name'] == "button") {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        captureImage('D004');
+                                      },
+                                      child: Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black12,
+                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                          new BorderRadius.all(Radius.circular(10.0)),
+                                        ),
+                                        child: Center(
+                                            child: IconButton(
+                                              icon: Icon(Icons.add_a_photo),
+                                              onPressed: () {
+                                                captureImage('D004');
+                                              },
+                                            )),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black12,
+                                            offset: const Offset(0.0, 2.0),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                          ),
+                                        ],
+                                        borderRadius:
+                                        new BorderRadius.all(Radius.circular(10.0)),
+                                      ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: double.infinity,
+                                            child: f['status'] == false
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "WS" + f['name'], true);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "WS" + f['name'], false);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    print(f['name']);
+                                                    deleteFile(f['path']);
+                                                    setState(() {
+                                                      listImage.removeWhere((item) =>
+                                                      item['name'] == f['name']);
+                                                    });
+                                                    setCam('D004');
+                                                  },
+                                                  child: Icon(Icons.delete,
+                                                      color: Colors.red, size: 15)),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: f['status'] != false
+                                                ? Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                                size: 15,
+                                              ),
+                                            )
+                                                : Container(),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: f['proses'] == true
+                                                ? CircularProgressIndicator()
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
+                              ),
+                            ],
+                          ),
+
                         ),
                       ]
-                  )
-              ),
-              Container(
-                color: Colors.grey[200],
-                width: double.infinity,
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextWidget(
-                              txt: "Photo",
-                              color: Colors.red,
-                              txtSize: 12,
-                              weight: FontWeight.bold)
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                      children: listImage
-                          .where((data) => data['type'] == 'D004')
-                          .map((f) {
-                        if (f['name'] == "button") {
-                          return GestureDetector(
-                            onTap: () {
-                              captureImage('D004');
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black12,
-                                    offset: const Offset(0.0, 2.0),
-                                    blurRadius: 2.0,
-                                    spreadRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: new BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: Center(
-                                  child: IconButton(
-                                    icon: Icon(Icons.add_a_photo, color: Colors.black),
-                                    onPressed: () {
-                                      captureImage('D004');
-                                    },
-                                  )
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0.0, 2.0),
-                                  blurRadius: 2.0,
-                                  spreadRadius: 2.0,
-                                ),
-                              ],
-                              borderRadius:
-                              new BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  child: f['status'] == false
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "WS" + f['name'], true);
-                                    },
-                                    child: Image.file(File(f['path']),
-                                        fit: BoxFit.fitWidth),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "WS" + f['name'], false);
-                                    },
-                                    child: Image.network(f['path'],
-                                        fit: BoxFit.fitWidth),
-                                  ),
-                                ),
-                                f['delete'] ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            listImage.removeWhere((item) =>
-                                            item['name'] == f['name']);
-                                          });
-                                          setCam('D004');
-
-                                        },
-                                        child: Icon(Icons.delete,color: Colors.red, size: 15)
-                                    ),
-                                  ),
-                                ) : Align(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: f['status'] != false
-                                      ? Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                      size: 15,
-                                    ),
-                                  )
-                                      : Container(),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: f['proses'] == true
-                                      ? CircularProgressIndicator()
-                                      : null,
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }).toList(),
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ]
@@ -1469,203 +1378,178 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
   }
 
   Widget _blowerWidget(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width / 20,
-            right: MediaQuery.of(context).size.width / 20
-        ),
-        decoration: BoxDecoration(
-          color:Colors.grey[200],
-          boxShadow: [
-            new BoxShadow(
-                color: Colors.black12,
-                offset: const Offset(0.0, 2.0),
-                blurRadius: 2.0,
-                spreadRadius: 2.0
-            )
-          ],
-          borderRadius: new BorderRadius.only(
-              topRight: Radius.circular(10.0),
-              topLeft: Radius.circular(10.0)
-          ),
-        ),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment:  MainAxisAlignment.start,
+    return Expanded(
+        child: Stack(
             children: <Widget> [
-              Container(
-                  height: 40,
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Row(
+              SizedBox(
+                height: 193,
+                width: 180,
+                child: Card(
+                  color: Colors.grey[200],
+                  child: Column(
                       children: <Widget>[
-                        TextWidget(
-                          txt: "Blower",
-                          color: Colors.black,
-                          weight: FontWeight.bold,
+                        Container(
+                            height: 40,
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                            child: Row(
+                                children: <Widget>[
+                                  TextWidget(
+                                    txt: "Blower",
+                                    color: Colors.black,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  TextWidget(
+                                    txt: " *",
+                                    color: Colors.red,
+                                    txtSize: 18,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ]
+                            )
                         ),
-                        TextWidget(
-                          txt: " *",
-                          color: Colors.red,
-                          txtSize: 18,
-                          weight: FontWeight.bold,
+                        Container(
+                          color: Colors.white,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          child: Stack(
+                            children: <Widget>[
+                              GridView.count(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 1,
+                                childAspectRatio: 1,
+                                mainAxisSpacing: 10.0,
+                                crossAxisSpacing: 10.0,
+                                children: listImage
+                                    .where((data) => data['type'] == 'D005')
+                                    .map((f) {
+                                  if (f['name'] == "button") {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        captureImage('D005');
+                                      },
+                                      child: Container(
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black12,
+                                              offset: const Offset(0.0, 2.0),
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ),
+                                          ],
+                                          borderRadius:
+                                          new BorderRadius.all(Radius.circular(10.0)),
+                                        ),
+                                        child: Center(
+                                            child: IconButton(
+                                              icon: Icon(Icons.add_a_photo),
+                                              onPressed: () {
+                                                captureImage('D005');
+                                              },
+                                            )),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black12,
+                                            offset: const Offset(0.0, 2.0),
+                                            blurRadius: 2.0,
+                                            spreadRadius: 2.0,
+                                          ),
+                                        ],
+                                        borderRadius:
+                                        new BorderRadius.all(Radius.circular(10.0)),
+                                      ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            width: double.infinity,
+                                            child: f['status'] == false
+                                                ? GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "BL" + f['name'], true);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            )
+                                                : GestureDetector(
+                                              onTap: () {
+                                                showImage(context, f['path'],
+                                                    "BL" + f['name'], false);
+                                              },
+                                              child: Image.file(File(f['path_compressed']),
+                                                  fit: BoxFit.fitWidth),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    print(f['name']);
+                                                    deleteFile(f['path']);
+                                                    setState(() {
+                                                      listImage.removeWhere((item) =>
+                                                      item['name'] == f['name']);
+                                                    });
+                                                    setCam('D005');
+                                                  },
+                                                  child: Icon(Icons.delete,
+                                                      color: Colors.red, size: 15)),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: f['status'] != false
+                                                ? Container(
+                                              padding: EdgeInsets.all(3),
+                                              margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: new BorderRadius.all(
+                                                      Radius.circular(50.0))),
+                                              child: Icon(
+                                                Icons.check,
+                                                color: Colors.green,
+                                                size: 15,
+                                              ),
+                                            )
+                                                : Container(),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: f['proses'] == true
+                                                ? CircularProgressIndicator()
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
+                              ),
+                            ],
+                          ),
+
                         ),
                       ]
-                  )
-              ),
-              Container(
-                color: Colors.grey[200],
-                width: double.infinity,
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextWidget(
-                              txt: "Photo",
-                              color: Colors.red,
-                              txtSize: 12,
-                              weight: FontWeight.bold)
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    GridView.count(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      crossAxisCount: 2,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                      children: listImage
-                          .where((data) => data['type'] == 'D005')
-                          .map((f) {
-                        if (f['name'] == "button") {
-                          return GestureDetector(
-                            onTap: () {
-                              captureImage('D005');
-                            },
-                            child: Container(
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black12,
-                                    offset: const Offset(0.0, 2.0),
-                                    blurRadius: 2.0,
-                                    spreadRadius: 2.0,
-                                  ),
-                                ],
-                                borderRadius: new BorderRadius.all(Radius.circular(10.0)),
-                              ),
-                              child: Center(
-                                  child: IconButton(
-                                    icon: Icon(Icons.add_a_photo, color: Colors.black),
-                                    onPressed: () {
-                                      captureImage('D005');
-                                    },
-                                  )
-                              ),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black12,
-                                  offset: const Offset(0.0, 2.0),
-                                  blurRadius: 2.0,
-                                  spreadRadius: 2.0,
-                                ),
-                              ],
-                              borderRadius:
-                              new BorderRadius.all(Radius.circular(10.0)),
-                            ),
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  child: f['status'] == false
-                                      ? GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "BL" + f['name'], true);
-                                    },
-                                    child: Image.file(File(f['path']),
-                                        fit: BoxFit.fitWidth),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      showImage(context, f['path'],
-                                          "BL" + f['name'], false);
-                                    },
-                                    child: Image.network(f['path'],
-                                        fit: BoxFit.fitWidth),
-                                  ),
-                                ),
-                                f['delete'] ? Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            listImage.removeWhere((item) =>
-                                            item['name'] == f['name']);
-                                          });
-                                          setCam('D005');
-
-                                        },
-                                        child: Icon(Icons.delete,color: Colors.red, size: 15)
-                                    ),
-                                  ),
-                                ) : Align(),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: f['status'] != false
-                                      ? Container(
-                                    padding: EdgeInsets.all(3),
-                                    margin: EdgeInsets.fromLTRB(0, 0, 5, 5),
-                                    decoration: BoxDecoration(
-                                        color: colorWhite,
-                                        borderRadius: new BorderRadius.all(
-                                            Radius.circular(50.0))),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                      size: 15,
-                                    ),
-                                  )
-                                      : Container(),
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: f['proses'] == true
-                                      ? CircularProgressIndicator()
-                                      : null,
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      }).toList(),
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ]
@@ -2163,6 +2047,11 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       return;
     }
 
+    if(_perbaikanController.text == "") {
+      _showAlert(context, "Catatan Perbaikan Tidak Boleh Kosong !");
+      return;
+    }
+
     listImage.forEach((element) {
       print(element);
       if(element['path'] == "") {
@@ -2213,6 +2102,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       'blower' : _blowerController.text,
       'perawatan' : _perawatanController.text,
       'penggantian' : _penggantianController.text,
+      'perbaikan' : _perbaikanController.text,
     });
 
     listImage.forEach((element) {

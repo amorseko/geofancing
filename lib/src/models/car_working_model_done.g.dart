@@ -44,6 +44,8 @@ HistoryCarWorkingData _$HistoryCarWorkingDataFromJson(
     penggantian: json['penggantian'] as String,
     input_date: json['input_date'] as String,
     status: json['status'] as String,
+    no_spk: json['no_spk'] as String,
+    type_working: json['type_working'] as String,
     list_foto: (json['list_foto'] as List)
         ?.map((e) =>
             e == null ? null : _ListFoto.fromJson(e as Map<String, dynamic>))
@@ -69,6 +71,8 @@ Map<String, dynamic> _$HistoryCarWorkingDataToJson(
       'penggantian': instance.penggantian,
       'input_date': instance.input_date,
       'status': instance.status,
+      'no_spk': instance.no_spk,
+      'type_working': instance.type_working,
       'list_foto': instance.list_foto,
     };
 

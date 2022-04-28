@@ -6,8 +6,11 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/request/req_history_car_working.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_after.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_before.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail_done.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_ec_after.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_ec_before.dart';
 import 'package:geofancing/src/utility/Colors.dart';
 import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
@@ -32,8 +35,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   bool _isLoading = true;
   double initial, distance;
   int _indexTab = 0;
-  String name, id_user, id_dealer;
-
+  String name, id_user, id_dealer, _typePekerjaan;
   HistoryCarWorkingModels _carWorkingModels;
 
   List listWorkingQuery = List();
@@ -210,8 +212,191 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                 ),
                 floatingActionButton: FloatingActionButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacementNamed('/car_working_before');
-                    // Add your onPressed code here!
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return StatefulBuilder(builder: (context, setState) {
+                          return Material(
+                            type: MaterialType.transparency,
+                            child: Container(
+                              child: Container(
+                                decoration : new BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [CorpToyogaColor, CorpToyogaColor2],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  ),
+                                  borderRadius: new BorderRadius.only(
+                                    topLeft: const Radius.circular(30.0),
+                                    topRight: const Radius.circular(30.0),
+                                  ),
+                                ),
+                                child: Container(
+                                    child: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              width: double.infinity,
+                                              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                                              margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: <Widget> [
+                                                  Container(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget> [
+                                                        TextWidget(
+                                                          txt: "Type Pekerjaan",
+                                                          txtSize: MediaQuery.of(context).size.width / 20,
+                                                          color: colorWhite
+                                                        ),
+                                                        Container(
+                                                          width: 30,
+                                                          height: 2,
+                                                          alignment: Alignment.topRight,
+                                                          color: colorWhite,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: 35,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: colorWhite,
+                                                      ),
+                                                      color: Colors.transparent,
+                                                    ),
+                                                    child: new IconButton(
+                                                        onPressed: (){
+                                                          Navigator.of(context, rootNavigator: true).pop();
+                                                        },
+                                                        icon: Icon(
+                                                          Icons.close,
+                                                          size : 15.0,
+                                                          color: Colors.white
+                                                        ))
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 20,),
+                                            Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                              decoration: BoxDecoration(
+                                                color: colorWhite,
+                                                borderRadius: new BorderRadius.all(
+                                                  const Radius.circular(30.0),
+                                                ),
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton<String>(
+                                                  hint: Text("Type Pekerjaan"),
+                                                  isExpanded: true,
+                                                  onChanged: (newValue) {
+                                                    setState(() {
+                                                      _typePekerjaan = newValue;
+                                                    });
+                                                  },
+                                                  value: _typePekerjaan,
+                                                  items:<String>['Air Conditioner','Engine Care'].map((String value) {
+                                                    return DropdownMenuItem(child: Text(value), value: value);
+                                                  }).toList(),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                            Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                              padding: EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: colorWhite,
+                                                borderRadius: new BorderRadius.all(
+                                                    const Radius.circular(30.0)),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    flex: 4,
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          _reset(context);
+                                                          Navigator.of(context,
+                                                              rootNavigator: true)
+                                                              .pop();
+                                                        },
+                                                        child: TextWidget(
+                                                          align: TextAlign.center,
+                                                          txt: "Batal",
+                                                          txtSize: 15,
+                                                          color: Colors.red,
+                                                          weight: FontWeight.bold,
+                                                        )),
+                                                  ),
+                                                  Expanded(
+                                                      flex: 2,
+                                                      child: TextWidget(
+                                                        txt: "|",
+                                                        txtSize: 15,
+                                                        color: colorBlack,
+                                                        weight: FontWeight.bold,
+                                                      )),
+                                                  Expanded(
+                                                      flex: 4,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          if(_typePekerjaan == null) {
+                                                            _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Pilih type pekerjaan")));
+                                                            return;
+                                                          }
+
+                                                          if(_typePekerjaan == "Air Conditioner") {
+                                                            print(_typePekerjaan);
+                                                            routeToWidget(context, CarWorkingBeforePage());
+                                                          } else if(_typePekerjaan == "Engine Care") {
+                                                            routeToWidget(context, CarWorkingEcBeforePage());
+                                                          }
+                                                          // Navigator.of(context,
+                                                          //     rootNavigator: true)
+                                                          //     .pop();
+                                                        },
+                                                        child: TextWidget(
+                                                          txt: "Lanjut",
+                                                          txtSize: 15,
+                                                          color: colorBlack,
+                                                          weight: FontWeight.bold,
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                            // ),
+                                          ],
+                                        )
+                                    )
+                                )
+                              ),
+                            )
+                          );
+                        });
+                      }
+                    );
                   },
                   backgroundColor: CorpToyogaColor,
                   child: const Icon(Icons.add),
@@ -234,6 +419,10 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       }
       case 2 : {
         return _data(context ,'2',_searchQuery.text);
+        break;
+      }
+      case 3 : {
+        return _data(context ,'3',_searchQuery.text);
         break;
       }
     }
@@ -279,8 +468,13 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
     return GestureDetector(
       onTap: () {
         if(data.status == "1") {
-          routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
-        } else if(data.status == "0") {
+          if(data.type_working == "Engine Care") {
+            routeToWidget(context, CarWorkingEcAfterPage(idUniq : data.id_uniq));
+          } else {
+            routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+          }
+
+        } else if(data.status == "0" || data.status == "3") {
           routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq));
         }  else if(data.status == "2") {
           routeToWidget(context, DetailWorkingCarDone(id_uniq : data.id_uniq));
@@ -442,6 +636,21 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                     weight:  _indexTab == 2 ? FontWeight.bold: null
                 )
             )
+        ),
+        Expanded(
+            child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _indexTab = 3;
+                  });
+                },
+                child: TextWidget(
+                    txt: "Pra Checking (Cancel)",
+                    txtSize: _indexTab == 3 ? 15 : 13,
+                    color: Colors.white,
+                    weight:  _indexTab == 3 ? FontWeight.bold: null
+                )
+            )
         )
       ],
     );
@@ -461,6 +670,10 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
         return "Post Checking (Done)";
         break;
       }
+      case 3 : {
+        return "Pra Checking (Cancel)";
+        break;
+      }
     }
   }
 
@@ -470,6 +683,12 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       _setListData(member.data.id_user);
     });
 
+  }
+
+  _reset(BuildContext context) {
+    setState(() {
+      _typePekerjaan = null;
+    });
   }
 
   _setListData(String userId) {

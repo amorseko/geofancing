@@ -156,160 +156,239 @@ class _DetailWorkingCarDone extends State<DetailWorkingCarDone> {
                           )
                       ),
                       // _detailCarWorking.data.list_foto != null ?
+                      _detailCarWorking.data.type_working == "Engine Care" ?
                       Column(
                         children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
-                            data.code == 'D001' && data.foto != "").length > 0 ? Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 20),
-                                Container(
-                                    height: 40,
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: TextWidget(
-                                      txt: "Foto KM ",
-                                      color: colorBlack,
-                                      txtSize: 18,
-                                      weight: FontWeight.bold,
-                                    )
-                                ),
-                                Container(
-                                    child: _attachPhoto(
-                                        context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D001').toList()
-                                    )
-                                ),
-                              ],
-                            ) : SizedBox(),
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                    data.code == 'D001' && data.foto != "").length > 0 ? Column(
+                                      mainAxisAlignment:MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(height: 20),
+                                        Container(
+                                            height: 40,
+                                            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                            child: TextWidget(
+                                              txt: "Foto Blok Mesin ",
+                                              color: colorBlack,
+                                              txtSize: 14,
+                                              weight: FontWeight.bold,
+                                            )
+                                        ) ,
+                                        Container(
+                                            child: _attachPhoto(
+                                                context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D001').toList()
+                                            )
+                                        ),
+                                      ],
+                                    ) : SizedBox(),
+                                  )
+                              ),
+                              // Spacer(),
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                  data.code == 'D002' && data.foto != "").length > 0 ? Column(
+                                    mainAxisAlignment:MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      SizedBox(height: 20),
+                                      Container(
+                                          height: 40,
+                                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                          child: TextWidget(
+                                            txt: "Foto No. Polisi",
+                                            color: colorBlack,
+                                            txtSize: 14,
+                                            weight: FontWeight.bold,
+                                          )
+                                      ),
+                                      Container(
+                                          child: _attachPhoto(
+                                              context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D002').toList()
+                                          )
+                                      ),
+                                    ],
+                                  ) : Container(),
+                                )
+                              ),
+                            ]
+                        ),
+
                         ],
+                      ) : Column(
+                          children: <Widget>[
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                        data.code == 'D001' && data.foto != "").length > 0 ? Column(
+                                          mainAxisAlignment:MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            SizedBox(height: 20),
+                                            Container(
+                                                height: 40,
+                                                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                                child: TextWidget(
+                                                  txt: "Foto KM ",
+                                                  color: colorBlack,
+                                                  txtSize: 14,
+                                                  weight: FontWeight.bold,
+                                                )
+                                            ) ,
+                                            Container(
+                                                child: _attachPhoto(
+                                                    context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D001').toList()
+                                                )
+                                            ),
+                                          ],
+                                        ) : SizedBox(),
+                                      )
+                                  ),
+                                  // Spacer(),
+                                  Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                        data.code == 'D002' && data.foto != "").length > 0 ? Column(
+                                          mainAxisAlignment:MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            SizedBox(height: 20),
+                                            Container(
+                                                height: 40,
+                                                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                                child: TextWidget(
+                                                  txt: "Foto Tampak Depan ",
+                                                  color: colorBlack,
+                                                  txtSize: 14,
+                                                  weight: FontWeight.bold,
+                                                )
+                                            ),
+                                            Container(
+                                                child: _attachPhoto(
+                                                    context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D002').toList()
+                                                )
+                                            ),
+                                          ],
+                                        ) : Container(),
+                                      )
+                                  ),
+                                  Expanded(
+                                      child: Container(
+                                        width: double.infinity,
+                                        child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                        data.code == 'D003' && data.foto != "").length > 0 ? Column(
+                                          mainAxisAlignment:MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            SizedBox(height: 20),
+                                            Container(
+                                                height: 40,
+                                                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                                child: TextWidget(
+                                                  txt: "Foto Filter ",
+                                                  color: colorBlack,
+                                                  txtSize: 14,
+                                                  weight: FontWeight.bold,
+                                                )
+                                            ),
+                                            Container(
+                                                child: _attachPhoto(
+                                                    context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D003').toList()
+                                                )
+                                            ),
+                                          ],
+                                        ) : SizedBox(),
+                                      )
+                                  )
+                                ]
+                            ),
+
+                          ]
                       ),
-                      Column(
+                      _detailCarWorking.data.type_working != "Engine Care" ? Column(
                         children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
-                            data.code == 'D002' && data.foto != "").length > 0 ? Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 20),
-                                Container(
-                                    height: 40,
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: TextWidget(
-                                      txt: "Foto Tampak Depan ",
-                                      color: colorBlack,
-                                      txtSize: 18,
-                                      weight: FontWeight.bold,
-                                    )
-                                ),
-                                Container(
-                                    child: _attachPhoto(
-                                        context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D002').toList()
-                                    )
-                                ),
-                              ],
-                            ) : SizedBox(),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                  data.code == 'D004' && data.foto != "").length > 0 ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(height: 20),
+                                      Container(
+                                          height: 40,
+                                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                          child: TextWidget(
+                                            txt: "Foto Suhu/Windspeed ",
+                                            color: colorBlack,
+                                            txtSize: 12,
+                                            weight: FontWeight.bold,
+                                          )
+                                      ),
+                                      Container(
+                                          child: _attachPhoto(
+                                              context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D004').toList()
+                                          )
+                                      ),
+                                    ],
+                                  ) : SizedBox(),
+                                )
+                              ),
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
+                                  data.code == 'D005' && data.foto != "").length > 0 ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(height: 20),
+                                      Container(
+                                          height: 40,
+                                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                          child: TextWidget(
+                                            txt: "Foto Blower ",
+                                            color: colorBlack,
+                                            txtSize: 12,
+                                            weight: FontWeight.bold,
+                                          )
+                                      ),
+                                      Container(
+                                          child: _attachPhoto(
+                                              context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D005').toList()
+                                          )
+                                      ),
+                                    ],
+                                  ) : SizedBox(),
+                                )
+                              ),
+                            ],
                           )
                         ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
-                            data.code == 'D003' && data.foto != "").length > 0 ? Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 20),
-                                Container(
-                                    height: 40,
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: TextWidget(
-                                      txt: "Foto Filter ",
-                                      color: colorBlack,
-                                      txtSize: 18,
-                                      weight: FontWeight.bold,
-                                    )
-                                ),
-                                Container(
-                                    child: _attachPhoto(
-                                        context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D003').toList()
-                                    )
-                                ),
-                              ],
-                            ) : SizedBox(),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
-                            data.code == 'D004' && data.foto != "").length > 0 ? Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 20),
-                                Container(
-                                    height: 40,
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: TextWidget(
-                                      txt: "Foto Suhu/Windspeed ",
-                                      color: colorBlack,
-                                      txtSize: 18,
-                                      weight: FontWeight.bold,
-                                    )
-                                ),
-                                Container(
-                                    child: _attachPhoto(
-                                        context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D004').toList()
-                                    )
-                                ),
-                              ],
-                            ) : SizedBox(),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            child: _detailCarWorking.data.list_foto != null && _detailCarWorking.data.list_foto.where((data) =>
-                            data.code == 'D005' && data.foto != "").length > 0 ? Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 20),
-                                Container(
-                                    height: 40,
-                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                    child: TextWidget(
-                                      txt: "Foto Blower ",
-                                      color: colorBlack,
-                                      txtSize: 18,
-                                      weight: FontWeight.bold,
-                                    )
-                                ),
-                                Container(
-                                    child: _attachPhoto(
-                                        context ,_detailCarWorking.data.list_foto.where((data) => data.code =='D005').toList()
-                                    )
-                                ),
-                              ],
-                            ) : SizedBox(),
-                          )
-                        ],
-                      ),
-                      //     : Container(
-                      //   height: MediaQuery.of(context).size.height / 2,
-                      //   child: dataNotFound(context),
-                      // ),
+                      ) : SizedBox(),
+
                     ],
                   ) : Container(),
                 ),
@@ -331,6 +410,8 @@ class _DetailWorkingCarDone extends State<DetailWorkingCarDone> {
       return ConstrainedBox(
         constraints: BoxConstraints(
             minHeight: 80, // Set as you want or you can remove it also.
+            // maxHeight: 240,
+            // maxWidth: 150,
             maxHeight: double.infinity,
             maxWidth: double.infinity,
             minWidth: 50),
@@ -437,50 +518,9 @@ class _DetailWorkingCarDone extends State<DetailWorkingCarDone> {
       );
     }
   }
-  Widget _attachPhotox(BuildContext context,  dataImage) {
-    return ConstrainedBox(
-        constraints: BoxConstraints(
-            minHeight: 80,
-            maxHeight: double.infinity,
-            maxWidth: double.infinity,
-            minWidth: 50
-        ),
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: 2,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-                onTap: () {
-                  showImage(context, dataImage, "1", false);
-                },
-                child: CachedNetworkImage(
-                  imageUrl: dataImage,
-                  imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          )
-                      )
-                  ),
-                  placeholder: (context, url) => SizedBox(
-                      height: 10.0,
-                      width: 10.0,
-                      child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(Colors.blue),
-                          strokeWidth: 5.0)
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                )
-            );
-          },
-        )
-    );
-  }
+
+
+
 
   Widget _contentRepair(BuildContext context) {
     return Column(

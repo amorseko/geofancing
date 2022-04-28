@@ -164,7 +164,7 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
                                             child: new TextFieldWidget(
                                               _namaSAController,
                                               hint: "Nama SA",
-                                              readOnly : true,
+                                              readOnly : false,
                                             )
                                         )
                                       ]
@@ -471,6 +471,7 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
       'blower' : _blowerController.text,
       'perawatan' : _perawatanController.text,
       'penggantian' : _penggantianController.text,
+      "type_working" : "Air Conditioner"
     });
 
     listImage.forEach((element) {
@@ -491,6 +492,8 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(model.message), backgroundColor: Colors.green
         ));
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/list_working_car_before', (Route<dynamic> route) => false);
         // Navigator.of(context)
         //     .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
       } else {
@@ -818,6 +821,7 @@ Widget _hasilCheck(BuildContext context) {
       )
     );
   }
+
 
   Widget _saranPerbaikian(BuildContext context) {
     return Card(
@@ -1938,7 +1942,11 @@ Widget _hasilCheck(BuildContext context) {
         id_user = member.data.id_user;
         id_dealer = member.data.id_dealer;
         _namaUserController.text = name;
-        _namaSAController.text = name;
+        // _namaSAController.text = name;
+        _hpNormalController.text = "200 - 250";
+        _lpNormalController.text = "20 - 40";
+        _suhuNormalController.text = "< 7";
+        _windSpeedNormalController.text = "2.0";
       });
     });
 

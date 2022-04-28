@@ -34,6 +34,7 @@ HistoryCarWorkingData _$HistoryCarWorkingDataFromJson(
   return HistoryCarWorkingData(
     id: json['id'] as String,
     id_uniq: json['id_uniq'] as String,
+    id_sa: json['id_sa'] as String,
     nopol: json['nopol'] as String,
     model: json['model'] as String,
     km: json['km'] as String,
@@ -46,6 +47,8 @@ HistoryCarWorkingData _$HistoryCarWorkingDataFromJson(
     penggantian: json['penggantian'] as String,
     input_date: json['input_date'] as String,
     status: json['status'] as String,
+    no_spk: json['no_spk'] as String,
+    type_working: json['type_working'] as String,
     list_foto: json['list_foto'] as String,
   )..hp = json['hp'] as String;
 }
@@ -55,6 +58,7 @@ Map<String, dynamic> _$HistoryCarWorkingDataToJson(
     <String, dynamic>{
       'id': instance.id,
       'id_uniq': instance.id_uniq,
+      'id_sa': instance.id_sa,
       'nopol': instance.nopol,
       'model': instance.model,
       'km': instance.km,
@@ -68,5 +72,7 @@ Map<String, dynamic> _$HistoryCarWorkingDataToJson(
       'penggantian': instance.penggantian,
       'input_date': instance.input_date,
       'status': instance.status,
+      'no_spk': instance.no_spk,
+      'type_working': instance.type_working,
       'list_foto': instance.list_foto,
     };
