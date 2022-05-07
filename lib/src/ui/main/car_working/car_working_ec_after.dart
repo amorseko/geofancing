@@ -48,6 +48,8 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
 
   final _nopolController = TextEditingController();
   final _remarksController = TextEditingController();
+  final _namaSaController = TextEditingController();
+  final _modelMobilController = TextEditingController();
 
   @override
   void initState() {
@@ -79,6 +81,11 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       });
     });
 
+    setState(() {
+
+      _isLoading = false;
+    });
+
     listImage.addAll([
       {
         "name": "button",
@@ -100,10 +107,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       },
     ]);
 
-    setState(() {
 
-      _isLoading = false;
-    });
 
 
   }
@@ -159,6 +163,42 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
                                             child: new TextFieldWidget(
                                               _nopolController,
                                               hint: "Nomor Polisi",
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      children: <Widget> [
+                                        new Expanded(
+                                            child: new TextWidget(
+                                              txt: "Nama SA",
+                                              align: TextAlign.justify,
+                                            )
+                                        ),
+                                        new Expanded(
+                                            flex: 3,
+                                            child: new TextFieldWidget(
+                                              _namaSaController,
+                                              hint: "Nama SA",
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      children: <Widget> [
+                                        new Expanded(
+                                            child: new TextWidget(
+                                              txt: "Model Mobil",
+                                              align: TextAlign.justify,
+                                            )
+                                        ),
+                                        new Expanded(
+                                            flex: 3,
+                                            child: new TextFieldWidget(
+                                              _modelMobilController,
+                                              hint: "Model Mobil",
                                             )
                                         )
                                       ],
@@ -600,10 +640,19 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       return;
     }
 
+    if(_namaSaController.text == "") {
+      _showAlert(context, "Nama SA Boleh Kosong !");
+      return;
+    }
+
+    if(_modelMobilController.text == "") {
+      _showAlert(context, "Model Mobil Boleh Kosong !");
+      return;
+    }
 
 
     listImage.forEach((element) {
-      print(element);
+      print("data path : " + element['path'] + " " + element['type'] + " " + element['name']);
       if(element['path'] == "") {
         if(element['type'] == "D001") {
           _showAlert(context, "Foto Blok Mesin Tidak Boleh Kosong !");
@@ -618,16 +667,18 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
     });
 
 
+
+
     setState(() {
       _isLoading = true;
     });
 
     var formData = FormData.fromMap({
       'id_user': _idUser,
-      'id_sa': '123',
+      'id_sa': _namaSaController.text,
       'id_uniq_before' : widget.idUniq,
       'nopol' : _nopolController.text,
-      'model' : "-",
+      'model' : _modelMobilController.text,
       'KM' : "-",
       'HP' : "-",
       'LP' : "-",
@@ -653,9 +704,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
     bloc.doPengajuan(formData, (callback) {
       DefaultModel model = callback;
 
-      setState(() {
-        _isLoading = false;
-      });
+
 
 
       if(model.status == 'success') {
@@ -672,6 +721,12 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
 
 
     });
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    _btnSaveController.reset();
 
   }
 
@@ -799,6 +854,56 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
 
   setCam(String type) {
     setState(() {
+      if (type == 'D001' || type == 'D002' || type == 'D003' || type == 'D004' || type == 'D005') {
+        if (listImage.where((data) => data['type'] == type).length > 1) {
+          listImage.removeWhere(
+                  (item) => item['type'] == type && item['name'] == 'button');
+        } else {
+          if (listImage
+              .where((data) =>
+          data['type'] == type && data['name'] == 'button')
+              .length <
+              1) {
+            listImage.add({
+              "name": "button",
+              "path": "",
+              "path_compressed":"",
+              "status": false,
+              "proses": false,
+              "delete": true,
+              "type": type
+            });
+          }
+        }
+      } else {
+        if (listImage.where((data) => data['type'] == type).length > 20) {
+          listImage.removeWhere(
+                  (item) => item['type'] == type && item['name'] == 'button');
+        } else {
+          if (listImage
+              .where((data) =>
+          data['type'] == type && data['name'] == 'button')
+              .length <
+              1) {
+            listImage.add({
+              "name": "button",
+              "path": "",
+              "path_compressed":"",
+              "status": false,
+              "proses": false,
+              "delete": true,
+              "type": type
+            });
+          }
+        }
+      }
+    });
+    setOrder(type);
+  }
+
+  setCamx(String type) {
+    setState(() {
+      print(type);
       if (type == '') {
         if (listImage.where((data) => data['type'] == type).length > 1) {
           listImage.removeWhere(
@@ -822,9 +927,11 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
         }
       } else {
         if (listImage.where((data) => data['type'] == type).length > 2) {
+          print("kesana ?");
           listImage.removeWhere(
                   (item) => item['type'] == type && item['name'] == 'button');
         } else {
+          print(listImage.where((data) => data['type'] == type).length);
           if (listImage
               .where((data) =>
           data['type'] == type && data['name'] == 'button')

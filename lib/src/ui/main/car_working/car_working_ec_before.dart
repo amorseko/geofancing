@@ -40,6 +40,8 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
 
   final _nopolController = TextEditingController();
   final _remarksController = TextEditingController();
+  final _namaSaController = TextEditingController();
+  final _modelMobilController = TextEditingController();
 
   @override
   void initState() {
@@ -148,6 +150,42 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
                                     children: <Widget> [
                                       new Expanded(
                                           child: new TextWidget(
+                                            txt: "Nama SA",
+                                            align: TextAlign.justify,
+                                          )
+                                      ),
+                                      new Expanded(
+                                          flex: 3,
+                                          child: new TextFieldWidget(
+                                            _namaSaController,
+                                            hint: "Nama SA",
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    children: <Widget> [
+                                      new Expanded(
+                                          child: new TextWidget(
+                                            txt: "Model Mobil",
+                                            align: TextAlign.justify,
+                                          )
+                                      ),
+                                      new Expanded(
+                                          flex: 3,
+                                          child: new TextFieldWidget(
+                                            _modelMobilController,
+                                            hint: "Model Mobil",
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    children: <Widget> [
+                                      new Expanded(
+                                          child: new TextWidget(
                                             txt: "Remarks",
                                             align: TextAlign.justify,
                                           )
@@ -209,20 +247,30 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
 
     // var formData = FormData();
 
-    if(_nopolController.text == "") {
-      _showAlert(context, "Nomor Polisi Tidak Boleh Kosong !");
-      return;
-    }
-
-    if(_remarksController.text == "") {
-      _showAlert(context, "Remarks Tidak Boleh Kosong !");
-      return;
-    }
+    // if(_nopolController.text == "") {
+    //   _showAlert(context, "Nomor Polisi Tidak Boleh Kosong !");
+    //   return;
+    // }
+    //
+    // if(_remarksController.text == "") {
+    //   _showAlert(context, "Remarks Tidak Boleh Kosong !");
+    //   return;
+    // }
+    //
+    // if(_namaSaController.text == "") {
+    //   _showAlert(context, "Nama SA Tidak Boleh Kosong !");
+    //   return;
+    // }
+    //
+    // if(_modelMobilController.text == "") {
+    //   _showAlert(context, "Model Mobil Tidak Boleh Kosong !");
+    //   return;
+    // }
 
 
 
     listImage.forEach((element) {
-      print(element);
+      print(element['path']);
       if(element['path'] == "") {
         if(element['type'] == "D001") {
           _showAlert(context, "Foto Blok Mesin Tidak Boleh Kosong !");
@@ -243,9 +291,9 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
 
     var formData = FormData.fromMap({
       'id_user': _idUser,
-      'id_sa': '123',
+      'id_sa': _namaSaController.text,
       'nopol' : _nopolController.text,
-      'model' : "-",
+      'model' : _modelMobilController.text,
       'KM' : "-",
       'HP' : "-",
       'LP' :"-",
@@ -276,8 +324,8 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(model.message), backgroundColor: Colors.green
         ));
-        // Navigator.of(context)
-        //     .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/list_working_car_before', (Route<dynamic> route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(model.message), backgroundColor: Colors.red
@@ -676,6 +724,7 @@ class _CarWorkingEcBeforePage extends State<CarWorkingEcBeforePage> {
   }
 
   Future<void> captureImage(String type) async {
+    print("keisini ?");
     final ImagePicker _picker = ImagePicker();
 
     final XFile image =await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);

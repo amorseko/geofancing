@@ -31,6 +31,7 @@ class HistoryCarWorkingData {
       {
         this.id,
         this.id_uniq,
+        this.id_sa,
         this.nopol,
         this.model,
         this.km,
@@ -53,6 +54,8 @@ class HistoryCarWorkingData {
   String id;
   @JsonKey(name: 'id_uniq')
   String id_uniq;
+  @JsonKey(name: 'id_sa')
+  String id_sa;
   @JsonKey(name: 'nopol')
   String nopol;
   @JsonKey(name: 'model')

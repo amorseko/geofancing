@@ -134,7 +134,9 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                               color: Colors.white,
                               child: Stack(
                                 children: <Widget>[
-                                  _contentResultValid(context),
+                                  _detailCarWorking.data.type_working != "Engine Care" ?
+                                  _contentResultValid(context) :
+                                  _ContentResultValidEC(context),
                                 ],
                               ),
                             )
@@ -149,7 +151,9 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                                 color: Colors.white,
                                 child: Stack(
                                   children: <Widget>[
-                                    _contentRepair(context),
+                                    _detailCarWorking.data.type_working != "Engine Care" ?
+                                    _contentRepair(context)
+                                    : _contentRepairEC(context),
                                   ],
                                 ),
                               )
@@ -565,6 +569,59 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
     }
   }
 
+  Widget _contentRepairEC(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextWidget(
+                        txt: "Perawatan",
+                        txtSize: 12,
+                        color: Colors.black,
+                        align: TextAlign.left,
+                      ),
+                      TextWidget(
+                        txt: _detailCarWorking.data.penggantian,
+                        txtSize: 12,
+                        color: Colors.black,
+                        align: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TextWidget(
+                        txt: "Penggantian",
+                        txtSize: 12,
+                        color: Colors.black,
+                        align: TextAlign.left,
+                      ),
+                      TextWidget(
+                        txt: "-",
+                        txtSize: 12,
+                        color: Colors.black,
+                        align: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                ]
+            )
+        )
+      ],
+    );
+  }
+
   Widget _contentRepair(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -641,6 +698,79 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
         break;
       }
     }
+  }
+
+  Widget _ContentResultValidEC(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+            padding: EdgeInsets.fromLTRB(25, 15, 25, 5),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextWidget(
+                          txt: "No polisi",
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.left,
+                        ),
+                        TextWidget(
+                          txt: _detailCarWorking.data.nopol,
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.right,
+                        ),
+                      ]
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextWidget(
+                          txt: "Nama SA",
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.left,
+                        ),
+                        TextWidget(
+                          txt: _detailCarWorking.data.id_sa,
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.right,
+                        ),
+                      ]
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        TextWidget(
+                          txt: "Model Mobil",
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.left,
+                        ),
+                        TextWidget(
+                          txt: _detailCarWorking.data.model,
+                          txtSize: 12,
+                          color: Colors.black,
+                          align: TextAlign.right,
+                        ),
+                      ]
+                  ),
+
+                ]
+            )
+        ),
+      ],
+    );
   }
 
   Widget _contentResultValid(BuildContext context) {
