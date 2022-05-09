@@ -514,7 +514,17 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                           width: 25,
                           height: 1,
                           alignment: Alignment.topRight,
-                          color: colorBlack)
+                          color: colorBlack),
+                      SizedBox(height: 5),
+                      TextWidget(
+                          txt: "Tipe Pekerjaan",
+                          txtSize: 6.5,
+                          weight: FontWeight.bold),
+                      SizedBox(height: 5),
+                      TextWidget(
+                          txt: data.type_working != "" ? data.type_working : "-",
+                          txtSize: 9.5,
+                          weight: FontWeight.bold),
                     ],
                   ),
                 )

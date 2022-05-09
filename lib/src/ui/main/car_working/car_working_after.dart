@@ -317,6 +317,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                                         flex: 3,
                                         child: new TextFieldWidget(
                                           _namaSAController,
+                                          readOnly: true,
                                           hint: "Nama SA",
                                         )
                                     )
@@ -337,6 +338,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                                         flex: 3,
                                         child: new TextFieldWidget(
                                           _nopolController,
+                                          readOnly: true,
                                           hint: "Nomor Polisi",
                                         )
                                     )
@@ -357,6 +359,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                                         flex: 3,
                                         child: new TextFieldWidget(
                                           _modelMobilController,
+                                          readOnly: true,
                                           hint: "Model",
                                         )
                                     )

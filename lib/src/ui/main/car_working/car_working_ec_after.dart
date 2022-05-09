@@ -180,6 +180,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
                                             flex: 3,
                                             child: new TextFieldWidget(
                                               _namaSaController,
+                                              readOnly: true,
                                               hint: "Nama SA",
                                             )
                                         )
@@ -198,6 +199,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
                                             flex: 3,
                                             child: new TextFieldWidget(
                                               _modelMobilController,
+                                              readOnly: true,
                                               hint: "Model Mobil",
                                             )
                                         )
@@ -761,6 +763,8 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       _detailCarWorking = models;
       _nopolController.text = models.data[0].nopol;
       _remarksController.text = models.data[0].penggantian;
+      _namaSaController.text = models.data[0].id_sa;
+      _modelMobilController.text = models.data[0].model;
 
       // if(models.error == false) {
       //   for (var i = 0; i <  models.data[0].list_foto.split(', ').length; i++) {
