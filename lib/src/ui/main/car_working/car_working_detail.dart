@@ -21,12 +21,12 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/change_status_working_bloc.dart' as blocCarWorking;
 
 class DetailWorkingCar extends StatefulWidget {
-  String id_uniq;
+  String id_uniq, condition;
 
   @override
   State<StatefulWidget> createState() => _DetailWorkingCar();
 
-  DetailWorkingCar({this.id_uniq});
+  DetailWorkingCar({this.id_uniq, this.condition});
 }
 
 class _DetailWorkingCar extends State<DetailWorkingCar> {
@@ -53,9 +53,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
   }
 
   initView() {
-    setState(() {
-      _isLoading = false;
-    });
+
 
     SharedPreferencesHelper.getDoLogin().then((value)  {
       final member = MemberModels.fromJson(json.decode(value));
@@ -68,12 +66,14 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       });
     });
 
+    print(widget.condition);
 
   }
 
   getData(HistoryCarWorkingModelsDone models) {
     setState((){
       _detailCarWorking = models;
+      _isLoading = false;
     });
   }
 
@@ -389,7 +389,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                           SizedBox(
                             height: 30,
                           ),
-                          _detailCarWorking.data.status != "3" ?
+                          _detailCarWorking.data.status != "3" && widget.condition == "" ?
                           Padding(
                             padding: const EdgeInsets.only(bottom : 32, left: 21, right: 21),
                             child: Align(
@@ -414,7 +414,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
                           SizedBox(
                             height: 10,
                           ),
-                          _detailCarWorking.data.status != "3" ? Padding(
+                          _detailCarWorking.data.status != "3" && widget.condition == "" ? Padding(
                             padding: const EdgeInsets.only(bottom : 32, left: 21, right: 21),
                             child: Align(
                               alignment: AlignmentDirectional.bottomCenter,

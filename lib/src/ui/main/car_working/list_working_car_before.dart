@@ -194,7 +194,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                           });
                         } else {
                           setState(() {
-                            _indexTab = (_indexTab == 2) ? 2 : _indexTab + 1;
+                            _indexTab = (_indexTab == 3) ? 3 : _indexTab + 1;
                           });
                         }
                       },
@@ -438,10 +438,12 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                 _carWorkingModels.data.where((data) => data.status == status && data.nopol.toUpperCase().contains(query)).length > 0  ?
         ListView(
             scrollDirection: Axis.vertical,
-            children: _carWorkingModels.data
+            children: status != "3" ? _carWorkingModels.data
                 .where((data) => data.status == status && data.nopol.toUpperCase().contains(query))
-                .map((data) => createList(data, context))
-                .toList()
+                .map((data) => createList(data, context, ""))
+                .toList() : _carWorkingModels.data
+                .where((data) =>  {"0", "1" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query))
+                .map((data) => createList(data, context, "direct")).toList()
         ) : ListView(
           children: <Widget>[
             Container(
@@ -464,21 +466,25 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
     );
   }
 
-  Widget createList(data, BuildContext context) {
+  Widget createList(data, BuildContext context, String condition) {
     return GestureDetector(
       onTap: () {
         if(data.status == "1") {
-          if(data.type_working == "Engine Care") {
-            routeToWidget(context, CarWorkingEcAfterPage(idUniq : data.id_uniq));
+          if(condition == "") {
+            if(data.type_working == "Engine Care") {
+              routeToWidget(context, CarWorkingEcAfterPage(idUniq : data.id_uniq));
+            } else {
+              routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+            }
           } else {
-            routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+            routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq, condition : condition));
           }
-
         } else if(data.status == "0" || data.status == "3") {
-          routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq));
+          routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq, condition : condition));
         }  else if(data.status == "2") {
           routeToWidget(context, DetailWorkingCarDone(id_uniq : data.id_uniq));
         }
+
 
       },
       child: Container(
@@ -610,7 +616,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
               });
             },
             child: TextWidget(
-              txt: "Pra Checking",
+              txt: "Before",
               txtSize: _indexTab == 0 ? 15 : 13,
               color: Colors.white,
               weight:  _indexTab == 0 ? FontWeight.bold: null
@@ -625,7 +631,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
               });
             },
             child: TextWidget(
-                txt: "Post Checking",
+                txt: "After",
                 txtSize: _indexTab == 1 ? 15 : 13,
                 color: Colors.white,
                 weight:  _indexTab == 1 ? FontWeight.bold: null
@@ -640,7 +646,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                   });
                 },
                 child: TextWidget(
-                    txt: "Post Checking (Done)",
+                    txt: "After (Done)",
                     txtSize: _indexTab == 2 ? 15 : 13,
                     color: Colors.white,
                     weight:  _indexTab == 2 ? FontWeight.bold: null
@@ -655,7 +661,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                   });
                 },
                 child: TextWidget(
-                    txt: "Pra Checking (Cancel)",
+                    txt: "Before List",
                     txtSize: _indexTab == 3 ? 15 : 13,
                     color: Colors.white,
                     weight:  _indexTab == 3 ? FontWeight.bold: null
@@ -669,19 +675,19 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   String _textStatus(int dataStatus) {
     switch(dataStatus) {
       case 0 : {
-        return "Pre Checking";
+        return "Before";
         break;
       }
       case 1 : {
-        return "Post Checking";
+        return "After";
         break;
       }
       case 2 : {
-        return "Post Checking (Done)";
+        return "After (Done)";
         break;
       }
       case 3 : {
-        return "Pra Checking (Cancel)";
+        return "Before List";
         break;
       }
     }
