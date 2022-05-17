@@ -19,10 +19,13 @@ import 'package:geofancing/src/bloc/car_before_save_bloc.dart';
 import 'package:geofancing/src/models/default_model.dart';
 
 class CarWorkingBeforePage extends StatefulWidget {
+  String pekerjaan;
+
   @override
-  State<StatefulWidget> createState() {
-    return _CarWorkingBeforePage();
-  }
+  State<StatefulWidget> createState() => _CarWorkingBeforePage();
+
+  CarWorkingBeforePage({this.pekerjaan});
+
 }
 
 class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
@@ -58,7 +61,7 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
   bool isVideo = false;
 
   bool _isLoading = true;
-  String name, id_user, id_dealer;
+  String name, id_user, id_dealer, _pekerjaan;
 
   @override
   void initState() {
@@ -255,22 +258,21 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
                           SizedBox(
                             height: 20,
                           ),
+                          _pekerjaan == "Pekerjaan Kecil" ?
                           Row(
                             children: <Widget>[
                               _filterWidget(context),
                               _suhuWindspeedWidget(context),
 
                             ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
+                          ) : Container(),
+                          _pekerjaan == "Pekerjaan Kecil" ? SizedBox(height: 20,) : SizedBox(),
+                          _pekerjaan == "Pekerjaan Kecil" ? Row(
                             children: <Widget>[
                               _blowerWidget(context),
 
                             ],
-                          ),
+                          ) : Container(),
                           Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15.0),
@@ -435,15 +437,16 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
           return;
         }
 
-        if(element['type'] == "D003") {
-          _showAlert(context, "Foto Filter Tidak Boleh Kosong !");
-          return;
-        }
+        if(_pekerjaan != "Pekerjaan Kecil")
+          if(element['type'] == "D003") {
+            _showAlert(context, "Foto Filter Tidak Boleh Kosong !");
+            return;
+          }
 
-        if(element['type'] == "D004") {
-          _showAlert(context, "Foto Suhu/Windspeed Tidak Boleh Kosong !");
-          return;
-        }
+          if(element['type'] == "D004") {
+            _showAlert(context, "Foto Suhu/Windspeed Tidak Boleh Kosong !");
+            return;
+          }
 
         if(element['type'] == "D005") {
           _showAlert(context, "Foto Blower Tidak Boleh Kosong !");
@@ -565,7 +568,8 @@ Widget _hasilCheck(BuildContext context) {
                     child: TextFieldWidget(
                         _hpController,
                         keyboardType: TextInputType.numberWithOptions(),
-                        hint: "HP"
+                        hint: "HP",
+                        readOnly: _pekerjaan == "Pekerjaan Kecil" ? true : false,
                     ) ,
                   )
               ),
@@ -592,7 +596,8 @@ Widget _hasilCheck(BuildContext context) {
                     child: TextFieldWidget(
                         _lpController,
                         keyboardType: TextInputType.numberWithOptions(),
-                        hint: "LP"
+                        hint: "LP",
+                        readOnly: _pekerjaan == "Pekerjaan Kecil" ? true : false,
                     ) ,
                   )
               ),
@@ -1947,6 +1952,11 @@ Widget _hasilCheck(BuildContext context) {
         _lpNormalController.text = "20 - 40";
         _suhuNormalController.text = "< 7";
         _windSpeedNormalController.text = "2.0";
+        _pekerjaan = widget.pekerjaan;
+        if(widget.pekerjaan != "" || widget.pekerjaan != null || widget.pekerjaan == "Pekerjaan Kecil") {
+          _hpController.text = "0";
+          _lpController.text = "0";
+        }
       });
     });
 

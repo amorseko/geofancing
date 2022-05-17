@@ -2055,6 +2055,11 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       return;
     }
 
+    if(_noSpkController.text == "") {
+      _showAlert(context, "No. SPK Tidak Boleh Kosong !");
+      return;
+    }
+
     listImage.forEach((element) {
       print(element);
       if(element['path'] == "") {
@@ -2095,6 +2100,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       'id_sa': _namaSAController.text,
       'id_uniq_before' : widget.idUniq,
       'nopol' : _nopolController.text,
+      'no_spk' : _noSpkController.text,
       'model' : _modelMobilController.text,
       'KM' : _kmController.text,
       'HP' : _hpController.text,

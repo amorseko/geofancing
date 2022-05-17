@@ -50,6 +50,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
   final _remarksController = TextEditingController();
   final _namaSaController = TextEditingController();
   final _modelMobilController = TextEditingController();
+  final _noSpkController = TextEditingController();
 
   @override
   void initState() {
@@ -182,6 +183,25 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
                                               _namaSaController,
                                               readOnly: true,
                                               hint: "Nama SA",
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height : 10),
+                                    Row(
+                                      children: <Widget> [
+                                        new Expanded(
+                                            child: new TextWidget(
+                                              txt: "No. SPK",
+                                              align: TextAlign.justify,
+                                            )
+                                        ),
+                                        new Expanded(
+                                            flex: 3,
+                                            child: new TextFieldWidget(
+                                              _noSpkController,
+                                              readOnly: false,
+                                              hint: "No. SPK",
                                             )
                                         )
                                       ],
@@ -652,6 +672,11 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       return;
     }
 
+    if(_noSpkController.text == "") {
+      _showAlert(context, "No. SPK Tidak Boleh Kosong !");
+      return;
+    }
+
 
     listImage.forEach((element) {
       print("data path : " + element['path'] + " " + element['type'] + " " + element['name']);
@@ -680,6 +705,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       'id_sa': _namaSaController.text,
       'id_uniq_before' : widget.idUniq,
       'nopol' : _nopolController.text,
+      'no_spk' : _noSpkController.text,
       'model' : _modelMobilController.text,
       'KM' : "-",
       'HP' : "-",
@@ -765,7 +791,7 @@ class _CarWorkingEcAfterPage extends State<CarWorkingEcAfterPage> {
       _remarksController.text = models.data[0].penggantian;
       _namaSaController.text = models.data[0].id_sa;
       _modelMobilController.text = models.data[0].model;
-
+      _noSpkController.text = models.data[0].no_spk;
       // if(models.error == false) {
       //   for (var i = 0; i <  models.data[0].list_foto.split(', ').length; i++) {
       //     if(models.data[0].list_foto.split(', ')[i].toString() != "" || models.data[0].list_foto.split(', ')[i] != null) {

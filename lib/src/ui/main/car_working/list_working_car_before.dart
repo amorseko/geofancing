@@ -35,7 +35,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   bool _isLoading = true;
   double initial, distance;
   int _indexTab = 0;
-  String name, id_user, id_dealer, _typePekerjaan;
+  String name, id_user, id_dealer, _typePekerjaan, _pekerjaan;
   HistoryCarWorkingModels _carWorkingModels;
 
   List listWorkingQuery = List();
@@ -306,6 +306,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                                                     setState(() {
                                                       _typePekerjaan = newValue;
                                                     });
+
                                                   },
                                                   value: _typePekerjaan,
                                                   items:<String>['Air Conditioner','Engine Care'].map((String value) {
@@ -314,6 +315,36 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                                                 ),
                                               ),
                                             ),
+                                            _typePekerjaan == 'Air Conditioner' ? SizedBox(height: 20,) : SizedBox(),
+                                            _typePekerjaan == 'Air Conditioner' ?
+                                            Container(
+                                              width: double.infinity,
+                                              height: 50,
+                                              margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                              decoration: BoxDecoration(
+                                                color: colorWhite,
+                                                borderRadius: new BorderRadius.all(
+                                                  const Radius.circular(30.0),
+                                                ),
+                                              ),
+                                              child: DropdownButtonHideUnderline(
+                                                child: DropdownButton<String>(
+                                                  hint: Text("Pekerjaan"),
+                                                  isExpanded: true,
+                                                  onChanged: (newValue) {
+                                                    setState(() {
+                                                      _pekerjaan = newValue;
+                                                    });
+
+                                                  },
+                                                  value: _pekerjaan,
+                                                  items:<String>['Pekerjaan Kecil','Pekerjaan Besar'].map((String value) {
+                                                    return DropdownMenuItem(child: Text(value), value: value);
+                                                  }).toList(),
+                                                ),
+                                              ),
+                                            ) : Container(),
                                             SizedBox(height: 20),
                                             Container(
                                               width: double.infinity,
@@ -366,8 +397,12 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                                                           }
 
                                                           if(_typePekerjaan == "Air Conditioner") {
-                                                            print(_typePekerjaan);
-                                                            routeToWidget(context, CarWorkingBeforePage());
+                                                            if(_pekerjaan != "") {
+                                                              routeToWidget(context, CarWorkingBeforePage(pekerjaan : _pekerjaan));
+                                                            } else {
+                                                              _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Pilih Pekerjaan")));
+                                                            }
+
                                                           } else if(_typePekerjaan == "Engine Care") {
                                                             routeToWidget(context, CarWorkingEcBeforePage());
                                                           }
@@ -407,6 +442,24 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
     );
   }
 
+  Widget EngineCareLanjutan(BuildContext context) {
+    return DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        hint: Text("Pekerjaan"),
+        isExpanded: true,
+        onChanged: (newValue) {
+          setState(() {
+            _typePekerjaan = newValue;
+          });
+        },
+        value: _typePekerjaan,
+        items:<String>['Pekerjaan Kecil','Pekerjaan Besar'].map((String value) {
+          return DropdownMenuItem(child: Text(value), value: value);
+        }).toList(),
+      ),
+    );
+  }
+
   Widget body(BuildContext context) {
     switch(_indexTab) {
       case 0 : {
@@ -435,7 +488,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       child: _carWorkingModels.toString() != 'null' ?
       Container(
         child: _carWorkingModels.data.toString() != 'null' ?
-                _carWorkingModels.data.where((data) => data.status == status && data.nopol.toUpperCase().contains(query)).length > 0  ?
+                _carWorkingModels.data.where((data) => status != "3" ? data.status == status : {"0", "1" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query)).length > 0  ?
         ListView(
             scrollDirection: Axis.vertical,
             children: status != "3" ? _carWorkingModels.data
@@ -467,6 +520,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   }
 
   Widget createList(data, BuildContext context, String condition) {
+    print(condition);
     return GestureDetector(
       onTap: () {
         if(data.status == "1") {

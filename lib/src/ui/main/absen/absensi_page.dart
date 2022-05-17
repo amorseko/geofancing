@@ -89,7 +89,8 @@ class _AbsensiPageState extends State<AbsensiPage> {
   double latitude = 0.0, longitude = 0.0;
   Map<String, double> userLocation;
 
-  final ButtonWidgetLoadController _btnRetryController = new ButtonWidgetLoadController();
+  final ButtonWidgetLoadController _btnRetryController =
+      new ButtonWidgetLoadController();
 
   bool hasInternet = false;
   ConnectivityResult resultOfConnectivity = ConnectivityResult.none;
@@ -106,13 +107,10 @@ class _AbsensiPageState extends State<AbsensiPage> {
 //    _isButtonDisabled = true;
     new Timer(const Duration(milliseconds: 150), () {
       _inivtiew();
-
     });
-
-
   }
 
-   dispose() {
+  dispose() {
     super.dispose();
 
     subscription.cancel();
@@ -148,8 +146,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => isMockLocation());
+    WidgetsBinding.instance.addPostFrameCallback((_) => isMockLocation());
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -160,172 +157,180 @@ class _AbsensiPageState extends State<AbsensiPage> {
           backgroundColor: CorpToyogaColor),
       body: ProgressDialog(
         inAsyncCall: _isLoading,
-        child: this.hasInternet ? Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            GoogleMap(
-                mapType: MapType.normal,
-                zoomControlsEnabled: false,
-                initialCameraPosition: initiallocation,
-                markers: Set.of((_markers != null ? _markers : [])),
-                circles: Set.of((circle != null ? [circle] : [])),
-                onMapCreated: (GoogleMapController controller) {
-                  _controller = controller;
-                }
-            ),
-            Container(
-                padding: EdgeInsets.only(left: 10, bottom: 20, right: 10),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Positioned(
-                      bottom: 0,
-                      child: Card(
-                        elevation: 5,
-                        child: Container(
-                          height: 150,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.elliptical(150, 30)),
+        child: this.hasInternet
+            ? Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  GoogleMap(
+                      mapType: MapType.normal,
+                      zoomControlsEnabled: false,
+                      initialCameraPosition: initiallocation,
+                      markers: Set.of((_markers != null ? _markers : [])),
+                      circles: Set.of((circle != null ? [circle] : [])),
+                      onMapCreated: (GoogleMapController controller) {
+                        _controller = controller;
+                      }),
+                  Container(
+                      padding: EdgeInsets.only(left: 10, bottom: 20, right: 10),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Positioned(
+                            bottom: 0,
+                            child: Card(
+                              elevation: 5,
+                              child: Container(
+                                height: 150,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.elliptical(150, 30)),
+                                ),
+                              ),
+                            ),
                           ),
+                          Positioned(
+                            bottom: 0,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 20),
+                                Container(
+                                  child: TextWidget(
+                                    txt: allTranslations.text('txt_tanggal') +
+                                        " : " +
+                                        formattedDate,
+                                    txtSize: 20,
+                                    color: CorpToyogaColor,
+                                    weight: FontWeight.bold,
+                                  ),
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                ),
+                                Container(
+                                  child: TextWidget(
+                                    txt: "Jarak dengan kantor anda " +
+                                        _totalMeters.toString() +
+                                        " m",
+                                    txtSize: 16,
+                                    color: CorpToyogaColor,
+                                  ),
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                ),
+                                Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        RaisedButton(
+                                          onPressed: () => getCurrentLocation(),
+                                          color: Colors.white,
+                                          textColor: CorpToyogaColor,
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                            child: TextWidget(
+                                              txt: "Refresh",
+                                              txtSize: 15,
+                                              color: CorpToyogaColor,
+                                              weight: FontWeight.bold,
+                                            ),
+                                          ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+//                      child: Container(),
+                                        ),
+                                        RaisedButton(
+                                          // onPressed: () => _isButtonDisable
+                                          //     ? _ValidationChecking(
+                                          //         _totalMeters, _latlng)
+                                          //     : null,
+                                          onPressed : () => _totalMeters != 0 ? _ValidationChecking(
+                                                    _totalMeters, _latlng) : null,
+                                          color: CorpToyogaColor,
+                                          textColor: Colors.white,
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                            child: TextWidget(
+                                              txt: allTranslations
+                                                  .text('btn_attendance'),
+                                              txtSize: 12,
+                                              color: Colors.white,
+                                              weight: FontWeight.bold,
+                                            ),
+                                          ),
+//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+//                      child: Container(),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.only(bottom: 15)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Align(
+                        alignment: AlignmentDirectional.center,
+                        child: Image.asset(
+                          "assets/images/img_no_network.png",
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 20),
-                          Container(
-                            child: TextWidget(
-                              txt: allTranslations.text('txt_tanggal') +
-                                  " : " +
-                                  formattedDate,
-                              txtSize: 20,
-                              color: CorpToyogaColor,
-                              weight: FontWeight.bold,
-                            ),
-                            padding: const EdgeInsets.only(bottom: 15),
-                          ),
-                          Container(
-                            child: TextWidget(
-                              txt: "Jarak dengan kantor anda " +
-                                  _totalMeters.toString() +
-                                  " m",
-                              txtSize: 16,
-                              color: CorpToyogaColor,
-                            ),
-                            padding: const EdgeInsets.only(bottom: 15),
-                          ),
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  RaisedButton(
-                                    onPressed: () => getCurrentLocation(),
-                                    color: Colors.white,
-                                    textColor: CorpToyogaColor,
-                                    child: Container(
-                                      width:
-                                      MediaQuery.of(context).size.width / 4,
-                                      child: TextWidget(
-                                        txt: "Refresh",
-                                        txtSize: 15,
-                                        color: CorpToyogaColor,
-                                        weight: FontWeight.bold,
-                                      ),
-                                    ),
-//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-//                      child: Container(),
-                                  ),
-                                  RaisedButton(
-                                    onPressed: () => _isButtonDisable
-                                        ? _ValidationChecking(
-                                        _totalMeters, _latlng)
-                                        : null,
-                                    color: CorpToyogaColor,
-                                    textColor: Colors.white,
-                                    child: Container(
-                                      width:
-                                      MediaQuery.of(context).size.width / 4,
-                                      child: TextWidget(
-                                        txt: allTranslations
-                                            .text('btn_attendance'),
-                                        txtSize: 12,
-                                        color: Colors.white,
-                                        weight: FontWeight.bold,
-                                      ),
-                                    ),
-//                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-//                      child: Container(),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.only(bottom: 15)),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-            ),
-          ],
-        ) : Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Align(
-                  alignment: AlignmentDirectional.center,
-                  child: Image.asset(
-                    "assets/images/img_no_network.png",
-                    fit: BoxFit.cover,
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom : 32, left: 21, right: 21),
-              child: Align(
-                alignment: AlignmentDirectional.bottomCenter,
-                child: ButtonWidgetLoad(
-                    child: TextWidget(
-                      txt: "RETRY",
-                      color: Colors.white,
-                      txtSize: 14,
-                      fontFamily: 'Bold',
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 32, left: 21, right: 21),
+                    child: Align(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      child: ButtonWidgetLoad(
+                          child: TextWidget(
+                            txt: "RETRY",
+                            color: Colors.white,
+                            txtSize: 14,
+                            fontFamily: 'Bold',
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          borderRadius: 15.0,
+                          color: Colors.redAccent[400],
+                          successColor: Colors.redAccent[400],
+                          controller: _btnRetryController,
+                          onPressed: () => _navigationPage()),
                     ),
-                    width: MediaQuery.of(context).size.width,
-                    height: 50,
-                    borderRadius: 15.0,
-                    color: Colors.redAccent[400],
-                    successColor: Colors.redAccent[400],
-                    controller: _btnRetryController,
-                    onPressed: () => _navigationPage()
-                ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
       ),
     );
-
   }
 
   _navigationPage() async {
     try {
       final result = await InternetAddress.lookup('google.com');
 
-      if(result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         // Navigator.pop(context);
         // Navigator.of(context, rootNavigator: true).pop(context);
         Navigator.of(context).pop();
@@ -386,10 +391,12 @@ class _AbsensiPageState extends State<AbsensiPage> {
           strokeColor: Colors.blue,
           center: _latlng2,
           fillColor: Colors.blue.withAlpha(70));
+
+      _totalMeters = sDistance(new pref.LatLng(_lat, _long),
+          new pref.LatLng(newLocationData.latitude, newLocationData.longitude));
     });
 
-    _totalMeters = sDistance(new pref.LatLng(_lat, _long),
-        new pref.LatLng(newLocationData.latitude, newLocationData.longitude));
+
   }
 
   void getCurrentLocation() async {
@@ -424,6 +431,7 @@ class _AbsensiPageState extends State<AbsensiPage> {
       }
     }
   }
+
 
   _ValidationChecking(double _Meters, LatLng ltlng) {
     if (_AksesKhusus != "Y") {
@@ -467,25 +475,24 @@ class _AbsensiPageState extends State<AbsensiPage> {
       subscription = Connectivity().onConnectivityChanged.listen((result) {
         // Got a new connectivity status!
         setState(() {
-          this.resultOfConnectivity  = result;
+          this.resultOfConnectivity = result;
           print("data connecitvity : $result");
         });
       });
 
-      internetSubscription = InternetConnectionChecker().onStatusChange.listen((status){
-          final hasInternet = status == InternetConnectionStatus.connected;
+      internetSubscription =
+          InternetConnectionChecker().onStatusChange.listen((status) {
+        final hasInternet = status == InternetConnectionStatus.connected;
 
-          setState(() {
-            this.hasInternet = hasInternet;
-            print("data status $hasInternet");
-          });
+        setState(() {
+          this.hasInternet = hasInternet;
+          print("data status $hasInternet");
+        });
       });
 
       getCurrentLocation();
       setCustomMapPin();
     });
-
-
 
     setState(() {
       _isLoading = false;
