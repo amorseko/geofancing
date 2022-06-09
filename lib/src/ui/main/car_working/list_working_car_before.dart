@@ -6,7 +6,9 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:geofancing/src/bloc/request/req_history_car_working.dart';
 import 'package:geofancing/src/models/members_model.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_after.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_after_pekerjaan_besar.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_before.dart';
+import 'package:geofancing/src/ui/main/car_working/car_working_before_pekerjaan_besar.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_detail_done.dart';
 import 'package:geofancing/src/ui/main/car_working/car_working_ec_after.dart';
@@ -398,7 +400,13 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
 
                                                           if(_typePekerjaan == "Air Conditioner") {
                                                             if(_pekerjaan != "") {
-                                                              routeToWidget(context, CarWorkingBeforePage(pekerjaan : _pekerjaan));
+                                                              print("pekerjaan : " + _pekerjaan);
+                                                              if(_pekerjaan == "Pekerjaan Besar") {
+                                                                routeToWidget(context, CarWorkingBeforePagePekerjaanBesar());
+                                                              } else {
+                                                                routeToWidget(context, CarWorkingBeforePage());
+                                                              }
+
                                                             } else {
                                                               _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Pilih Pekerjaan")));
                                                             }
@@ -488,14 +496,14 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
       child: _carWorkingModels.toString() != 'null' ?
       Container(
         child: _carWorkingModels.data.toString() != 'null' ?
-                _carWorkingModels.data.where((data) => status != "3" ? data.status == status : {"0", "1" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query)).length > 0  ?
+                _carWorkingModels.data.where((data) => status != "3" ? data.status == status : {"1", "2" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query)).length > 0  ?
         ListView(
             scrollDirection: Axis.vertical,
             children: status != "3" ? _carWorkingModels.data
                 .where((data) => data.status == status && data.nopol.toUpperCase().contains(query))
                 .map((data) => createList(data, context, ""))
                 .toList() : _carWorkingModels.data
-                .where((data) =>  {"0", "1" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query))
+                .where((data) =>  {"1", "2" , "3"}.contains(data.status) && data.nopol.toUpperCase().contains(query))
                 .map((data) => createList(data, context, "direct")).toList()
         ) : ListView(
           children: <Widget>[
@@ -520,7 +528,7 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
   }
 
   Widget createList(data, BuildContext context, String condition) {
-    print(condition);
+    print(data.toString());
     return GestureDetector(
       onTap: () {
         if(data.status == "1") {
@@ -528,7 +536,12 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
             if(data.type_working == "Engine Care") {
               routeToWidget(context, CarWorkingEcAfterPage(idUniq : data.id_uniq));
             } else {
-              routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+              if(data.pekerjaan == "Pekerjaan Besar") {
+                routeToWidget(context, CarWorkingAftePekerjaanBesar(idUniq : data.id_uniq));
+              } else {
+                routeToWidget(context, CarWorkingAfter(idUniq : data.id_uniq));
+              }
+
             }
           } else {
             routeToWidget(context, DetailWorkingCar(id_uniq : data.id_uniq, condition : condition));
@@ -583,6 +596,11 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
                       SizedBox(height: 5),
                       TextWidget(
                           txt: data.type_working != "" ? data.type_working : "-",
+                          txtSize: 9.5,
+                          weight: FontWeight.bold),
+                      SizedBox(height: 5),
+                      TextWidget(
+                          txt: data.pekerjaan != "" ? data.pekerjaan : "-",
                           txtSize: 9.5,
                           weight: FontWeight.bold),
                     ],
@@ -733,15 +751,15 @@ class _ListWorkingCarBefore extends State<ListWorkingCarBefore> {
         break;
       }
       case 1 : {
-        return "After";
+        return "On Progress";
         break;
       }
       case 2 : {
-        return "After (Done)";
+        return "Done";
         break;
       }
       case 3 : {
-        return "Before List";
+        return "Decline";
         break;
       }
     }

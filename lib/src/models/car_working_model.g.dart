@@ -50,6 +50,7 @@ HistoryCarWorkingData _$HistoryCarWorkingDataFromJson(
     no_spk: json['no_spk'] as String,
     type_working: json['type_working'] as String,
     list_foto: json['list_foto'] as String,
+    pekerjaan: json['pekerjaan'] as String,
   )..hp = json['hp'] as String;
 }
 
@@ -75,4 +76,5 @@ Map<String, dynamic> _$HistoryCarWorkingDataToJson(
       'no_spk': instance.no_spk,
       'type_working': instance.type_working,
       'list_foto': instance.list_foto,
+      'pekerjaan': instance.pekerjaan,
     };

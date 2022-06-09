@@ -46,6 +46,7 @@ class HistoryCarWorkingData {
         this.no_spk,
         this.type_working,
         this.list_foto,
+        this.pekerjaan,
       }
       );
 
@@ -87,6 +88,8 @@ class HistoryCarWorkingData {
   String type_working;
   @JsonKey(name: 'list_foto')
   String list_foto;
+  @JsonKey(name: 'pekerjaan')
+  String pekerjaan;
 
   factory HistoryCarWorkingData.fromJson(Map<String, dynamic> json) =>
       _$HistoryCarWorkingDataFromJson(json);

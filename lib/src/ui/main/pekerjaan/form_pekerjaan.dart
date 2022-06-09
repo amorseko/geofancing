@@ -316,7 +316,7 @@ class _FormPekerjaanPage extends State<FormPekerjaanPage> {
         'id_dealer': _idDealer,
         'no_spk': _txtNoSpk.text,
         'nopol': _txtNoPol.text,
-        'jenis_pekerjaan': _myActivities,
+        'jenis_pekerjaan': _myActivities.toString(),
         'foto_spk':
             await MultipartFile.fromFile(_imageSpk.path, filename: filenameSPK),
         'foto_nopol': await MultipartFile.fromFile(_imageNoPol.path,

@@ -31,7 +31,7 @@ class DetailWorkingCar extends StatefulWidget {
 
 class _DetailWorkingCar extends State<DetailWorkingCar> {
   bool _isLoading = true;
-  String _idUser;
+  String _idUser, _idDealer;
   HistoryCarWorkingModelsDone _detailCarWorking;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -59,8 +59,9 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       final member = MemberModels.fromJson(json.decode(value));
       setState(() {
         _idUser = member.data.id_user;
+        _idDealer = member.data.id_dealer;
       });
-      var data = {"id_uniq" : widget.id_uniq, "method" : "detail_after", "id_user" : _idUser};
+      var data = {"id_uniq" : widget.id_uniq, "method" : "detail_after", "id_user" : _idUser, "id_dealer": _idDealer};
       bloc.getsHistoryCarWorkingDone(data, (model) {
         getData(model);
       });
@@ -964,7 +965,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       _isLoading = true;
     });
     
-    var data = {"id_uniq" : widget.id_uniq, 'status' : "1"};
+    var data = {"id_uniq" : widget.id_uniq, 'status' : "1", 'id_dealer' : _idDealer};
 
 
     blocCarWorking.bloc.actChangeStatusWorking(data, (status, message)  {
@@ -1003,7 +1004,7 @@ class _DetailWorkingCar extends State<DetailWorkingCar> {
       _isLoading = true;
     });
 
-    var data = {"id_uniq" : widget.id_uniq, 'status' : "3"};
+    var data = {"id_uniq" : widget.id_uniq, 'status' : "3", 'id_dealer' : _idDealer};
 
 
     blocCarWorking.bloc.actChangeStatusWorking(data, (status, message)  {

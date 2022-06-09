@@ -435,7 +435,7 @@ class ApiProvider {
 //      });
 
       print(formData);
-      final response = await _dioSecond.post(_baseUrl + "save_pekerjaan.php",
+      final response = await _dioSecond.post(_baseUrl + "save_pekerjaan_tester.php",
           data: formData);
       print("response pb temp : $response");
       print(response.data.toString());
@@ -573,11 +573,10 @@ class ApiProvider {
     final _dio = await _syncConnWithoutToken();
 
     try {
-      print(body);
       final response =
       await _dio.post("/history_working_car_before.php", data: json.encode(body));
-
       print(response.data);
+      // print("data list car working" + response.data);
       return HistoryCarWorkingModels.fromJson(response.data);
     } catch (error, _) {
      // return _handleError(error);

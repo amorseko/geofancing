@@ -20,16 +20,17 @@ import 'package:geofancing/src/utility/SharedPreferences.dart';
 import 'package:geofancing/src/widgets/additional_widgets.dart';
 import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
 
-class CarWorkingAfter extends StatefulWidget {
+class CarWorkingAftePekerjaanBesar extends StatefulWidget {
   String idUniq;
 
   @override
-  State<StatefulWidget> createState() => _CarWorkingAfter();
+  State<StatefulWidget> createState() => _CarWorkingAfterPekerjaanBesar();
 
-  CarWorkingAfter({this.idUniq});
+  CarWorkingAftePekerjaanBesar({this.idUniq});
 }
 
-class _CarWorkingAfter extends State<CarWorkingAfter> {
+class _CarWorkingAfterPekerjaanBesar
+    extends State<CarWorkingAftePekerjaanBesar> {
   bool _isLoading = true;
   String _idUser, _name, _idDealer;
   HistoryCarWorkingModels _detailCarWorking;
@@ -91,8 +92,6 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
         _lpNormalController.text = "20 - 40";
         _suhuNormalController.text = "< 7";
         _windSpeedNormalController.text = "2.0";
-        _hpController.text = "0";
-        _lpController.text = "0";
       });
 
       var data = {
@@ -104,6 +103,7 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
         getData(model);
       });
     });
+
 
 
     // return;
@@ -138,6 +138,33 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
         "delete": true,
         "type": "D002"
       },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "delete": true,
+        "type": "D003"
+      },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "delete": true,
+        "type": "D004"
+      },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "delete": true,
+        "type": "D005"
+      }
     ]);
 
     setState(() {
@@ -312,15 +339,33 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
                         SizedBox(
                           height: 16,
                         ),
-
+                        _hasilCheck(context),
+                        SizedBox(
+                          height: 16,
+                        ),
                         Row(
                           children: <Widget>[
                             _kmWidget(context),
                             _tampakDepan(context),
                           ],
                         ),
-                        // SizedBox(height: 20,),
-
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            _filterWidget(context),
+                            _suhuWindspeedWidget(context),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            _blowerWidget(context),
+                          ],
+                        ),
                         Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -1821,6 +1866,38 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
       return;
     }
 
+    if (_hpController.text == "") {
+      _showAlert(context, "HP Tidak Boleh Kosong !");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_lpController.text == "") {
+      _showAlert(context, "LP Tidak Boleh Kosong !");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_suhuController.text == "") {
+      _showAlert(context, "Suhu Tidak Boleh Kosong !");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    if (_windSpeedController.text == "") {
+      _showAlert(context, "Windpseed Tidak Boleh Kosong !");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     if (_filterController.text == "") {
       _showAlert(context, "Filter Tidak Boleh Kosong !");
       setState(() {
@@ -1886,6 +1963,30 @@ class _CarWorkingAfter extends State<CarWorkingAfter> {
 
           if (element['type'] == "D002") {
             _showAlert(context, "Foto Tampak Depan Tidak Boleh Kosong !");
+            setState(() {
+              _isLoading = false;
+            });
+            return;
+          }
+
+          if (element['type'] == "D003") {
+            _showAlert(context, "Foto Filter Tidak Boleh Kosong !");
+            setState(() {
+              _isLoading = false;
+            });
+            return;
+          }
+
+          if (element['type'] == "D004") {
+            _showAlert(context, "Foto Suhu/Windspeed Tidak Boleh Kosong !");
+            setState(() {
+              _isLoading = false;
+            });
+            return;
+          }
+
+          if (element['type'] == "D005") {
+            _showAlert(context, "Foto Blower Tidak Boleh Kosong !");
             setState(() {
               _isLoading = false;
             });

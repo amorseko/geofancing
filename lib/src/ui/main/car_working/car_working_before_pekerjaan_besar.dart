@@ -18,14 +18,14 @@ import 'package:geofancing/src/widgets/ButtonWidgetLoading.dart';
 import 'package:geofancing/src/bloc/car_before_save_bloc.dart';
 import 'package:geofancing/src/models/default_model.dart';
 
-class CarWorkingBeforePage extends StatefulWidget {
+class CarWorkingBeforePagePekerjaanBesar extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _CarWorkingBeforePage();
+    return _CarWorkingBeforePagePekerjaanBesar();
   }
 }
 
-class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
+class _CarWorkingBeforePagePekerjaanBesar extends State<CarWorkingBeforePagePekerjaanBesar> {
   final _namaUserController = TextEditingController();
   final _namaSAController = TextEditingController();
   final _nopolController = TextEditingController();
@@ -221,11 +221,31 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
                           SizedBox(
                             height: 16,
                           ),
+                          _hasilCheck(context),
+                          SizedBox(
+                            height: 16,
+                          ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               _kmWidget(context),
                               _tampakDepan(context),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              _filterWidget(context),
+                              _suhuWindspeedWidget(context),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              _blowerWidget(context),
                             ],
                           ),
                           Card(
@@ -337,6 +357,16 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
       return;
     }
 
+    if (_suhuController.text == "") {
+      _showAlert(context, "Suhu Tidak Boleh Kosong !");
+      return;
+    }
+
+    if (_windSpeedController.text == "") {
+      _showAlert(context, "Windpseed Tidak Boleh Kosong !");
+      return;
+    }
+
     if (_filterController.text == "") {
       _showAlert(context, "Filter Tidak Boleh Kosong !");
       return;
@@ -369,6 +399,21 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
           _showAlert(context, "Foto Tampak Depan Tidak Boleh Kosong !");
           return;
         }
+
+        if (element['type'] == "D003") {
+          _showAlert(context, "Foto Filter Tidak Boleh Kosong !");
+          return;
+        }
+
+        if (element['type'] == "D004") {
+          _showAlert(context, "Foto Suhu/Windspeed Tidak Boleh Kosong !");
+          return;
+        }
+
+        if (element['type'] == "D005") {
+          _showAlert(context, "Foto Blower Tidak Boleh Kosong !");
+          return;
+        }
       }
     });
 
@@ -391,7 +436,7 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
       'perawatan': _perawatanController.text,
       'penggantian': _penggantianController.text,
       "type_working": "Air Conditioner",
-      "pekerjaan": 'Pekerjaan Kecil'
+      "pekerjaan": "Pekerjaan Besar"
     });
 
     listImage.forEach((element) {
@@ -1793,8 +1838,9 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
         _lpNormalController.text = "20 - 40";
         _suhuNormalController.text = "< 7";
         _windSpeedNormalController.text = "2.0";
-        _hpController.text = "0";
-        _lpController.text = "0";
+
+
+
       });
     });
 
@@ -1815,6 +1861,30 @@ class _CarWorkingBeforePage extends State<CarWorkingBeforePage> {
         "proses": false,
         "type": "D002"
       },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "type": "D003"
+      },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "type": "D004"
+      },
+      {
+        "name": "button",
+        "path": "",
+        "path_compressed": "",
+        "status": false,
+        "proses": false,
+        "type": "D005"
+      }
     ]);
 
     setState(() {
